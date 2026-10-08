@@ -1,0 +1,17 @@
+{
+  "session_id": "5302344b-f412-4dc8-88ec-ed443b231e8b",
+  "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-claude-F--Opensource-agentarium-78ebe192-1ef6-45c4-acc3-9118c3304d65-scratchpad-repo\\5302344b-f412-4dc8-88ec-ed443b231e8b.jsonl",
+  "cwd": "<HOME>\\AppData\\Local\\Temp\\claude\\F--Opensource-agentarium\\78ebe192-1ef6-45c4-acc3-9118c3304d65\\scratchpad\\repo",
+  "prompt_id": "03f35402-d9ad-4a68-aa89-8041adcd8d17",
+  "permission_mode": "default",
+  "effort": {
+    "level": "medium"
+  },
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Grep",
+  "tool_input": {
+    "pattern": "scratch",
+    "output_mode": "content"
+  },
+  "tool_use_id": "toolu_01LX7GiNSeo9jXsvjboG1yxw"
+}

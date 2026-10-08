@@ -1,0 +1,9 @@
+{
+  "session_id": "d60f1fd5-9d31-4285-a7d1-3f1d159c0d0a",
+  "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-claude-F--Opensource-agentarium-78ebe192-1ef6-45c4-acc3-9118c3304d65-scratchpad-repo\\d60f1fd5-9d31-4285-a7d1-3f1d159c0d0a.jsonl",
+  "cwd": "<HOME>\\AppData\\Local\\Temp\\claude\\F--Opensource-agentarium\\78ebe192-1ef6-45c4-acc3-9118c3304d65\\scratchpad\\repo",
+  "prompt_id": "b03b9b36-2872-436a-a764-be2a1ea3f527",
+  "agent_id": "ab32fd5f03a3098f8",
+  "agent_type": "general-purpose",
+  "hook_event_name": "SubagentStart"
+}

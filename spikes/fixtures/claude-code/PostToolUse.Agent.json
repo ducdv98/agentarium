@@ -1,0 +1,83 @@
+{
+  "session_id": "d60f1fd5-9d31-4285-a7d1-3f1d159c0d0a",
+  "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-claude-F--Opensource-agentarium-78ebe192-1ef6-45c4-acc3-9118c3304d65-scratchpad-repo\\d60f1fd5-9d31-4285-a7d1-3f1d159c0d0a.jsonl",
+  "cwd": "<HOME>\\AppData\\Local\\Temp\\claude\\F--Opensource-agentarium\\78ebe192-1ef6-45c4-acc3-9118c3304d65\\scratchpad\\repo",
+  "prompt_id": "b03b9b36-2872-436a-a764-be2a1ea3f527",
+  "permission_mode": "acceptEdits",
+  "effort": {
+    "level": "medium"
+  },
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Agent",
+  "tool_input": {
+    "description": "List directory files",
+    "prompt": "List the files in this directory: <HOME>\\AppData\\Local\\Temp\\claude\\F--Opensource-agentarium\\78ebe192-1ef6-45c4-acc3-9118c3304d65\\scratchpad\\repo . Report the file names.",
+    "subagent_type": "general-purpose",
+    "run_in_background": false
+  },
+  "tool_response": {
+    "status": "completed",
+    "prompt": "List the files in this directory: <HOME>\\AppData\\Local\\Temp\\claude\\F--Opensource-agentarium\\78ebe192-1ef6-45c4-acc3-9118c3304d65\\scratchpad\\repo . Report the file names.",
+    "agentId": "ab32fd5f03a3098f8",
+    "agentType": "general-purpose",
+    "harnessNoteCount": 0,
+    "harnessTailCount": 0,
+    "harnessSectionHash": "4bab05e7ad88fe4d",
+    "content": [
+      {
+        "type": "text",
+        "text": "Files in the directory (including hidden ones):\n\n- `.claude` (directory)\n- `.git` (directory)\n- `hello.txt`\n- `README.md`\n\nSeparately, these MCP servers need authorization before their tools work: claude.ai Gmail, claude.ai Google Calendar, claude.ai Google Drive, and plugin:context7:context7. I cou…[truncated]"
+      }
+    ],
+    "resolvedModel": "claude-sonnet-5-5",
+    "totalDurationMs": 9386,
+    "totalTokens": 22627,
+    "totalToolUseCount": 1,
+    "usage": {
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2027,
+      "cache_read_input_tokens": 20413,
+      "output_tokens": 185,
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 2027
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 185,
+          "cache_read_input_tokens": 20413,
+          "cache_creation_input_tokens": 2027,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 2027,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "toolStats": {
+      "readCount": 0,
+      "searchCount": 0,
+      "bashCount": 1,
+      "editFileCount": 0,
+      "linesAdded": 0,
+      "linesRemoved": 0,
+      "otherToolCount": 0
+    },
+    "canContinueAgent": true
+  },
+  "tool_use_id": "toolu_01Qvqy3tTC5saD3maB9NQYrd",
+  "duration_ms": 9389
+}
