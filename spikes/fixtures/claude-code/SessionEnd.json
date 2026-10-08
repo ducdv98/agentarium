@@ -1,8 +1,9 @@
 {
-  "session_id": "d60f1fd5-9d31-4285-a7d1-3f1d159c0d0a",
-  "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-claude-F--Opensource-agentarium-78ebe192-1ef6-45c4-acc3-9118c3304d65-scratchpad-repo\\d60f1fd5-9d31-4285-a7d1-3f1d159c0d0a.jsonl",
-  "cwd": "<HOME>\\AppData\\Local\\Temp\\claude\\F--Opensource-agentarium\\78ebe192-1ef6-45c4-acc3-9118c3304d65\\scratchpad\\repo",
-  "prompt_id": "b03b9b36-2872-436a-a764-be2a1ea3f527",
+  "session_id": "f43c5d3c-28a6-4ded-882c-4f283652eb3d",
+  "transcript_path": "<HOME>\\.claude\\projects\\F--Opensource-mock-repo\\f43c5d3c-28a6-4ded-882c-4f283652eb3d.jsonl",
+  "cwd": "F:\\Opensource\\mock-repo",
+  "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\F--Opensource-mock-repo\\f43c5d3c-28a6-4ded-882c-4f283652eb3d\\scratchpad",
+  "prompt_id": "d5daff68-8be5-4678-b913-f574d6b83c7f",
   "hook_event_name": "SessionEnd",
-  "reason": "other"
+  "reason": "prompt_input_exit"
 }

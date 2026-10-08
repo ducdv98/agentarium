@@ -8,7 +8,9 @@ Re-run: `node spikes/setup-scratch-repo.mjs <dir>`, set `AGENTARIUM_SPIKE_OUT`, 
 
 Captured, via two headless (`claude -p`) sessions: `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse` (Read, Write, Bash, Grep, Agent, ToolSearch), `PermissionRequest` (Bash, WebFetch), `SubagentStart`, `SubagentStop`, `Stop`, `SessionEnd`.
 
-**Not captured:** `Notification` (`idle_prompt`, `permission_prompt`, `elicitation_dialog`), `Elicitation`, `PostToolUseFailure`, `PermissionDenied`, `TaskCreated/Completed`. Headless mode never fires `Notification`, and a denied permission produced neither `PostToolUseFailure` nor `PermissionDenied`. These need an interactive session, which a script cannot drive. Treat their shape as unverified until someone runs the logger in a real terminal session and leaves a prompt idle for about 60 s.
+**Interactive follow-up (second capture, `permission_mode: auto`):** `Notification` fired once with `notification_type: "permission_prompt"`, `message: "Claude needs your permission"`, right alongside a `PermissionRequest`. Newer payloads also carry `scratchpad_dir` and, on `SessionStart`, `model`. `idle_prompt` was NOT captured.
+
+**Still not captured:** `Notification` of type `idle_prompt` and `elicitation_dialog`, `Elicitation`, `PostToolUseFailure`, `PermissionDenied`, `TaskCreated/Completed`. Headless mode never fires `Notification`, and a denied permission produced neither `PostToolUseFailure` nor `PermissionDenied`. These need an interactive session, which a script cannot drive. Treat their shape as unverified until someone runs the logger in a real terminal session and leaves a prompt idle for about 60 s.
 
 ## Findings
 

@@ -1,25 +1,26 @@
 {
-  "session_id": "d60f1fd5-9d31-4285-a7d1-3f1d159c0d0a",
-  "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-claude-F--Opensource-agentarium-78ebe192-1ef6-45c4-acc3-9118c3304d65-scratchpad-repo\\d60f1fd5-9d31-4285-a7d1-3f1d159c0d0a.jsonl",
-  "cwd": "<HOME>\\AppData\\Local\\Temp\\claude\\F--Opensource-agentarium\\78ebe192-1ef6-45c4-acc3-9118c3304d65\\scratchpad\\repo",
-  "prompt_id": "b03b9b36-2872-436a-a764-be2a1ea3f527",
-  "permission_mode": "acceptEdits",
+  "session_id": "f43c5d3c-28a6-4ded-882c-4f283652eb3d",
+  "transcript_path": "<HOME>\\.claude\\projects\\F--Opensource-mock-repo\\f43c5d3c-28a6-4ded-882c-4f283652eb3d.jsonl",
+  "cwd": "F:\\Opensource\\mock-repo",
+  "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\F--Opensource-mock-repo\\f43c5d3c-28a6-4ded-882c-4f283652eb3d\\scratchpad",
+  "prompt_id": "d8315720-ba89-4de7-9001-ce204a01d89e",
+  "permission_mode": "auto",
   "effort": {
     "level": "medium"
   },
   "hook_event_name": "PostToolUse",
   "tool_name": "Bash",
   "tool_input": {
-    "command": "echo done",
-    "description": "Print done"
+    "command": "curl --version",
+    "description": "Show curl version"
   },
   "tool_response": {
-    "stdout": "done",
+    "stdout": "curl 8.14.1 (x86_64-w64-mingw32) libcurl/8.14.1 Schannel zlib/1.3.1 brotli/1.1.0 zstd/1.5.7 libidn2/2.3.8 libpsl/0.21.5 libssh2/1.11.1\r\nRelease-Date: 2025-06-04\r\nProtocols: dict file ftp ftps gopher gophers http https imap imaps ipfs ipns ldap ldaps mqtt pop3 pop3s rtsp scp sftp smb smbs smtp smtps …[truncated]",
     "stderr": "",
     "interrupted": false,
     "isImage": false,
     "noOutputExpected": false
   },
-  "tool_use_id": "toolu_01DTQejbnb1SFYELWXJEtfbD",
-  "duration_ms": 108
+  "tool_use_id": "toolu_01EKnv8cUKv8CPqEeDdW5DDy",
+  "duration_ms": 1594
 }
