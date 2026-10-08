@@ -82,7 +82,7 @@ Research date: 2026-10-08.
 Normalized event:
 
 ```json
-{ "agent_id": "claude:sess_ab12", "provider": "claude-code",
+{ "agent_id": "<machine_id>:claude-code:<session_id>:<agent_id>", "schema_version": 1, "provider": "claude-code",
   "ts": 1760000000,
   "kind": "tool_start|tool_end|thinking|message|needs_input|error|spawn|stop",
   "tool": "Edit", "category": "read|write|exec|search|network|delegate",

@@ -1,7 +1,7 @@
 # Topologies and sub-agents
 
 How the model handles an agent that spawns sub-agents, and the other ways
-developers combine agents. Terms follow [glossary.md](glossary.md).
+developers combine agents. Terms follow [CONTEXT.md](../../CONTEXT.md).
 
 Research date: 2026-10-08. Claude Code details were read from its hooks and
 OpenTelemetry docs. Codex details come from search summaries and need

@@ -2,7 +2,7 @@
 
 Note: the office is the default theme, not the only one. Office words in this
 doc (desk, department, manager) are theme vocabulary; core terms are in
-[glossary.md](glossary.md) and swappable scenes are in [themes.md](themes.md).
+[CONTEXT.md](../../CONTEXT.md) and swappable scenes are in [themes.md](themes.md).
 
 A room where each agent (Claude Code session, subagent, Codex run, ...) is a
 character with a stable face, body and outfit. Agent state shows up as visible
@@ -41,8 +41,9 @@ behavior instead of log lines.
    shows handoffs. A wall board shows tokens, cost, elapsed time. Clicking a
    character shows the transcript or current command.
 
-## MVP (about a week)
+## MVP (thin vertical slice)
 
+- Scope: one daemon, Claude Code only, one room visible, JSON-lines log, pure reducer. `machine_id`, `schema_version` and the room key are in the schema from day 0. Not sized in days.
 - Local daemon that receives events over WebSocket.
 - Browser page with a 2D room, 4-5 reusable characters, about 6 states.
 - One-line installer that configures hooks.

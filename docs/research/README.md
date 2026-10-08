@@ -11,7 +11,7 @@ behavior.
 | [event-sources.md](event-sources.md) | How to collect events from agents of different providers |
 | [topologies.md](topologies.md) | Sub-agents and other ways agents are combined; the relationship graph model |
 | [themes.md](themes.md) | Swappable scenes (office, farm, construction site) and what they require of the core |
-| [glossary.md](glossary.md) | Theme-neutral terms used in the core |
+| [../../CONTEXT.md](../../CONTEXT.md) | Theme-neutral glossary used in the core |
 | [architecture.md](architecture.md) | Global daemon, rooms, event sourcing, packages, protocol, security |
 | [rendering.md](rendering.md) | Isometric 2D with PixiJS, sprite pipeline, v1 stability criteria, spike plan |
 | [stack.md](stack.md) | All technology choices in one table, with status, evidence and gaps |

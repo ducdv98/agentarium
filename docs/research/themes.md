@@ -2,7 +2,7 @@
 
 The default scene is an office of agents, but the visualization is not tied to
 it. A user can choose a theme: a farm (agents are farmhands), a construction
-site (builders, masons), and so on. Terms follow [glossary.md](glossary.md).
+site (builders, masons), and so on. Terms follow [CONTEXT.md](../../CONTEXT.md).
 
 ## Requirement on the core
 

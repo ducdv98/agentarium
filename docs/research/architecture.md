@@ -1,6 +1,6 @@
 # Architecture
 
-Research date: 2026-10-08. Terms follow [glossary.md](glossary.md). Event
+Research date: 2026-10-08. Terms follow [CONTEXT.md](../../CONTEXT.md). Event
 sources are in [event-sources.md](event-sources.md); structure in
 [topologies.md](topologies.md); scene layer in [themes.md](themes.md) and
 [rendering.md](rendering.md). Prior art in [prior-art.md](prior-art.md).

@@ -1,6 +1,6 @@
 # Rendering
 
-Research date: 2026-10-08. Terms follow [glossary.md](glossary.md). Scene
+Research date: 2026-10-08. Terms follow [CONTEXT.md](../../CONTEXT.md). Scene
 vocabulary and manifests are in [themes.md](themes.md).
 
 ## Decisions

@@ -34,9 +34,8 @@ Status: **decided** (project owner), **proposed** (recommended, not locked),
 
 ## Strategic decision pending
 
-Pixel Agents already implements a close version of this idea (see
-[prior-art.md](prior-art.md)). Whether to build independently, contribute
-upstream or fork has not been decided. The differentiators in this repo's notes
+Decided: build independently (ADR 0001). Pixel Agents already implements a close version of this idea (see
+[prior-art.md](prior-art.md)). The differentiators in this repo's notes
 are isometric hand-drawn art, swappable themes, a relationship-graph model,
 multi-provider schema, and a global multi-room daemon.
 
@@ -55,8 +54,8 @@ multi-provider schema, and a global multi-room daemon.
 
 ## Suggested next steps
 
-1. Decide build / contribute / fork.
-2. Run the rendering spike.
-3. Dump real hook payloads from each provider, then write the adapter mappers.
+1. ~~Decide build / contribute / fork~~ (done, ADR 0001).
+2. Dump real Claude Code hook payloads, then write the adapter mapper and freeze the action categories.
+3. Run the rendering spike after the core exists; use a dot-grid renderer until then.
 4. Scaffold the monorepo with `core`, the daemon, the Claude Code adapter and
    the load generator, with CI on three OSes.
