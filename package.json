@@ -1,0 +1,14 @@
+{
+  "name": "agentarium",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0"
+  }
+}
