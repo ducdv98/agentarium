@@ -1,5 +1,5 @@
-// Local stand-in for the CI matrix: typecheck, test and build on Node 22 and 24, on this host
-// and on Linux (Docker). macOS is only covered by CI.
+// Local stand-in for the CI matrix: typecheck, test, build and the pack smoke test on Node 22
+// and 24, on this host and on Linux (Docker). macOS is only covered by CI.
 // Usage: node scripts/verify-all.mjs [--only host|linux]
 // Host Node versions come from nvm (nvm-windows NVM_HOME, or NVM_DIR); a missing version is
 // reported as skipped, not passed.
@@ -9,7 +9,7 @@ import { delimiter, join, resolve } from "node:path";
 
 const NODE_MAJORS = [22, 24];
 const MIN = [22, 18];
-const STEPS = "pnpm install --frozen-lockfile && pnpm typecheck && pnpm test && pnpm build";
+const STEPS = "pnpm install --frozen-lockfile && pnpm typecheck && pnpm test && pnpm build && pnpm smoke:pack";
 const repo = resolve(import.meta.dirname, "..");
 const only = process.argv.includes("--only") ? process.argv[process.argv.indexOf("--only") + 1] : null;
 const isWindows = process.platform === "win32";

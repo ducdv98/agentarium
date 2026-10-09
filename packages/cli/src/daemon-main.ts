@@ -5,8 +5,8 @@ import { DAEMON_VERSION, resolvePort, startDaemon } from "@agentarium/server";
 import { agentariumHome, daemonFile, dataDir, readOrCreateToken } from "./paths";
 
 const home = agentariumHome();
-// Serve the built UI when it exists (`pnpm --filter @agentarium/ui-web build`).
-const uiDist = fileURLToPath(new URL("../../ui-web/dist", import.meta.url));
+// The build copies the UI next to the bundled daemon (dist/ui).
+const uiDist = fileURLToPath(new URL("./ui", import.meta.url));
 const daemon = await startDaemon({
   port: resolvePort(),
   dataDir: dataDir(home),

@@ -2,6 +2,7 @@ import { existsSync, mkdtempSync, readFileSync } from "node:fs";
 import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 import { contextFromEnv, init, probeHealth, start, stop, uninstall, type Context } from "../src/commands";
 
@@ -21,11 +22,15 @@ afterEach(async () => {
 async function setup(): Promise<Context> {
   const dir = mkdtempSync(join(tmpdir(), "agentarium-cli-"));
   const port = await freePort();
-  const ctx = contextFromEnv({
-    AGENTARIUM_HOME: join(dir, "home"),
-    CLAUDE_CONFIG_DIR: join(dir, "claude"),
-    AGENTARIUM_PORT: String(port),
-  });
+  const ctx = {
+    ...contextFromEnv({
+      AGENTARIUM_HOME: join(dir, "home"),
+      CLAUDE_CONFIG_DIR: join(dir, "claude"),
+      AGENTARIUM_PORT: String(port),
+    }),
+    // Bundled by the global setup.
+    daemonEntry: fileURLToPath(new URL("../dist/daemon.js", import.meta.url)),
+  };
   made.push(ctx);
   return ctx;
 }

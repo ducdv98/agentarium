@@ -1,7 +1,6 @@
 import { spawn } from "node:child_process";
 import { existsSync, openSync, readFileSync, rmSync } from "node:fs";
-import { createRequire } from "node:module";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import { DAEMON_VERSION, resolvePort } from "@agentarium/server";
 import {
   agentariumHome,
@@ -18,10 +17,19 @@ export interface Context {
   home: string;
   settingsPath: string;
   port: number;
+  /** The built daemon script `start` runs; the default only exists in the bundle, not from src/. */
+  daemonEntry: string;
 }
 
 export function contextFromEnv(env: Env = process.env): Context {
-  return { env, home: agentariumHome(env), settingsPath: claudeSettingsPath(env), port: resolvePort(env) };
+  return {
+    env,
+    home: agentariumHome(env),
+    settingsPath: claudeSettingsPath(env),
+    port: resolvePort(env),
+    // Next to the bundled CLI: dist/bin.js runs dist/daemon.js.
+    daemonEntry: fileURLToPath(new URL("./daemon.js", import.meta.url)),
+  };
 }
 
 export function init(ctx: Context): InstallResult & { settingsPath: string; port: number } {
@@ -75,12 +83,12 @@ export async function start(ctx: Context): Promise<StartResult> {
     }
     return { status: "already-running", port: ctx.port, pid: running.pid };
   }
+  if (!existsSync(ctx.daemonEntry)) {
+    throw new Error(`daemon script not found at ${ctx.daemonEntry}; run "pnpm build" first`);
+  }
   readOrCreateToken(ctx.home);
   const out = openSync(logFile(ctx.home), "a");
-  // tsx lets the daemon run straight from TypeScript sources until there is a build step.
-  const tsx = pathToFileURL(createRequire(import.meta.url).resolve("tsx")).href;
-  const entry = fileURLToPath(new URL("./daemon-main.ts", import.meta.url));
-  const child = spawn(process.execPath, ["--import", tsx, entry], {
+  const child = spawn(process.execPath, [ctx.daemonEntry], {
     detached: true,
     stdio: ["ignore", out, out],
     windowsHide: true,

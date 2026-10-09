@@ -7,9 +7,10 @@
   "scripts": {
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
-    "build": "pnpm --filter @agentarium/ui-web build",
+    "build": "pnpm -r build",
     "verify:all": "node scripts/verify-all.mjs",
-    "agentarium": "pnpm --filter @agentarium/cli exec tsx src/bin.ts"
+    "smoke:pack": "node scripts/smoke-pack.mjs",
+    "agentarium": "node packages/cli/dist/bin.js"
   },
   "devDependencies": {
     "@types/node": "^26.6.4",
