@@ -10,7 +10,13 @@ Captured, via two headless (`claude -p`) sessions: `SessionStart`, `UserPromptSu
 
 **Interactive follow-up (second capture, `permission_mode: auto`):** `Notification` fired once with `notification_type: "permission_prompt"`, `message: "Claude needs your permission"`, right alongside a `PermissionRequest`. Newer payloads also carry `scratchpad_dir` and, on `SessionStart`, `model`. `idle_prompt` was NOT captured.
 
-**Still not captured:** `Notification` of type `idle_prompt` and `elicitation_dialog`, `Elicitation`, `PostToolUseFailure`, `PermissionDenied`, `TaskCreated/Completed`. Headless mode never fires `Notification`, and a denied permission produced neither `PostToolUseFailure` nor `PermissionDenied`. These need an interactive session, which a script cannot drive. Treat their shape as unverified until someone runs the logger in a real terminal session and leaves a prompt idle for about 60 s.
+**Interactive close-out capture (2026-10-09, `permission_mode: auto`):**
+- `Notification` `idle_prompt` (`message: "Claude is waiting for your input"`) fires once, about 60 s after `Stop`, and is not repeated.
+- `AskUserQuestion` produces `PreToolUse`, then `PermissionRequest` (carrying the questions in `tool_input`), then `Notification` `permission_prompt` about 6 s later. `PostToolUse` arrives only when the user answers; in this capture that was 704 s later, with no events in between.
+- `SubagentStop` with an empty `agent_type` and no prior `SubagentStart` follows some `Stop` events. Its `last_assistant_message` is a short title-like phrase, so these look like internal helper agents. The reducer ignores an `end` for an agent it never saw.
+- New events: `ConfigChange` (`source`, `file_path`) and `CwdChanged` (`old_cwd`, `new_cwd`). The adapter ignores both.
+
+**Still not captured:** `Notification` of type `elicitation_dialog`, `Elicitation`, `PostToolUseFailure`, `PermissionDenied`, `TaskCreated/Completed`. Headless mode never fires `Notification`, and a denied permission produced neither `PostToolUseFailure` nor `PermissionDenied`. These need an interactive session, which a script cannot drive. Treat their shape as unverified until someone runs the logger in a real terminal session and leaves a prompt idle for about 60 s.
 
 ## Findings
 
@@ -30,7 +36,8 @@ Consequence for the reducer: `parent_id` for a sub-agent is "inferred" at spawn 
 ### Which events signal waiting?
 - `PermissionRequest` fires when a tool needs approval, and it fires after that tool's `PreToolUse`. It carries `tool_name`, `tool_input`, `permission_suggestions`, but no `tool_use_id`. Match it to the pending call by session, `agent_id` and `tool_name`.
 - There is no event for the user's answer in the captured data. In headless mode a denied tool produced no `PostToolUse` and no failure event, so the pending request cleared only on the next event (`PreToolUse` retry) or `Stop`. Clearing the Needs-input flag must therefore also happen on any later event from that agent.
-- `Notification` (`permission_prompt`, `idle_prompt`, `elicitation_dialog`) is documented but not captured here.
+- `Notification` `permission_prompt` and `idle_prompt` are captured (see above). `elicitation_dialog` is documented but not captured.
+- A question from Claude (`AskUserQuestion`) is signalled as a `PermissionRequest`, so it raises the Needs-input flag with no special handling.
 
 ### Other observations
 - `SessionEnd` has `reason` (`other` in headless runs).

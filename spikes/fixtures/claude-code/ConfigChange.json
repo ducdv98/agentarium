@@ -1,0 +1,10 @@
+{
+  "session_id": "9182a407-8aae-48b4-a1f7-3cc4f24cf40e",
+  "transcript_path": "<HOME>\\.claude\\projects\\F--Side-Projects-test-cc\\9182a407-8aae-48b4-a1f7-3cc4f24cf40e.jsonl",
+  "cwd": "<CWD>",
+  "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\F--Side-Projects-test-cc\\9182a407-8aae-48b4-a1f7-3cc4f24cf40e\\scratchpad",
+  "prompt_id": "a4dd0996-439f-40ba-a9ad-1800672268eb",
+  "hook_event_name": "ConfigChange",
+  "source": "user_settings",
+  "file_path": "<HOME>\\.claude\\settings.json"
+}

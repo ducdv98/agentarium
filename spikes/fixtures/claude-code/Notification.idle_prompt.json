@@ -1,0 +1,10 @@
+{
+  "session_id": "700fd348-8639-48d0-89cf-796863ad27e1",
+  "transcript_path": "<HOME>\\.claude\\projects\\F--Side-Projects-test-cc-1\\700fd348-8639-48d0-89cf-796863ad27e1.jsonl",
+  "cwd": "<CWD>",
+  "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\F--Side-Projects-test-cc-1\\700fd348-8639-48d0-89cf-796863ad27e1\\scratchpad",
+  "prompt_id": "0d56892d-2bf6-415a-b03e-e9a8c41be5a2",
+  "hook_event_name": "Notification",
+  "message": "Claude is waiting for your input",
+  "notification_type": "idle_prompt"
+}

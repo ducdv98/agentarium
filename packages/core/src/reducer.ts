@@ -32,6 +32,8 @@ export function reduce(
   }
 
   const key = agentKey(event.agent);
+  // Claude Code's internal helper agents send SubagentStop without SubagentStart.
+  if (event.kind === "end" && !world.agents[key]) return world;
   const current = world.agents[key] ?? create(event.agent, key, event.ts);
   const agent: AgentState = { ...current, pending: { ...current.pending }, lastTs: event.ts };
   world.agents[key] = agent;

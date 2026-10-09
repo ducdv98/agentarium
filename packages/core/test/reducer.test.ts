@@ -52,6 +52,10 @@ describe("working and tools", () => {
   it("end marks the agent done", () => {
     expect(run([e.prompt(0), e.end(1)]).agents[root]?.status).toBe("done");
   });
+
+  it("an end for an agent never seen adds nothing (Claude Code's internal helper agents)", () => {
+    expect(run([e.prompt(0), e.end(1, sub)]).agents[subKey]).toBeUndefined();
+  });
 });
 
 describe("needs-input", () => {

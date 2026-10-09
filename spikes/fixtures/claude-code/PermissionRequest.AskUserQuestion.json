@@ -1,0 +1,32 @@
+{
+  "session_id": "700fd348-8639-48d0-89cf-796863ad27e1",
+  "transcript_path": "<HOME>\\.claude\\projects\\F--Side-Projects-test-cc-1\\700fd348-8639-48d0-89cf-796863ad27e1.jsonl",
+  "cwd": "<CWD>",
+  "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\F--Side-Projects-test-cc-1\\700fd348-8639-48d0-89cf-796863ad27e1\\scratchpad",
+  "prompt_id": "bbfb5581-46f9-498b-b317-ffc2ce9a61b8",
+  "permission_mode": "auto",
+  "effort": {
+    "level": "medium"
+  },
+  "hook_event_name": "PermissionRequest",
+  "tool_name": "AskUserQuestion",
+  "tool_input": {
+    "questions": [
+      {
+        "question": "Do you prefer red or blue?",
+        "header": "Color",
+        "options": [
+          {
+            "label": "Red",
+            "description": "Choose red"
+          },
+          {
+            "label": "Blue",
+            "description": "Choose blue"
+          }
+        ],
+        "multiSelect": false
+      }
+    ]
+  }
+}

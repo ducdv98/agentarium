@@ -1,3 +1,6 @@
 node_modules
 
 dist
+
+# raw hook captures (unsanitized; fixtures go through spikes/sanitize-fixtures.mjs)
+spikes/*.jsonl

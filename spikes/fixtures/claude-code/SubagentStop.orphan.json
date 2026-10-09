@@ -1,0 +1,19 @@
+{
+  "session_id": "9182a407-8aae-48b4-a1f7-3cc4f24cf40e",
+  "transcript_path": "<HOME>\\.claude\\projects\\F--Side-Projects-test-cc\\9182a407-8aae-48b4-a1f7-3cc4f24cf40e.jsonl",
+  "cwd": "<CWD>",
+  "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\F--Side-Projects-test-cc\\9182a407-8aae-48b4-a1f7-3cc4f24cf40e\\scratchpad",
+  "prompt_id": "340a8fe1-9ffa-4d3b-83e0-c0b439ff8f30",
+  "permission_mode": "auto",
+  "agent_id": "a57d094cca02e3335",
+  "agent_type": "",
+  "effort": {
+    "level": "medium"
+  },
+  "hook_event_name": "SubagentStop",
+  "stop_hook_active": false,
+  "agent_transcript_path": "<HOME>\\.claude\\projects\\F--Side-Projects-test-cc\\9182a407-8aae-48b4-a1f7-3cc4f24cf40e\\subagents\\agent-a57d094cca02e3335.jsonl",
+  "last_assistant_message": "remove the agentarium logger hooks",
+  "background_tasks": [],
+  "session_crons": []
+}

@@ -76,7 +76,26 @@ describe("claude code adapter", () => {
     expect(kinds(adapter().map(fx("PermissionRequest.Bash")).events)).toEqual(["needs_input"]);
     expect(kinds(adapter().map(fx("Notification.permission_prompt")).events)).toEqual(["needs_input"]);
     expect(kinds(adapter().map({ ...fx("Notification.permission_prompt"), notification_type: "elicitation_dialog" }).events)).toEqual(["needs_input"]);
-    expect(kinds(adapter().map({ ...fx("Notification.permission_prompt"), notification_type: "idle_prompt" }).events)).toEqual(["stop"]);
+    expect(kinds(adapter().map(fx("Notification.idle_prompt")).events)).toEqual(["stop"]);
+  });
+
+  it("ignores ConfigChange and CwdChanged", () => {
+    expect(adapter().map(fx("ConfigChange")).events).toEqual([]);
+    expect(adapter().map(fx("CwdChanged")).events).toEqual([]);
+  });
+
+  it("an AskUserQuestion makes the agent waiting until it is answered", () => {
+    const a = adapter();
+    const seq = [
+      "UserPromptSubmit",
+      "PreToolUse.AskUserQuestion",
+      "PermissionRequest.AskUserQuestion",
+      "Notification.permission_prompt",
+      "PostToolUse.AskUserQuestion",
+    ].flatMap((n) => a.map({ ...fx(n), session_id: "s" }).events);
+    const evs = seq.map((e, i) => ({ ...e, ts: i + 1 }) as AgentEvent);
+    expect(Object.values(replay(evs.slice(0, 4)).agents)[0]?.status).toBe("waiting");
+    expect(Object.values(replay(evs).agents)[0]?.status).toBe("working");
   });
 
   it("infers sub-agent parent at SubagentStart and observes it at Agent PostToolUse", () => {
