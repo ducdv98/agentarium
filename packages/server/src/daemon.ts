@@ -1,0 +1,340 @@
+import { randomBytes, timingSafeEqual } from "node:crypto";
+import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
+import type { Duplex } from "node:stream";
+import {
+  DEFAULT_TIMEOUTS,
+  SCHEMA_VERSION,
+  diffWorld,
+  emptyWorld,
+  reduce,
+  replay,
+  type AgentEvent,
+  type ClientMessage,
+  type ServerMessage,
+  type Timeouts,
+  type WorldState,
+} from "@agentarium/core";
+import { WebSocket, WebSocketServer } from "ws";
+import { parseIngest } from "./ingest";
+import { UNASSIGNED_ROOM, resolveRoom } from "./rooms";
+import { jsonlLog, type EventLog } from "./storage";
+import { DAEMON_VERSION, DEFAULT_PORT } from "./version";
+
+export interface DaemonOptions {
+  port?: number;
+  /** Directory for the default JSON-lines log. Ignored when `storage` is given. */
+  dataDir?: string;
+  storage?: EventLog;
+  token?: string;
+  version?: string;
+  /** Interval for idle/lost timeout ticks; 0 disables. */
+  tickMs?: number;
+  /** Patch coalescing window. */
+  flushMs?: number;
+  timeouts?: Timeouts;
+  clock?: () => number;
+  /** Client socket buffer size above which patches are skipped in favour of a later snapshot. */
+  maxBufferedBytes?: number;
+}
+
+export interface Daemon {
+  port: number;
+  token: string;
+  /** Current world for a room (for tests and diagnostics). */
+  world(room: string): WorldState;
+  close(): Promise<void>;
+}
+
+export class VersionMismatchError extends Error {
+  constructor(
+    readonly running: string,
+    readonly wanted: string,
+  ) {
+    super(
+      `An agentarium daemon v${running} is already running on this port (this is v${wanted}). Run "agentarium stop" first.`,
+    );
+    this.name = "VersionMismatchError";
+  }
+}
+
+export class AlreadyRunningError extends Error {
+  constructor(readonly version: string) {
+    super(`An agentarium daemon v${version} is already running on this port.`);
+    this.name = "AlreadyRunningError";
+  }
+}
+
+const MAX_BODY = 1_000_000;
+
+interface Client {
+  ws: WebSocket;
+  /** Missed a patch because of backpressure; owed a fresh snapshot. */
+  stale: boolean;
+}
+
+interface Room {
+  id: string;
+  world: WorldState;
+  /** What clients have been sent so far; patches are diffs against this. */
+  sent: WorldState;
+  seq: number;
+  dirty: boolean;
+  lastActive: number;
+  clients: Set<Client>;
+}
+
+export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
+  const version = opts.version ?? DAEMON_VERSION;
+  const token = opts.token ?? randomBytes(24).toString("hex");
+  const storage = opts.storage ?? jsonlLog(requireDir(opts.dataDir));
+  const timeouts = opts.timeouts ?? DEFAULT_TIMEOUTS;
+  const clock = opts.clock ?? Date.now;
+  const flushMs = opts.flushMs ?? 50;
+  const tickMs = opts.tickMs ?? 5_000;
+  const maxBuffered = opts.maxBufferedBytes ?? 1_000_000;
+
+  const rooms = new Map<string, Room>();
+  const getRoom = (id: string): Room => {
+    let room = rooms.get(id);
+    if (!room) {
+      room = {
+        id,
+        world: emptyWorld(),
+        sent: emptyWorld(),
+        seq: 0,
+        dirty: false,
+        lastActive: 0,
+        clients: new Set(),
+      };
+      rooms.set(id, room);
+    }
+    return room;
+  };
+  const defaultRoom = (): Room => {
+    let best: Room | undefined;
+    for (const r of rooms.values()) if (!best || r.lastActive > best.lastActive) best = r;
+    return best ?? getRoom(UNASSIGNED_ROOM);
+  };
+
+  for (const id of await storage.rooms()) {
+    const room = getRoom(id);
+    room.world = room.sent = replay(await storage.read(id), timeouts);
+    room.lastActive = room.world.now;
+  }
+
+  // Appends are chained so the log order always matches the order events were reduced.
+  let appendQueue: Promise<unknown> = Promise.resolve();
+  const enqueueAppend = (room: string, event: AgentEvent): Promise<unknown> =>
+    (appendQueue = appendQueue.then(() => storage.append(room, event)));
+
+  const send = (c: Client, msg: ServerMessage): void => {
+    if (c.ws.readyState === WebSocket.OPEN) c.ws.send(JSON.stringify(msg));
+  };
+  const snapshot = (room: Room): ServerMessage => ({
+    type: "snapshot",
+    room: room.id,
+    seq: room.seq,
+    world: room.sent,
+  });
+
+  let flushTimer: NodeJS.Timeout | null = null;
+  const flush = (): void => {
+    flushTimer = null;
+    for (const room of rooms.values()) {
+      if (!room.dirty) continue;
+      room.dirty = false;
+      const patch = diffWorld(room.sent, room.world);
+      if (patch.upserts.length === 0 && patch.removed.length === 0) continue;
+      room.sent = room.world;
+      room.seq += 1;
+      const msg: ServerMessage = { type: "patch", room: room.id, seq: room.seq, patch };
+      for (const c of room.clients) {
+        if (c.ws.bufferedAmount > maxBuffered) {
+          c.stale = true;
+        } else if (c.stale) {
+          c.stale = false;
+          send(c, snapshot(room));
+        } else {
+          send(c, msg);
+        }
+      }
+    }
+  };
+  const markDirty = (room: Room): void => {
+    room.dirty = true;
+    flushTimer ??= setTimeout(flush, flushMs);
+  };
+
+  const tickTimer =
+    tickMs > 0
+      ? setInterval(() => {
+          const ts = clock();
+          for (const room of rooms.values()) {
+            const next = reduce(room.world, { schema_version: SCHEMA_VERSION, kind: "tick", ts }, timeouts);
+            if (diffWorld(room.world, next).upserts.length > 0) {
+              room.world = next;
+              markDirty(room);
+            }
+          }
+        }, tickMs)
+      : null;
+
+  const server = createServer();
+  const wss = new WebSocketServer({ noServer: true });
+  let boundPort = 0;
+
+  const hostOk = (req: IncomingMessage): boolean => {
+    const allowed = [`127.0.0.1:${boundPort}`, `localhost:${boundPort}`];
+    const host = req.headers.host;
+    if (!host || !allowed.includes(host.toLowerCase())) return false;
+    const origin = req.headers.origin;
+    return origin === undefined || allowed.some((h) => origin.toLowerCase() === `http://${h}`);
+  };
+  const tokenOk = (given: string | undefined): boolean => {
+    if (!given) return false;
+    const a = Buffer.from(given);
+    const b = Buffer.from(token);
+    return a.length === b.length && timingSafeEqual(a, b);
+  };
+  const headerToken = (req: IncomingMessage): string | undefined => {
+    const auth = req.headers.authorization;
+    const x = req.headers["x-agentarium-token"];
+    return auth?.startsWith("Bearer ") ? auth.slice(7) : Array.isArray(x) ? x[0] : x;
+  };
+  const reply = (res: ServerResponse, status: number, body: unknown): void => {
+    res.writeHead(status, { "content-type": "application/json" }).end(JSON.stringify(body));
+  };
+
+  async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    if (!hostOk(req)) return reply(res, 403, { error: "forbidden host or origin" });
+    const url = new URL(req.url ?? "/", "http://localhost");
+    if (req.method === "GET" && url.pathname === "/health") {
+      return reply(res, 200, { app: "agentarium", version, pid: process.pid });
+    }
+    if (req.method === "POST" && url.pathname === "/events") {
+      if (!tokenOk(headerToken(req))) return reply(res, 401, { error: "unauthorized" });
+      const raw = await readBody(req);
+      if (raw === null) return reply(res, 413, { error: "body too large" });
+      let body: unknown;
+      try {
+        body = JSON.parse(raw);
+      } catch {
+        return reply(res, 400, { error: "invalid JSON" });
+      }
+      const parsed = parseIngest(body);
+      if (typeof parsed === "string") return reply(res, 400, { error: parsed });
+      const event = { ...parsed.event, ts: clock() } as AgentEvent;
+      const room = getRoom(resolveRoom(parsed.cwd));
+      room.world = reduce(room.world, event, timeouts);
+      room.lastActive = event.ts;
+      markDirty(room);
+      await enqueueAppend(room.id, event);
+      return reply(res, 202, { room: room.id });
+    }
+    return reply(res, 404, { error: "not found" });
+  }
+
+  server.on("request", (req, res) => {
+    handle(req, res).catch(() => {
+      if (!res.headersSent) reply(res, 500, { error: "internal error" });
+      else res.end();
+    });
+  });
+
+  server.on("upgrade", (req: IncomingMessage, socket: Duplex, head: Buffer) => {
+    const url = new URL(req.url ?? "/", "http://localhost");
+    const refuse = (status: string): void => {
+      socket.end(`HTTP/1.1 ${status}\r\nConnection: close\r\n\r\n`);
+    };
+    if (url.pathname !== "/ws") return refuse("404 Not Found");
+    if (!hostOk(req)) return refuse("403 Forbidden");
+    if (!tokenOk(url.searchParams.get("token") ?? headerToken(req))) return refuse("401 Unauthorized");
+    wss.handleUpgrade(req, socket, head, (ws) => {
+      const requested = url.searchParams.get("room");
+      const room = requested ? getRoom(requested) : defaultRoom();
+      const client: Client = { ws, stale: false };
+      room.clients.add(client);
+      ws.on("close", () => room.clients.delete(client));
+      ws.on("error", () => room.clients.delete(client));
+      ws.on("message", (data) => {
+        let msg: ClientMessage | undefined;
+        try {
+          msg = JSON.parse(data.toString()) as ClientMessage;
+        } catch {
+          return;
+        }
+        if (msg?.type === "resync") send(client, snapshot(room));
+      });
+      send(client, snapshot(room));
+    });
+  });
+
+  boundPort = await listen(server, opts.port ?? DEFAULT_PORT, version);
+
+  return {
+    port: boundPort,
+    token,
+    world: (room) => getRoom(room).world,
+    async close() {
+      if (tickTimer) clearInterval(tickTimer);
+      if (flushTimer) clearTimeout(flushTimer);
+      for (const ws of wss.clients) ws.terminate();
+      wss.close();
+      server.closeAllConnections();
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+      await appendQueue;
+    },
+  };
+}
+
+function requireDir(dir: string | undefined): string {
+  if (!dir) throw new Error("startDaemon needs `dataDir` or `storage`");
+  return dir;
+}
+
+/** Resolves to the body text, or null when it exceeds the size limit. */
+function readBody(req: IncomingMessage): Promise<string | null> {
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    let size = 0;
+    let tooBig = false;
+    req.on("data", (chunk: Buffer) => {
+      size += chunk.length;
+      if (size > MAX_BODY) tooBig = true;
+      else chunks.push(chunk);
+    });
+    req.on("end", () => resolve(tooBig ? null : Buffer.concat(chunks).toString("utf8")));
+    req.on("error", reject);
+  });
+}
+
+/** Listens on 127.0.0.1 only. On a busy port, probes /health to say who is there. */
+async function listen(server: Server, port: number, version: string): Promise<number> {
+  try {
+    await new Promise<void>((resolve, reject) => {
+      server.once("error", reject);
+      server.listen(port, "127.0.0.1", () => {
+        server.off("error", reject);
+        resolve();
+      });
+    });
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code !== "EADDRINUSE") throw err;
+    const running = await probe(port);
+    if (running === null) throw err;
+    if (running !== version) throw new VersionMismatchError(running, version);
+    throw new AlreadyRunningError(running);
+  }
+  const addr = server.address();
+  return typeof addr === "object" && addr ? addr.port : port;
+}
+
+async function probe(port: number): Promise<string | null> {
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/health`, { signal: AbortSignal.timeout(1_000) });
+    const body = (await res.json()) as { app?: unknown; version?: unknown };
+    return body.app === "agentarium" && typeof body.version === "string" ? body.version : null;
+  } catch {
+    return null;
+  }
+}
