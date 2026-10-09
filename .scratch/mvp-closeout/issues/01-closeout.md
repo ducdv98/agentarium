@@ -18,3 +18,5 @@ Acceptance:
 - The usage log exists, even if it is empty, and each entry is either linked to a Phase 1 issue or dismissed.
 
 ## Comments
+
+- 2026-10-09 (agent): CI matrix is now Node 22 and 24 on 3 OSes (`3bd158b`), and all commits are pushed. Locally on Windows with Node 24, typecheck passes and all 97 tests pass; GitHub results not yet checked (private repo, no `gh` here). The adapter already maps `Notification` `idle_prompt` to stop (idle, no flag) and `elicitation_dialog` to needs-input (`packages/adapters/src/claude-code.ts:158`). It still needs real fixtures to confirm the payload shape. Remaining steps are for a human: the interactive capture, about 3 days of use, and the usage log.
