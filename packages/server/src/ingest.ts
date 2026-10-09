@@ -1,11 +1,9 @@
-import { ACTION_CATEGORIES, SCHEMA_VERSION, type AgentEvent, type AgentRef } from "@agentarium/core";
-
-type DistributiveOmit<T, K extends keyof never> = T extends unknown ? Omit<T, K> : never;
+import { ACTION_CATEGORIES, SCHEMA_VERSION, type AgentRef, type NewEvent } from "@agentarium/core";
 
 export interface IngestRequest {
   cwd?: string;
   /** The daemon assigns `ts` on receipt. */
-  event: DistributiveOmit<Exclude<AgentEvent, { kind: "tick" }>, "ts">;
+  event: NewEvent;
 }
 
 type Obj = Record<string, unknown>;

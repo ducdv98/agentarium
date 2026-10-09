@@ -1,6 +1,8 @@
 import { randomBytes, timingSafeEqual } from "node:crypto";
+import { hostname } from "node:os";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import type { Duplex } from "node:stream";
+import { createClaudeCodeAdapter } from "@agentarium/adapters";
 import {
   DEFAULT_TIMEOUTS,
   SCHEMA_VERSION,
@@ -10,6 +12,7 @@ import {
   replay,
   type AgentEvent,
   type ClientMessage,
+  type NewEvent,
   type ServerMessage,
   type Timeouts,
   type WorldState,
@@ -27,6 +30,8 @@ export interface DaemonOptions {
   storage?: EventLog;
   token?: string;
   version?: string;
+  /** Machine id stamped on agent identities (default: the host name). */
+  machine?: string;
   /** Interval for idle/lost timeout ticks; 0 disables. */
   tickMs?: number;
   /** Patch coalescing window. */
@@ -92,6 +97,8 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
   const flushMs = opts.flushMs ?? 50;
   const tickMs = opts.tickMs ?? 5_000;
   const maxBuffered = opts.maxBufferedBytes ?? 1_000_000;
+
+  const claudeCode = createClaudeCodeAdapter({ machine: opts.machine ?? hostname() });
 
   const rooms = new Map<string, Room>();
   const getRoom = (id: string): Room => {
@@ -205,6 +212,17 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
     res.writeHead(status, { "content-type": "application/json" }).end(JSON.stringify(body));
   };
 
+  /** Stamps, reduces and logs one event; returns the room it landed in. */
+  async function ingest(cwd: string | undefined, newEvent: NewEvent): Promise<Room> {
+    const event = { ...newEvent, ts: clock() } as AgentEvent;
+    const room = getRoom(resolveRoom(cwd));
+    room.world = reduce(room.world, event, timeouts);
+    room.lastActive = event.ts;
+    markDirty(room);
+    await enqueueAppend(room.id, event);
+    return room;
+  }
+
   async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
     if (!hostOk(req)) return reply(res, 403, { error: "forbidden host or origin" });
     const url = new URL(req.url ?? "/", "http://localhost");
@@ -223,13 +241,23 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
       }
       const parsed = parseIngest(body);
       if (typeof parsed === "string") return reply(res, 400, { error: parsed });
-      const event = { ...parsed.event, ts: clock() } as AgentEvent;
-      const room = getRoom(resolveRoom(parsed.cwd));
-      room.world = reduce(room.world, event, timeouts);
-      room.lastActive = event.ts;
-      markDirty(room);
-      await enqueueAppend(room.id, event);
+      const room = await ingest(parsed.cwd, parsed.event);
       return reply(res, 202, { room: room.id });
+    }
+    if (req.method === "POST" && url.pathname === "/hooks/claude-code") {
+      if (!tokenOk(headerToken(req))) return reply(res, 401, { error: "unauthorized" });
+      const raw = await readBody(req);
+      // Hooks must never disturb the agent: answer 204 whatever the payload turns out to be.
+      let payload: unknown;
+      try {
+        payload = raw === null ? null : JSON.parse(raw);
+      } catch {
+        payload = null;
+      }
+      const { cwd, events } = claudeCode.map(payload);
+      for (const event of events) await ingest(cwd, event);
+      res.writeHead(204).end();
+      return;
     }
     return reply(res, 404, { error: "not found" });
   }

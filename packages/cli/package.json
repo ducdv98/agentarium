@@ -1,7 +1,10 @@
 {
-  "name": "@agentarium/server",
+  "name": "@agentarium/cli",
   "private": true,
   "type": "module",
+  "bin": {
+    "agentarium": "src/bin.ts"
+  },
   "main": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {
@@ -9,11 +12,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@agentarium/adapters": "workspace:*",
-    "@agentarium/core": "workspace:*",
-    "ws": "^8.18.0"
-  },
-  "devDependencies": {
-    "@types/ws": "^8.5.0"
+    "@agentarium/server": "workspace:*",
+    "tsx": "^4.20.0"
   }
 }

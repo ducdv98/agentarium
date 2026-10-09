@@ -1,5 +1,5 @@
 {
-  "name": "@agentarium/server",
+  "name": "@agentarium/adapters",
   "private": true,
   "type": "module",
   "main": "src/index.ts",
@@ -9,11 +9,6 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@agentarium/adapters": "workspace:*",
-    "@agentarium/core": "workspace:*",
-    "ws": "^8.18.0"
-  },
-  "devDependencies": {
-    "@types/ws": "^8.5.0"
+    "@agentarium/core": "workspace:*"
   }
 }

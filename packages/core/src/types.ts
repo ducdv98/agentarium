@@ -101,3 +101,8 @@ export interface Relationship {
   to: string;
   provenance: Provenance;
 }
+
+type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
+
+/** What adapters emit: an agent event before the daemon stamps `ts` on it. */
+export type NewEvent = DistributiveOmit<Exclude<AgentEvent, { kind: "tick" }>, "ts">;

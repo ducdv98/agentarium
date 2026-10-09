@@ -200,3 +200,22 @@ describe("lifecycle", () => {
     await expect(startDaemon({ port: d.port, dataDir: tmp("agentarium-data-"), version: "2.0.0" })).rejects.toThrow(/agentarium stop/);
   });
 });
+
+describe("claude code hook endpoint", () => {
+  it("accepts raw hook payloads and always answers 204", async () => {
+    const d = await start();
+    const hook = (body: string, token = d.token) =>
+      fetch(`http://127.0.0.1:${d.port}/hooks/claude-code`, {
+        method: "POST",
+        headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
+        body,
+      });
+    const cwd = tmp("agentarium-hook-");
+    const payload = { session_id: "s9", hook_event_name: "UserPromptSubmit", cwd };
+    expect((await hook(JSON.stringify(payload))).status).toBe(204);
+    expect((await hook("not json")).status).toBe(204);
+    expect((await hook("{}")).status).toBe(204);
+    expect((await hook(JSON.stringify(payload), "bad")).status).toBe(401);
+    expect(Object.keys(d.world("unassigned").agents)).toHaveLength(1);
+  });
+});
