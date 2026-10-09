@@ -1,6 +1,6 @@
 # Build and bundle `@agentarium/cli`
 
-Status: ready-for-agent
+Status: resolved
 Type: task
 Blocked by: none
 
@@ -13,4 +13,5 @@ Acceptance:
 
 ## Comments
 
-- 2026-10-09: esbuild bundles `src/bin.ts` and `src/daemon-main.ts` into `packages/cli/dist/{bin,daemon}.js` (ws, server, adapters, core inlined; no runtime dependencies), and `build.mjs` copies `ui-web/dist` to `dist/ui`. `start` runs `node dist/daemon.js`; `tsx` is gone from the CLI. `scripts/smoke-pack.mjs` (`pnpm smoke:pack`, in CI and verify:all) runs `npm pack`, installs the tarball globally into a temp prefix and drives init/start/UI/hook/stop/uninstall. Root `pnpm agentarium` now runs the built CLI (needs `pnpm build`). Local verify:all passes on Windows (Node 22, 24); Linux/macOS pending CI.
+- 2026-10-09: esbuild bundles `src/bin.ts` and `src/daemon-main.ts` into `packages/cli/dist/{bin,daemon}.js` (ws, server, adapters, core inlined; no runtime dependencies), and `build.mjs` copies `ui-web/dist` to `dist/ui`. `start` runs `node dist/daemon.js`; `tsx` is gone from the CLI. `scripts/smoke-pack.mjs` (`pnpm smoke:pack`, in CI and verify:all) runs `npm pack`, installs the tarball globally into a temp prefix and drives init/start/UI/hook/stop/uninstall. Root `pnpm agentarium` now runs the built CLI (needs `pnpm build`). Local verify:all passes on Windows and Linux (Node 22, 24).
+- 2026-10-09: CI green on all six jobs (ubuntu, macos, windows × Node 22, 24), including `pnpm smoke:pack`. Resolved.
