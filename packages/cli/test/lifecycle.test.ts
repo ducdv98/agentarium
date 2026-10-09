@@ -1,9 +1,13 @@
+import { execFile } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync } from "node:fs";
+import { createServer as createHttpServer } from "node:http";
 import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { promisify } from "node:util";
 import { afterEach, describe, expect, it } from "vitest";
+import { DAEMON_VERSION } from "@agentarium/server";
 import { contextFromEnv, init, probeHealth, start, stop, uninstall, type Context } from "../src/commands";
 
 const freePort = () =>
@@ -12,6 +16,12 @@ const freePort = () =>
       const port = (s.address() as { port: number }).port;
       s.close(() => resolve(port));
     });
+  });
+
+const runInit = (ctx: Context) =>
+  promisify(execFile)(process.execPath, [fileURLToPath(new URL("../dist/bin.js", import.meta.url)), "init"], {
+    env: { ...process.env, ...ctx.env },
+    windowsHide: true,
   });
 
 const made: Context[] = [];
@@ -38,18 +48,73 @@ async function setup(): Promise<Context> {
 describe("init/uninstall", () => {
   it("writes the real port, is idempotent, and uninstall removes it", async () => {
     const ctx = await setup();
-    init(ctx);
+    await init(ctx);
     expect(readFileSync(ctx.settingsPath, "utf8")).toContain(`:${ctx.port}/hooks/claude-code`);
-    expect(init(ctx).changed).toBe(false);
+    expect((await init(ctx)).changed).toBe(false);
     uninstall(ctx);
     expect(existsSync(ctx.settingsPath)).toBe(false);
+  });
+
+  it("reports a running daemon and stays idempotent", async () => {
+    const ctx = await setup();
+    await start(ctx);
+
+    expect(await init(ctx)).toMatchObject({ changed: true, daemon: "running" });
+    expect(await init(ctx)).toMatchObject({ changed: false, daemon: "running" });
+    const { stdout, stderr } = await runInit(ctx);
+    expect(stdout.trim().split(/\r?\n/)).toEqual([`Hooks already up to date in ${ctx.settingsPath}.`]);
+    expect(stderr).toBe("");
+  }, 30_000);
+
+  it("reports when the daemon is not running after writing hooks", async () => {
+    const ctx = await setup();
+
+    expect(await init(ctx)).toMatchObject({ changed: true, daemon: "not-running" });
+    expect(readFileSync(ctx.settingsPath, "utf8")).toContain(`:${ctx.port}/hooks/claude-code`);
+    const { stdout, stderr } = await runInit(ctx);
+    expect(stdout.trim().split(/\r?\n/)).toEqual([
+      `Hooks already up to date in ${ctx.settingsPath}.`,
+      "Hooks will do nothing until the daemon runs. Start it with: agentarium start",
+    ]);
+    expect(stderr).toBe("");
+  });
+
+  it("reports a different daemon version without failing", async () => {
+    const ctx = await setup();
+    const server = createHttpServer((req, res) => {
+      if (req.method === "GET" && req.url === "/health") {
+        res.writeHead(200, { "content-type": "application/json" });
+        res.end(JSON.stringify({ app: "agentarium", version: "0.0.0-other", pid: 1 }));
+      } else {
+        res.writeHead(404).end();
+      }
+    });
+    try {
+      await new Promise<void>((resolve) => server.listen(ctx.port, "127.0.0.1", resolve));
+
+      expect(await init(ctx)).toMatchObject({
+        changed: true,
+        daemon: "other-version",
+        version: "0.0.0-other",
+      });
+      const hint = `agentarium daemon v0.0.0-other is already running on port ${ctx.port} (this is v${DAEMON_VERSION}). Run "agentarium stop" first.`;
+      await expect(start(ctx)).rejects.toThrow(hint);
+      const { stdout, stderr } = await runInit(ctx);
+      expect(stdout.trim().split(/\r?\n/)).toEqual([
+        `Hooks already up to date in ${ctx.settingsPath}.`,
+        hint,
+      ]);
+      expect(stderr).toBe("");
+    } finally {
+      await new Promise<void>((resolve, reject) => server.close((err) => (err ? reject(err) : resolve())));
+    }
   });
 });
 
 describe("start/stop", () => {
   it("runs a detached daemon that accepts a hook, and stops it", async () => {
     const ctx = await setup();
-    init(ctx);
+    await init(ctx);
     const token = readFileSync(join(ctx.home, "token"), "utf8").trim();
     expect((await start(ctx)).status).toBe("started");
     expect((await start(ctx)).status).toBe("already-running");

@@ -32,12 +32,25 @@ export function contextFromEnv(env: Env = process.env): Context {
   };
 }
 
-export function init(ctx: Context): InstallResult & { settingsPath: string; port: number } {
+export type InitResult = InstallResult & { settingsPath: string; port: number } & (
+  | { daemon: "not-running" }
+  | { daemon: "running" | "other-version"; version: string }
+);
+
+export async function init(ctx: Context): Promise<InitResult> {
   const token = readOrCreateToken(ctx.home);
+  const installed = installHooks(ctx.settingsPath, { port: ctx.port, token });
+  const running = await probeHealth(ctx.port);
   return {
-    ...installHooks(ctx.settingsPath, { port: ctx.port, token }),
+    ...installed,
     settingsPath: ctx.settingsPath,
     port: ctx.port,
+    ...(running
+      ? {
+          daemon: running.version === DAEMON_VERSION ? ("running" as const) : ("other-version" as const),
+          version: running.version,
+        }
+      : { daemon: "not-running" as const }),
   };
 }
 
@@ -72,14 +85,16 @@ async function waitFor(cond: () => Promise<boolean>, ms: number): Promise<boolea
 
 export type StartResult = { status: "started" | "already-running"; port: number; pid: number };
 
+export function differentVersionMessage(version: string, port: number): string {
+  return `agentarium daemon v${version} is already running on port ${port} (this is v${DAEMON_VERSION}). Run "agentarium stop" first.`;
+}
+
 /** Starts the detached daemon. Refuses when a daemon of a different version holds the port. */
 export async function start(ctx: Context): Promise<StartResult> {
   const running = await probeHealth(ctx.port);
   if (running) {
     if (running.version !== DAEMON_VERSION) {
-      throw new Error(
-        `agentarium daemon v${running.version} is already running on port ${ctx.port} (this is v${DAEMON_VERSION}). Run "agentarium stop" first.`,
-      );
+      throw new Error(differentVersionMessage(running.version, ctx.port));
     }
     return { status: "already-running", port: ctx.port, pid: running.pid };
   }

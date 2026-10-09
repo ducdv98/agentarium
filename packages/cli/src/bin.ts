@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { readOrCreateToken } from "./paths";
-import { contextFromEnv, init, start, stop, uninstall } from "./commands";
+import { contextFromEnv, differentVersionMessage, init, start, stop, uninstall } from "./commands";
 
 const USAGE = "usage: agentarium <init|uninstall|start|stop>";
 
@@ -8,12 +8,17 @@ async function main(argv: string[]): Promise<number> {
   const ctx = contextFromEnv();
   switch (argv[0]) {
     case "init": {
-      const r = init(ctx);
+      const r = await init(ctx);
       console.log(
         r.changed
           ? `Hooks written to ${r.settingsPath} (port ${r.port})${r.backedUp ? "; original backed up" : ""}.`
           : `Hooks already up to date in ${r.settingsPath}.`,
       );
+      if (r.daemon === "not-running") {
+        console.log("Hooks will do nothing until the daemon runs. Start it with: agentarium start");
+      } else if (r.daemon === "other-version") {
+        console.log(differentVersionMessage(r.version, r.port));
+      }
       return 0;
     }
     case "uninstall": {
