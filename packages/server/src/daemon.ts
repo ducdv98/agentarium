@@ -1,5 +1,7 @@
 import { randomBytes, timingSafeEqual } from "node:crypto";
+import { readFile } from "node:fs/promises";
 import { hostname } from "node:os";
+import { extname, join, normalize, sep } from "node:path";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import type { Duplex } from "node:stream";
 import { createClaudeCodeAdapter } from "@agentarium/adapters";
@@ -30,6 +32,10 @@ export interface DaemonOptions {
   storage?: EventLog;
   token?: string;
   version?: string;
+  /** Directory of a built UI to serve at `/`. */
+  staticDir?: string;
+  /** Extra browser origins allowed besides the daemon's own (e.g. a dev server). */
+  allowedOrigins?: string[];
   /** Machine id stamped on agent identities (default: the host name). */
   machine?: string;
   /** Interval for idle/lost timeout ticks; 0 disables. */
@@ -195,7 +201,9 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
     const host = req.headers.host;
     if (!host || !allowed.includes(host.toLowerCase())) return false;
     const origin = req.headers.origin;
-    return origin === undefined || allowed.some((h) => origin.toLowerCase() === `http://${h}`);
+    if (origin === undefined) return true;
+    const o = origin.toLowerCase();
+    return allowed.some((h) => o === `http://${h}`) || (opts.allowedOrigins ?? []).includes(o);
   };
   const tokenOk = (given: string | undefined): boolean => {
     if (!given) return false;
@@ -259,6 +267,7 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
       res.writeHead(204).end();
       return;
     }
+    if (req.method === "GET" && opts.staticDir && (await serveStatic(opts.staticDir, url.pathname, res))) return;
     return reply(res, 404, { error: "not found" });
   }
 
@@ -365,4 +374,38 @@ async function probe(port: number): Promise<string | null> {
   } catch {
     return null;
   }
+}
+
+const MIME: Record<string, string> = {
+  ".html": "text/html; charset=utf-8",
+  ".js": "text/javascript; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
+  ".json": "application/json",
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".ico": "image/x-icon",
+  ".map": "application/json",
+};
+
+/** Serves a file under `root`; extensionless paths fall back to index.html (SPA). Returns false when nothing matched. */
+async function serveStatic(root: string, pathname: string, res: ServerResponse): Promise<boolean> {
+  let rel: string;
+  try {
+    rel = normalize(decodeURIComponent(pathname));
+  } catch {
+    return false;
+  }
+  if (rel.split(sep).includes("..")) return false;
+  const wanted = rel === sep || rel === "/" ? "index.html" : rel;
+  const candidates = extname(wanted) ? [wanted] : ["index.html"];
+  for (const c of candidates) {
+    try {
+      const body = await readFile(join(root, c));
+      res.writeHead(200, { "content-type": MIME[extname(c)] ?? "application/octet-stream" }).end(body);
+      return true;
+    } catch {
+      // try next
+    }
+  }
+  return false;
 }

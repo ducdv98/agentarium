@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { readOrCreateToken } from "./paths";
 import { contextFromEnv, init, start, stop, uninstall } from "./commands";
 
 const USAGE = "usage: agentarium <init|uninstall|start|stop>";
@@ -28,6 +29,7 @@ async function main(argv: string[]): Promise<number> {
       const r = await start(ctx);
       const what = r.status === "started" ? "started" : "already running";
       console.log(`Daemon ${what} on 127.0.0.1:${r.port} (pid ${r.pid}).`);
+      console.log(`Open http://127.0.0.1:${r.port}/?token=${readOrCreateToken(ctx.home)}`);
       return 0;
     }
     case "stop": {
@@ -42,9 +44,11 @@ async function main(argv: string[]): Promise<number> {
 }
 
 main(process.argv.slice(2)).then(
-  (code) => process.exit(code),
+  (code) => {
+    process.exitCode = code;
+  },
   (err: unknown) => {
     console.error(err instanceof Error ? err.message : String(err));
-    process.exit(1);
+    process.exitCode = 1;
   },
 );

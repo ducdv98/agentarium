@@ -1,13 +1,17 @@
 // Entry point of the detached daemon process (spawned by `agentarium start`).
-import { rmSync, writeFileSync } from "node:fs";
+import { existsSync, rmSync, writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { DAEMON_VERSION, resolvePort, startDaemon } from "@agentarium/server";
 import { agentariumHome, daemonFile, dataDir, readOrCreateToken } from "./paths";
 
 const home = agentariumHome();
+// Serve the built UI when it exists (`pnpm --filter @agentarium/ui-web build`).
+const uiDist = fileURLToPath(new URL("../../ui-web/dist", import.meta.url));
 const daemon = await startDaemon({
   port: resolvePort(),
   dataDir: dataDir(home),
   token: readOrCreateToken(home),
+  ...(existsSync(uiDist) ? { staticDir: uiDist } : {}),
 });
 writeFileSync(daemonFile(home), JSON.stringify({ pid: process.pid, port: daemon.port, version: DAEMON_VERSION }));
 console.log(`agentarium daemon v${DAEMON_VERSION} listening on 127.0.0.1:${daemon.port}`);

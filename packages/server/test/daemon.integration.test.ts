@@ -219,3 +219,19 @@ describe("claude code hook endpoint", () => {
     expect(Object.keys(d.world("unassigned").agents)).toHaveLength(1);
   });
 });
+
+describe("static UI hosting", () => {
+  it("serves files and index fallback, refuses traversal, honours extra origins", async () => {
+    const ui = tmp("agentarium-ui-");
+    writeFileSync(join(ui, "index.html"), "<h1>hi</h1>");
+    writeFileSync(join(ui, "app.js"), "1");
+    const d = await start(undefined, { staticDir: ui, allowedOrigins: ["http://localhost:5173"] });
+    const base = `http://127.0.0.1:${d.port}`;
+    expect(await (await fetch(`${base}/`)).text()).toBe("<h1>hi</h1>");
+    expect((await fetch(`${base}/app.js`)).headers.get("content-type")).toMatch(/javascript/);
+    expect(await (await fetch(`${base}/some/route`)).text()).toBe("<h1>hi</h1>");
+    expect((await fetch(`${base}/missing.png`)).status).toBe(404);
+    expect(await rawRequest(d.port, { host: `127.0.0.1:${d.port}`, origin: "http://localhost:5173" })).toBe(200);
+    expect(await rawRequest(d.port, { host: `127.0.0.1:${d.port}`, origin: "http://evil.example" })).toBe(403);
+  });
+});
