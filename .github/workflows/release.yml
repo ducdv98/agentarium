@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+  publish:
+    needs: [ci]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+      - run: npm --version
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Check tag matches package version
+        run: |
+          version=$(node -p "require('./packages/cli/package.json').version")
+          if [ "$GITHUB_REF_NAME" != "v$version" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package version v$version" >&2
+            exit 1
+          fi
+      - name: Dry run publish
+        run: npm publish --dry-run --access public --provenance
+        working-directory: packages/cli
+      - name: Publish
+        run: npm publish --access public --provenance
+        working-directory: packages/cli
