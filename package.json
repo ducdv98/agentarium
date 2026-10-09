@@ -7,7 +7,8 @@
   "scripts": {
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
-    "build": "pnpm --filter @agentarium/ui-web build"
+    "build": "pnpm --filter @agentarium/ui-web build",
+    "verify:all": "node scripts/verify-all.mjs"
   },
   "devDependencies": {
     "@types/node": "^26.6.4",
