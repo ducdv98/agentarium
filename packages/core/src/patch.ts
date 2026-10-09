@@ -10,7 +10,19 @@ export type ServerMessage =
   | { type: "snapshot"; room: string; seq: number; world: WorldState }
   | { type: "patch"; room: string; seq: number; patch: WorldPatch };
 
-export type ClientMessage = { type: "resync" };
+/** Announced to every client so a UI can offer, or follow, other rooms. */
+export interface RoomSummary {
+  id: string;
+  /** Agents still in the scene (not lost). */
+  agents: number;
+  /** Agents currently waiting on the user. */
+  waiting: number;
+  lastActive: number;
+}
+
+export type RoomsMessage = { type: "rooms"; rooms: RoomSummary[] };
+
+export type ClientMessage = { type: "resync" } | { type: "join"; room: string };
 
 const same = (a: AgentState, b: AgentState): boolean => JSON.stringify(a) === JSON.stringify(b);
 

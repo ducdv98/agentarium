@@ -14,6 +14,8 @@ import {
   replay,
   type AgentEvent,
   type ClientMessage,
+  type RoomSummary,
+  type RoomsMessage,
   type NewEvent,
   type ServerMessage,
   type Timeouts,
@@ -79,6 +81,7 @@ const MAX_BODY = 1_000_000;
 
 interface Client {
   ws: WebSocket;
+  room: Room;
   /** Missed a patch because of backpressure; owed a fresh snapshot. */
   stale: boolean;
 }
@@ -140,7 +143,7 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
   const enqueueAppend = (room: string, event: AgentEvent): Promise<unknown> =>
     (appendQueue = appendQueue.then(() => storage.append(room, event)));
 
-  const send = (c: Client, msg: ServerMessage): void => {
+  const send = (c: Client, msg: ServerMessage | RoomsMessage): void => {
     if (c.ws.readyState === WebSocket.OPEN) c.ws.send(JSON.stringify(msg));
   };
   const snapshot = (room: Room): ServerMessage => ({
@@ -149,6 +152,26 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
     seq: room.seq,
     world: room.sent,
   });
+
+  const allClients = new Set<Client>();
+  const summaries = (): RoomSummary[] =>
+    [...rooms.values()]
+      .map((r) => {
+        const live = Object.values(r.world.agents).filter((a) => a.status !== "lost");
+        return {
+          id: r.id,
+          agents: live.length,
+          waiting: live.filter((a) => a.status === "waiting").length,
+          lastActive: r.lastActive,
+        };
+      })
+      .filter((r) => r.agents > 0)
+      .sort((a, b) => b.lastActive - a.lastActive);
+  const roomsMessage = (): RoomsMessage => ({ type: "rooms", rooms: summaries() });
+  /** lastActive changes on every event, so it is left out when deciding whether anything is news. */
+  const roomsKey = (m: RoomsMessage): string =>
+    JSON.stringify(m.rooms.map(({ lastActive: _l, ...rest }) => rest));
+  let lastRoomsKey = "";
 
   let flushTimer: NodeJS.Timeout | null = null;
   const flush = (): void => {
@@ -171,6 +194,12 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
           send(c, msg);
         }
       }
+    }
+    const announce = roomsMessage();
+    const key = roomsKey(announce);
+    if (key !== lastRoomsKey) {
+      lastRoomsKey = key;
+      for (const c of allClients) send(c, announce);
     }
   };
   const markDirty = (room: Room): void => {
@@ -288,11 +317,16 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
     if (!tokenOk(url.searchParams.get("token") ?? headerToken(req))) return refuse("401 Unauthorized");
     wss.handleUpgrade(req, socket, head, (ws) => {
       const requested = url.searchParams.get("room");
-      const room = requested ? getRoom(requested) : defaultRoom();
-      const client: Client = { ws, stale: false };
+      const room = (requested ? rooms.get(requested) : undefined) ?? defaultRoom();
+      const client: Client = { ws, room, stale: false };
       room.clients.add(client);
-      ws.on("close", () => room.clients.delete(client));
-      ws.on("error", () => room.clients.delete(client));
+      allClients.add(client);
+      const leave = (): void => {
+        client.room.clients.delete(client);
+        allClients.delete(client);
+      };
+      ws.on("close", leave);
+      ws.on("error", leave);
       ws.on("message", (data) => {
         let msg: ClientMessage | undefined;
         try {
@@ -300,9 +334,20 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
         } catch {
           return;
         }
-        if (msg?.type === "resync") send(client, snapshot(room));
+        if (msg?.type === "resync") {
+          send(client, snapshot(client.room));
+        } else if (msg?.type === "join") {
+          const target = rooms.get(msg.room);
+          if (!target) return;
+          client.room.clients.delete(client);
+          client.room = target;
+          client.stale = false;
+          target.clients.add(client);
+          send(client, snapshot(target));
+        }
       });
       send(client, snapshot(room));
+      send(client, roomsMessage());
     });
   });
 

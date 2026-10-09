@@ -68,3 +68,38 @@ describe("connect", () => {
     expect(timers).toHaveLength(1);
   });
 });
+
+describe("rooms", () => {
+  it("forwards room lists, joins on request, and ignores traffic from other rooms", () => {
+    const sockets: FakeSocket[] = [];
+    const worlds: WorldState[] = [];
+    const lists: number[] = [];
+    const conn = connect({
+      url: "ws://x",
+      createSocket: () => {
+        const s = new FakeSocket();
+        sockets.push(s);
+        return s;
+      },
+      setTimer: () => 0,
+      clearTimer: () => {},
+      onStatus: () => {},
+      onUpdate: (_m, w) => worlds.push(w),
+      onRooms: (r) => lists.push(r.length),
+    });
+    const s = sockets[0]!;
+    s.onmessage?.({ data: JSON.stringify({ type: "rooms", rooms: [{ id: "a" }, { id: "b" }] }) });
+    expect(lists).toEqual([2]);
+
+    s.push({ type: "snapshot", room: "a", seq: 1, world: w1 });
+    conn.join("b");
+    expect(s.sent.map((x) => JSON.parse(x))).toEqual([{ type: "join", room: "b" }]);
+    // A late patch from the old room must not be applied while the switch is pending.
+    s.push({ type: "patch", room: "a", seq: 2, patch: diffWorld(w1, w2) });
+    expect(worlds).toHaveLength(1);
+    s.push({ type: "snapshot", room: "b", seq: 7, world: w2 });
+    expect(worlds.at(-1)).toEqual(w2);
+    s.push({ type: "patch", room: "a", seq: 8, patch: diffWorld(w1, w2) });
+    expect(worlds).toHaveLength(2);
+  });
+});

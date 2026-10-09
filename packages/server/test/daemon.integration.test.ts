@@ -47,8 +47,11 @@ function connect(d: Daemon, room?: string) {
   const ws = new WebSocket(url);
   const messages: ServerMessage[] = [];
   const listeners: (() => void)[] = [];
+  const roomLists: { id: string }[][] = [];
   ws.on("message", (data) => {
-    messages.push(JSON.parse(data.toString()) as ServerMessage);
+    const msg = JSON.parse(data.toString()) as ServerMessage | { type: "rooms"; rooms: { id: string }[] };
+    if (msg.type === "rooms") roomLists.push(msg.rooms);
+    else messages.push(msg);
     listeners.forEach((l) => l());
   });
   const waitFor = (pred: () => boolean, ms = 2000) =>
@@ -68,7 +71,7 @@ function connect(d: Daemon, room?: string) {
     ws.once("error", reject);
     ws.once("unexpected-response", (_req, res) => reject(new Error(`status ${res.statusCode}`)));
   });
-  return { ws, messages, waitFor, opened };
+  return { ws, messages, roomLists, waitFor, opened };
 }
 
 describe("ingest", () => {
@@ -233,5 +236,30 @@ describe("static UI hosting", () => {
     expect((await fetch(`${base}/missing.png`)).status).toBe(404);
     expect(await rawRequest(d.port, { host: `127.0.0.1:${d.port}`, origin: "http://localhost:5173" })).toBe(200);
     expect(await rawRequest(d.port, { host: `127.0.0.1:${d.port}`, origin: "http://evil.example" })).toBe(403);
+  });
+});
+
+describe("rooms announcements and join", () => {
+  it("announces new rooms to connected clients and lets a client join one", async () => {
+    const d = await start();
+    const a = tmp("agentarium-roomA-");
+    const b = tmp("agentarium-roomB-");
+    mkdirSync(join(a, ".git"));
+    mkdirSync(join(b, ".git"));
+    const client = connect(d); // connects before any room exists
+    await client.opened;
+    await client.waitFor(() => client.messages.length >= 1 && client.roomLists.length >= 1);
+
+    const roomB = ((await (await post(d, { cwd: b, event: ev("prompt", {}, agent("root", "sB")) })).json()) as { room: string }).room;
+    await client.waitFor(() => client.roomLists.some((l) => l.some((r) => r.id === roomB)));
+
+    client.ws.send(JSON.stringify({ type: "join", room: roomB }));
+    await client.waitFor(() => client.messages.some((m) => m.type === "snapshot" && m.room === roomB));
+    client.ws.send(JSON.stringify({ type: "join", room: "nope" })); // unknown rooms are ignored
+    await post(d, { cwd: a, event: ev("prompt", {}, agent("root", "sA")) });
+    await sleep(60);
+    const last = client.messages.filter((m) => m.type === "snapshot").at(-1);
+    expect(last).toMatchObject({ room: roomB });
+    client.ws.close();
   });
 });

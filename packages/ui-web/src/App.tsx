@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { emptyWorld, type WorldState } from "@agentarium/core";
+import { emptyWorld, type RoomSummary, type WorldState } from "@agentarium/core";
 import { createDotGridRenderer, dotGrid, type Renderer } from "@agentarium/renderer";
 import { connect, type ConnectionStatus } from "./connection";
+import { pickRoom } from "./follow";
 import { buildRoster, needsInputCount } from "./roster";
 
 /** `?token=` is required; `?daemon=host:port` points a dev server at the daemon (default: same origin). */
@@ -10,8 +11,7 @@ function daemonUrl(): string | null {
   const token = params.get("token");
   if (!token) return null;
   const host = params.get("daemon") ?? location.host;
-  const room = params.get("room");
-  return `ws://${host}/ws?token=${encodeURIComponent(token)}${room ? `&room=${encodeURIComponent(room)}` : ""}`;
+  return `ws://${host}/ws?token=${encodeURIComponent(token)}`;
 }
 
 const theme = dotGrid;
@@ -22,6 +22,11 @@ export function App() {
   const renderer = useRef<Renderer | null>(null);
   const [world, setWorld] = useState<WorldState>(emptyWorld());
   const [status, setStatus] = useState<ConnectionStatus>("connecting");
+  const [rooms, setRooms] = useState<RoomSummary[]>([]);
+  const [room, setRoom] = useState<string | null>(null);
+  /** null = follow automatically. */
+  const [manual, setManual] = useState<string | null>(null);
+  const conn = useRef<ReturnType<typeof connect> | null>(null);
 
   useEffect(() => {
     const el = stage.current;
@@ -40,19 +45,31 @@ export function App() {
 
   useEffect(() => {
     if (!url) return;
-    const conn = connect({
+    const c = connect({
       url,
       onStatus: setStatus,
+      onRooms: setRooms,
       onUpdate: (msg, w) => {
         // The canvas is driven imperatively; only the roster goes through React state.
         renderer.current?.applyState(
           msg.type === "snapshot" ? { kind: "snapshot", world: msg.world } : { kind: "patch", patch: msg.patch },
         );
+        setRoom(msg.room);
         setWorld(w);
       },
     });
-    return () => conn.close();
+    conn.current = c;
+    return () => {
+      c.close();
+      conn.current = null;
+    };
   }, [url]);
+
+  // Follow the room that matters: a new session in another repo must not need a page refresh.
+  useEffect(() => {
+    const target = pickRoom(rooms, room, manual);
+    if (target && target !== room) conn.current?.join(target);
+  }, [rooms, room, manual]);
 
   const rows = useMemo(() => buildRoster(world), [world]);
   const waiting = needsInputCount(rows);
@@ -67,6 +84,20 @@ export function App() {
             {waiting > 0 ? `${waiting} need${waiting === 1 ? "s" : ""} you` : "No one needs you"}
           </p>
         </header>
+        {rooms.length > 0 && (
+          <label className="rooms">
+            {theme.vocabulary.room}{" "}
+            <select value={manual ?? ""} onChange={(e) => setManual(e.target.value || null)}>
+              <option value="">Auto{room ? ` (${room})` : ""}</option>
+              {rooms.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.id} · {r.agents} agent{r.agents === 1 ? "" : "s"}
+                  {r.waiting > 0 ? ` · ${r.waiting} waiting` : ""}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         {!url && <p className="notice">Open this page with ?token=… (printed by “agentarium start”).</p>}
         <ul className="roster">
           {rows.map((r) => (

@@ -30,3 +30,5 @@ h1 { margin: 0 0 4px; font-size: 16px; }
 @media (max-width: 700px) {
   .app { grid-template-columns: 1fr; grid-template-rows: 40% 1fr; }
 }
+.rooms { display: block; padding: 8px 12px; color: var(--muted); font-size: 12px; }
+.rooms select { width: 100%; margin-top: 4px; background: var(--bg); color: var(--ink); border: 1px solid var(--line); padding: 4px; }
