@@ -19,3 +19,4 @@ Goal: triage first. The v1 success test is "who needs me?" answered at a glance 
 - Action categories are frozen only after real payloads are seen (ticket 01).
 - Hooks must be non-blocking: short explicit timeout, never exit 2, never return decision JSON.
 - Windows, macOS, Linux CI from the first commit; no shell scripts or native modules in install or hook paths.
+- (Post-MVP, 2026-10-09) The UI shows one Followed room at a time. It switches on its own to the room that needs the user, unless the user has pinned a room. This replaces "one Room visible".

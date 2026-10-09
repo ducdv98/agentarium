@@ -32,6 +32,10 @@ _Avoid_: Edge, link
 The scene for one repository; worktrees of the same repository share a room.
 _Avoid_: Office, workspace, project (those are theme or user-facing words)
 
+**Followed room**:
+The Room the view currently shows. It moves to the Room that needs the user most, unless the user has pinned a Room.
+_Avoid_: Active room, current room
+
 **Group**:
 A user-declared team of agents, independent of Room and Relationship.
 _Avoid_: Department, team
