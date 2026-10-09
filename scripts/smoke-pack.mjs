@@ -36,7 +36,7 @@ try {
 
   const [packed] = JSON.parse(sh(`npm pack --json --pack-destination "${tmp}"`, { cwd: cli }));
   const files = packed.files.map((f) => f.path);
-  for (const f of ["dist/bin.js", "dist/daemon.js", "dist/ui/index.html", "package.json"]) {
+  for (const f of ["dist/bin.js", "dist/daemon.js", "dist/ui/index.html", "package.json", "LICENSE", "README.md"]) {
     check(files.includes(f), `tarball contains ${f}`);
   }
   check(!files.some((f) => f.startsWith("src/")), "tarball has no sources");
