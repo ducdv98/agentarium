@@ -13,7 +13,7 @@ Goal: triage first. The v1 success test is "who needs me?" answered at a glance 
 ## Decisions (from grilling)
 
 - Unknown or non-git `cwd` goes to a single "unassigned" Room.
-- Idle after 30 s without events, only when no tool call is pending. Lost after 10 min without events and no stop observed. Both configurable defaults.
+- Idle after 30 s without events, only when no tool call is pending. Lost after 10 min without events and no stop observed, or after 2 h for an agent waiting on the user (post-MVP, 2026-10-09: a question left unanswered for 704 s had dropped from the scene). All configurable defaults.
 - A pending permission request or question raises the Needs-input flag. `idle_prompt` sets state idle with no flag.
 - Fixed uncommon default port, env-var override; `init` writes the real port into hook URLs. `start` refuses on a daemon of a different version, with a `stop` hint.
 - Action categories are frozen only after real payloads are seen (ticket 01).

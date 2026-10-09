@@ -91,9 +91,11 @@ export interface Timeouts {
   idleMs: number;
   /** No events and no end observed. */
   lostMs: number;
+  /** Like lostMs, for an agent waiting on the user: kept visible far longer, since it needs the user. */
+  waitingLostMs: number;
 }
 
-export const DEFAULT_TIMEOUTS: Timeouts = { idleMs: 30_000, lostMs: 600_000 };
+export const DEFAULT_TIMEOUTS: Timeouts = { idleMs: 30_000, lostMs: 600_000, waitingLostMs: 7_200_000 };
 
 export interface Relationship {
   type: "spawned_by";

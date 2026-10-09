@@ -137,7 +137,7 @@ function setIdle(agent: AgentState): void {
 function applyTimeouts(agent: AgentState, now: number, t: Timeouts): AgentState {
   if (agent.status === "done" || agent.status === "lost") return agent;
   const silent = now - agent.lastTs;
-  if (silent >= t.lostMs) {
+  if (silent >= (agent.status === "waiting" ? t.waitingLostMs : t.lostMs)) {
     return { ...agent, status: "lost", category: null, tool: null, summary: null, pending: {} };
   }
   if (agent.status === "working" && silent >= t.idleMs && Object.keys(agent.pending).length === 0) {

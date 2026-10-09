@@ -139,12 +139,21 @@ describe("idle and lost timeouts", () => {
     expect(w.agents[root]?.status).toBe("working");
   });
 
-  it("is lost after 10 min of silence, even with a pending tool or waiting", () => {
-    const w = run([e.prompt(0), e.toolStart(1, "t1"), e.spawn(2, sub), e.needsInput(3, sub), e.tick(3 + 600_000)]);
+  it("is lost after 10 min of silence, even with a pending tool", () => {
+    const w = run([e.prompt(0), e.toolStart(1, "t1"), e.tick(1 + 600_000)]);
     expect(w.agents[root]?.status).toBe("lost");
+    expect(visibleAgents(w)).toEqual([]);
+  });
+
+  it("a waiting agent stays visible for 2 h of silence, then is lost", () => {
+    let w = run([e.prompt(0), e.toolStart(1, "t1"), e.spawn(2, sub), e.needsInput(3, sub), e.tick(3 + 600_000)]);
+    expect(w.agents[root]?.status).toBe("lost");
+    expect(w.agents[subKey]?.status).toBe("waiting");
+    w = reduce(w, e.tick(3 + 7_199_999));
+    expect(w.agents[subKey]?.status).toBe("waiting");
+    w = reduce(w, e.tick(3 + 7_200_000));
     expect(w.agents[subKey]?.status).toBe("lost");
     expect(visibleAgents(w)).toEqual([]);
-    expect(needsInput(w, root)).toBe(false);
   });
 
   it("an idle agent that stopped is also lost without a session end", () => {
@@ -165,8 +174,10 @@ describe("idle and lost timeouts", () => {
   });
 
   it("honours custom timeouts", () => {
-    const w = replay([e.prompt(0), e.tick(5)], { idleMs: 5, lostMs: 50 });
+    const w = replay([e.prompt(0), e.tick(5)], { idleMs: 5, lostMs: 50, waitingLostMs: 100 });
     expect(w.agents[root]?.status).toBe("idle");
+    const waiting = replay([e.prompt(0), e.needsInput(1), e.tick(101)], { idleMs: 5, lostMs: 50, waitingLostMs: 100 });
+    expect(waiting.agents[root]?.status).toBe("lost");
   });
 });
 
