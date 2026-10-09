@@ -1,6 +1,6 @@
 # Close out the MVP slice
 
-Status: ready-for-human
+Status: resolved
 Type: task
 Blocked by: none
 
@@ -24,3 +24,12 @@ Acceptance:
 - 2026-10-09 (agent): After the billing fix, run 37929563594 (`a46bd88`): macOS on Node 22 and 24 passed. The Ubuntu and Windows jobs were still refused with the billing lock message. Together with `verify:all` this covers all 6 combinations, but the item stays open until one CI run is fully green. Warning seen: `actions/checkout@v4`, `actions/setup-node@v4` and `pnpm/action-setup@v4` target the deprecated Node 20.
 - 2026-10-09 (agent): Run 37929757952: all 6 jobs green. CI acceptance item done. Remaining: the interactive capture and the usage log.
 - 2026-10-09 (agent): Interactive capture done. `idle_prompt` and `AskUserQuestion` fixtures added, with tests (`f31fb3b`). A question from Claude arrives as a `PermissionRequest`, so it already raises the Needs-input flag. Fixed: `SubagentStop` from internal helper agents no longer creates ghost records. Found and fixed: a question left unanswered for 704 s went Lost at 10 min. Waiting agents now go Lost only after 2 h (`waitingLostMs`). `elicitation_dialog` remains uncaptured (needs an MCP elicitation) and stays marked unverified in `docs/research/hook-payloads.md`.
+
+## Answer
+
+Resolved 2026-10-09, with the usage item waived by the maintainer.
+
+- CI: green on 3 OSes × Node 22 and 24 (run 37929757952). `pnpm verify:all` is the local stand-in.
+- Capture: `idle_prompt` and `AskUserQuestion` fixtures are in `spikes/fixtures/claude-code/`, with tests. A question from Claude arrives as a `PermissionRequest`, so it raises the Needs-input flag with no special handling. `elicitation_dialog` is still uncaptured and marked unverified in `docs/research/hook-payloads.md`.
+- Fixes found along the way: `end` for an agent never seen is ignored (Claude Code's internal helper agents); waiting agents go Lost after 2 h instead of 10 min.
+- Waived: the 3 days of use. The usage log continues in `.scratch/daily-use/usage-log.md` during Phase 1, and it alone decides whether `needs-triage` issues 06-08 get promoted.

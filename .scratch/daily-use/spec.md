@@ -1,6 +1,6 @@
 # Phase 1: Daily use
 
-Goal: anyone with Node can install Agentarium in one command and use it every day on one machine. Terms follow `CONTEXT.md`; decisions are in `docs/adr/0001-0005`. Starts after `.scratch/mvp-closeout/issues/01-closeout.md` is resolved.
+Goal: anyone with Node can install Agentarium in one command and use it every day on one machine. Terms follow `CONTEXT.md`; decisions are in `docs/adr/0001-0005`. Follows `.scratch/mvp-closeout/issues/01-closeout.md` (resolved). Real usage is logged in `usage-log.md` throughout this phase.
 
 ## Scope
 
@@ -9,7 +9,7 @@ Goal: anyone with Node can install Agentarium in one command and use it every da
 - MIT LICENSE and a README.
 - Releases triggered by a `v*` tag, published through npm trusted publishing (OIDC) with provenance; no npm token stored as a secret.
 - `init` warns when the daemon is not running and shows the `start` command.
-- Fixed scope plus whatever the close-out log shows: known gaps are `needs-triage` issues, promoted only if the log shows them hurting triage.
+- Fixed scope plus whatever `usage-log.md` shows: known gaps are `needs-triage` issues, promoted only if the log shows them hurting triage.
 
 Out of scope: auto-start on login, multiple machines or a network relay, a second provider, the isometric Theme, the all-rooms home page.
 
