@@ -74,9 +74,9 @@ describe("claude code adapter", () => {
 
   it("raises needs_input for permission requests and permission/elicitation notifications, not idle_prompt", () => {
     expect(kinds(adapter().map(fx("PermissionRequest.Bash")).events)).toEqual(["needs_input"]);
-    expect(kinds(adapter().map(fx("Notification")).events)).toEqual(["needs_input"]);
-    expect(kinds(adapter().map({ ...fx("Notification"), notification_type: "elicitation_dialog" }).events)).toEqual(["needs_input"]);
-    expect(kinds(adapter().map({ ...fx("Notification"), notification_type: "idle_prompt" }).events)).toEqual(["stop"]);
+    expect(kinds(adapter().map(fx("Notification.permission_prompt")).events)).toEqual(["needs_input"]);
+    expect(kinds(adapter().map({ ...fx("Notification.permission_prompt"), notification_type: "elicitation_dialog" }).events)).toEqual(["needs_input"]);
+    expect(kinds(adapter().map({ ...fx("Notification.permission_prompt"), notification_type: "idle_prompt" }).events)).toEqual(["stop"]);
   });
 
   it("infers sub-agent parent at SubagentStart and observes it at Agent PostToolUse", () => {

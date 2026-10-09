@@ -111,7 +111,7 @@ describe("replaying ticket 01 fixtures", () => {
   });
 
   it("raises needs-input on a permission request and clears it after the tool ends", () => {
-    const upToRequest = ["SessionStart", "UserPromptSubmit", "PreToolUse.Bash", "PermissionRequest.Bash", "Notification"];
+    const upToRequest = ["SessionStart", "UserPromptSubmit", "PreToolUse.Bash", "PermissionRequest.Bash", "Notification.permission_prompt"];
     expect(needsInput(replay(sequence(upToRequest)), root)).toBe(true);
     expect(needsInput(replay(sequence([...upToRequest, "PostToolUse.Bash"])), root)).toBe(false);
   });

@@ -40,7 +40,7 @@ for (const file of inputs) {
   for (const line of readFileSync(file, "utf8").trim().split("\n")) {
     const { payload } = JSON.parse(line);
     const event = payload.hook_event_name ?? "unknown";
-    const tool = payload.tool_name ? `.${payload.tool_name}` : "";
+    const tool = payload.tool_name ? `.${payload.tool_name}` : payload.notification_type ? `.${payload.notification_type}` : "";
     const sub = payload.agent_id && !event.startsWith("Subagent") ? ".in-subagent" : "";
     const name = `${event}${tool}${sub}`;
     if (seen.has(name)) continue;
