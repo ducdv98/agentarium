@@ -1,0 +1,19 @@
+{
+  "name": "@agentarium/loadgen",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "loadgen": "tsx src/bin.ts"
+  },
+  "dependencies": {
+    "@agentarium/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@agentarium/server": "workspace:*",
+    "tsx": "^4.20.0"
+  }
+}
