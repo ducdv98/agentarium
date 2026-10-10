@@ -1,0 +1,135 @@
+{
+  "codex_cli_version": "0.160.0",
+  "scenario": "long-exec",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "01a124a4-9d7e-7dd3-a54b-b4fd1584c162",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-50-01a124a4-9d7e-7dd3-a54b-b4fd1584c162.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "source": "startup"
+    },
+    {
+      "at_ms": 34,
+      "session_id": "01a124a4-9d7e-7dd3-a54b-b4fd1584c162",
+      "turn_id": "01a124a4-9dce-7a01-99a0-bf8a4eeb5f31",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-50-01a124a4-9d7e-7dd3-a54b-b4fd1584c162.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "prompt": "Run exactly this shell command once and wait for it to finish: sleep 25; echo finished . Then reply DONE."
+    },
+    {
+      "at_ms": 3695,
+      "session_id": "01a124a4-9d7e-7dd3-a54b-b4fd1584c162",
+      "turn_id": "01a124a4-9dce-7a01-99a0-bf8a4eeb5f31",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-50-01a124a4-9d7e-7dd3-a54b-b4fd1584c162.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "sleep 25; echo finished ."
+      },
+      "tool_use_id": "exec-70aaeb40-afb6-4f56-a4a9-f200ffa64383"
+    },
+    {
+      "at_ms": 28757,
+      "session_id": "01a124a4-9d7e-7dd3-a54b-b4fd1584c162",
+      "turn_id": "01a124a4-9dce-7a01-99a0-bf8a4eeb5f31",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-50-01a124a4-9d7e-7dd3-a54b-b4fd1584c162.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "sleep 25; echo finished ."
+      },
+      "tool_response": "finished .\n",
+      "tool_use_id": "exec-70aaeb40-afb6-4f56-a4a9-f200ffa64383"
+    },
+    {
+      "at_ms": 31932,
+      "session_id": "01a124a4-9d7e-7dd3-a54b-b4fd1584c162",
+      "turn_id": "01a124a4-9dce-7a01-99a0-bf8a4eeb5f31",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-50-01a124a4-9d7e-7dd3-a54b-b4fd1584c162.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Stop",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE"
+    },
+    {
+      "at_ms": 31990,
+      "session_id": "01a124a4-9d7e-7dd3-a54b-b4fd1584c162",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-50-01a124a4-9d7e-7dd3-a54b-b4fd1584c162.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ],
+  "exec": [
+    {
+      "type": "thread.started",
+      "thread_id": "01a124a4-9d7e-7dd3-a54b-b4fd1584c162"
+    },
+    {
+      "type": "turn.started"
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_0",
+        "type": "agent_message",
+        "text": "I’ll run the command once and wait for it to finish."
+      }
+    },
+    {
+      "type": "item.started",
+      "item": {
+        "id": "item_1",
+        "type": "command_execution",
+        "command": "/bin/bash -lc 'sleep 25; echo finished .'",
+        "aggregated_output": "",
+        "exit_code": null,
+        "status": "in_progress"
+      }
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_1",
+        "type": "command_execution",
+        "command": "/bin/bash -lc 'sleep 25; echo finished .'",
+        "aggregated_output": "finished .\n",
+        "exit_code": 0,
+        "status": "completed"
+      }
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_2",
+        "type": "agent_message",
+        "text": "DONE"
+      }
+    },
+    {
+      "type": "turn.completed",
+      "usage": {
+        "input_tokens": 30789,
+        "cached_input_tokens": 24576,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 58,
+        "reasoning_output_tokens": 0
+      }
+    }
+  ]
+}

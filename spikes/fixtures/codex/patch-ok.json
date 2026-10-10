@@ -1,0 +1,141 @@
+{
+  "codex_cli_version": "0.160.0",
+  "scenario": "patch-ok",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "01a124a4-2d9a-7680-bad6-67e5617048c0",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-21-01a124a4-2d9a-7680-bad6-67e5617048c0.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "source": "startup"
+    },
+    {
+      "at_ms": 35,
+      "session_id": "01a124a4-2d9a-7680-bad6-67e5617048c0",
+      "turn_id": "01a124a4-2de7-7b42-8a45-a1efa01514e6",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-21-01a124a4-2d9a-7680-bad6-67e5617048c0.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "prompt": "Use the apply_patch tool to create a new file b.txt containing the single line 'x'. Then reply DONE."
+    },
+    {
+      "at_ms": 4423,
+      "session_id": "01a124a4-2d9a-7680-bad6-67e5617048c0",
+      "turn_id": "01a124a4-2de7-7b42-8a45-a1efa01514e6",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-21-01a124a4-2d9a-7680-bad6-67e5617048c0.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "apply_patch",
+      "tool_input": {
+        "command": "*** Begin Patch\n*** Add File: <CWD>/b.txt\n+x\n*** End Patch"
+      },
+      "tool_use_id": "exec-4d1ca986-6ea2-40d0-a45b-dfad6b563c17"
+    },
+    {
+      "at_ms": 4461,
+      "session_id": "01a124a4-2d9a-7680-bad6-67e5617048c0",
+      "turn_id": "01a124a4-2de7-7b42-8a45-a1efa01514e6",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-21-01a124a4-2d9a-7680-bad6-67e5617048c0.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "apply_patch",
+      "tool_input": {
+        "command": "*** Begin Patch\n*** Add File: <CWD>/b.txt\n+x\n*** End Patch"
+      },
+      "tool_response": "Exit code: 0\nWall time: 0 seconds\nOutput:\nSuccess. Updated the following files:\nA <CWD>/b.txt\n",
+      "tool_use_id": "exec-4d1ca986-6ea2-40d0-a45b-dfad6b563c17"
+    },
+    {
+      "at_ms": 6653,
+      "session_id": "01a124a4-2d9a-7680-bad6-67e5617048c0",
+      "turn_id": "01a124a4-2de7-7b42-8a45-a1efa01514e6",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-21-01a124a4-2d9a-7680-bad6-67e5617048c0.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Stop",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE"
+    },
+    {
+      "at_ms": 6709,
+      "session_id": "01a124a4-2d9a-7680-bad6-67e5617048c0",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-21-01a124a4-2d9a-7680-bad6-67e5617048c0.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ],
+  "exec": [
+    {
+      "type": "thread.started",
+      "thread_id": "01a124a4-2d9a-7680-bad6-67e5617048c0"
+    },
+    {
+      "type": "turn.started"
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_0",
+        "type": "agent_message",
+        "text": "I’ll create `b.txt` with the single line `x`.\n"
+      }
+    },
+    {
+      "type": "item.started",
+      "item": {
+        "id": "item_1",
+        "type": "file_change",
+        "changes": [
+          {
+            "path": "<CWD>/b.txt",
+            "kind": "add"
+          }
+        ],
+        "status": "in_progress"
+      }
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_1",
+        "type": "file_change",
+        "changes": [
+          {
+            "path": "<CWD>/b.txt",
+            "kind": "add"
+          }
+        ],
+        "status": "completed"
+      }
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_2",
+        "type": "agent_message",
+        "text": "DONE"
+      }
+    },
+    {
+      "type": "turn.completed",
+      "usage": {
+        "input_tokens": 30794,
+        "cached_input_tokens": 24576,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 101,
+        "reasoning_output_tokens": 0
+      }
+    }
+  ]
+}

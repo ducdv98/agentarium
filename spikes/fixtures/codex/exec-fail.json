@@ -1,0 +1,135 @@
+{
+  "codex_cli_version": "0.160.0",
+  "scenario": "exec-fail",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "01a124a3-c7e3-70e2-a580-421f90d2b2c3",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-07-56-01a124a3-c7e3-70e2-a580-421f90d2b2c3.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "source": "startup"
+    },
+    {
+      "at_ms": 37,
+      "session_id": "01a124a3-c7e3-70e2-a580-421f90d2b2c3",
+      "turn_id": "01a124a3-c979-7b80-b8bb-657ca2d8fffc",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-07-56-01a124a3-c7e3-70e2-a580-421f90d2b2c3.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "prompt": "Run exactly this shell command once: ls /definitely/not/here . Do not retry. Then reply DONE."
+    },
+    {
+      "at_ms": 4423,
+      "session_id": "01a124a3-c7e3-70e2-a580-421f90d2b2c3",
+      "turn_id": "01a124a3-c979-7b80-b8bb-657ca2d8fffc",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-07-56-01a124a3-c7e3-70e2-a580-421f90d2b2c3.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "ls /definitely/not/here ."
+      },
+      "tool_use_id": "exec-9f631602-538a-4bb6-b401-f0c100cffc02"
+    },
+    {
+      "at_ms": 4508,
+      "session_id": "01a124a3-c7e3-70e2-a580-421f90d2b2c3",
+      "turn_id": "01a124a3-c979-7b80-b8bb-657ca2d8fffc",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-07-56-01a124a3-c7e3-70e2-a580-421f90d2b2c3.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "ls /definitely/not/here ."
+      },
+      "tool_response": "ls: cannot access '/definitely/not/here': No such file or directory\n.:\na.txt\n",
+      "tool_use_id": "exec-9f631602-538a-4bb6-b401-f0c100cffc02"
+    },
+    {
+      "at_ms": 6876,
+      "session_id": "01a124a3-c7e3-70e2-a580-421f90d2b2c3",
+      "turn_id": "01a124a3-c979-7b80-b8bb-657ca2d8fffc",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-07-56-01a124a3-c7e3-70e2-a580-421f90d2b2c3.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Stop",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE"
+    },
+    {
+      "at_ms": 6924,
+      "session_id": "01a124a3-c7e3-70e2-a580-421f90d2b2c3",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-07-56-01a124a3-c7e3-70e2-a580-421f90d2b2c3.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ],
+  "exec": [
+    {
+      "type": "thread.started",
+      "thread_id": "01a124a3-c7e3-70e2-a580-421f90d2b2c3"
+    },
+    {
+      "type": "turn.started"
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_0",
+        "type": "agent_message",
+        "text": "I’ll run the command once, without retrying.\n"
+      }
+    },
+    {
+      "type": "item.started",
+      "item": {
+        "id": "item_1",
+        "type": "command_execution",
+        "command": "/bin/bash -lc 'ls /definitely/not/here .'",
+        "aggregated_output": "",
+        "exit_code": null,
+        "status": "in_progress"
+      }
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_1",
+        "type": "command_execution",
+        "command": "/bin/bash -lc 'ls /definitely/not/here .'",
+        "aggregated_output": "ls: cannot access '/definitely/not/here': No such file or directory\n.:\na.txt\n",
+        "exit_code": 2,
+        "status": "failed"
+      }
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_2",
+        "type": "agent_message",
+        "text": "DONE"
+      }
+    },
+    {
+      "type": "turn.completed",
+      "usage": {
+        "input_tokens": 30803,
+        "cached_input_tokens": 24576,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 57,
+        "reasoning_output_tokens": 0
+      }
+    }
+  ]
+}

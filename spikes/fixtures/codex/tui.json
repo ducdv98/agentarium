@@ -1,0 +1,175 @@
+{
+  "codex_cli_version": "0.160.0",
+  "scenario": "tui",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "01a124a7-78ae-7030-aea9-0e49c74ce9c8",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-11-57-01a124a7-78ae-7030-aea9-0e49c74ce9c8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "source": "startup"
+    },
+    {
+      "at_ms": 37,
+      "session_id": "01a124a7-78ae-7030-aea9-0e49c74ce9c8",
+      "turn_id": "01a124a7-a117-7823-b9ba-4df4079670fe",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-11-57-01a124a7-78ae-7030-aea9-0e49c74ce9c8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "prompt": "Run exactly this shell command once: touch d.txt . Request approval if needed. Then reply DONE."
+    },
+    {
+      "at_ms": 5824,
+      "session_id": "01a124a7-78ae-7030-aea9-0e49c74ce9c8",
+      "turn_id": "01a124a7-a117-7823-b9ba-4df4079670fe",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-11-57-01a124a7-78ae-7030-aea9-0e49c74ce9c8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "touch d.txt"
+      },
+      "tool_use_id": "exec-ea36125b-7a38-4a1a-ab17-00983968aefb"
+    },
+    {
+      "at_ms": 5879,
+      "session_id": "01a124a7-78ae-7030-aea9-0e49c74ce9c8",
+      "turn_id": "01a124a7-a117-7823-b9ba-4df4079670fe",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-11-57-01a124a7-78ae-7030-aea9-0e49c74ce9c8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PermissionRequest",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "touch d.txt",
+        "description": "Do you approve creating d.txt in the read-only workspace?"
+      }
+    },
+    {
+      "at_ms": 81831,
+      "session_id": "01a124a7-78ae-7030-aea9-0e49c74ce9c8",
+      "turn_id": "01a124a7-a117-7823-b9ba-4df4079670fe",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-11-57-01a124a7-78ae-7030-aea9-0e49c74ce9c8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "touch d.txt"
+      },
+      "tool_response": "",
+      "tool_use_id": "exec-ea36125b-7a38-4a1a-ab17-00983968aefb"
+    },
+    {
+      "at_ms": 86216,
+      "session_id": "01a124a7-78ae-7030-aea9-0e49c74ce9c8",
+      "turn_id": "01a124a7-a117-7823-b9ba-4df4079670fe",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-11-57-01a124a7-78ae-7030-aea9-0e49c74ce9c8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Stop",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE"
+    },
+    {
+      "at_ms": 97844,
+      "session_id": "01a124a7-78ae-7030-aea9-0e49c74ce9c8",
+      "turn_id": "01a124a9-20af-7223-b6d4-be824b63aed7",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-11-57-01a124a7-78ae-7030-aea9-0e49c74ce9c8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "prompt": "Now run: ls /nope . Then reply DONE."
+    },
+    {
+      "at_ms": 100894,
+      "session_id": "01a124a7-78ae-7030-aea9-0e49c74ce9c8",
+      "turn_id": "01a124a9-20af-7223-b6d4-be824b63aed7",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-11-57-01a124a7-78ae-7030-aea9-0e49c74ce9c8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "ls /nope"
+      },
+      "tool_use_id": "exec-94b25f94-238a-42b9-8a80-0cb0a67f5bcf"
+    },
+    {
+      "at_ms": 100966,
+      "session_id": "01a124a7-78ae-7030-aea9-0e49c74ce9c8",
+      "turn_id": "01a124a9-20af-7223-b6d4-be824b63aed7",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-11-57-01a124a7-78ae-7030-aea9-0e49c74ce9c8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "ls /nope"
+      },
+      "tool_response": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted\n",
+      "tool_use_id": "exec-94b25f94-238a-42b9-8a80-0cb0a67f5bcf"
+    },
+    {
+      "at_ms": 104012,
+      "session_id": "01a124a7-78ae-7030-aea9-0e49c74ce9c8",
+      "turn_id": "01a124a9-20af-7223-b6d4-be824b63aed7",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-11-57-01a124a7-78ae-7030-aea9-0e49c74ce9c8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "ls /nope"
+      },
+      "tool_use_id": "exec-835b4ab9-4465-459f-93b5-fd9d5614d99a"
+    },
+    {
+      "at_ms": 104048,
+      "session_id": "01a124a7-78ae-7030-aea9-0e49c74ce9c8",
+      "turn_id": "01a124a9-20af-7223-b6d4-be824b63aed7",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-11-57-01a124a7-78ae-7030-aea9-0e49c74ce9c8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PermissionRequest",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "ls /nope",
+        "description": "Do you approve running ls /nope outside the sandbox after the sandbox failed to start?"
+      }
+    },
+    {
+      "at_ms": 116206,
+      "session_id": "01a124a7-78ae-7030-aea9-0e49c74ce9c8",
+      "turn_id": "01a124a9-20af-7223-b6d4-be824b63aed7",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-11-57-01a124a7-78ae-7030-aea9-0e49c74ce9c8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Interrupt",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default"
+    },
+    {
+      "at_ms": 122222,
+      "session_id": "01a124a7-78ae-7030-aea9-0e49c74ce9c8",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-11-57-01a124a7-78ae-7030-aea9-0e49c74ce9c8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ]
+}

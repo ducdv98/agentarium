@@ -1,0 +1,883 @@
+{
+  "codex_cli_version": "0.160.0",
+  "scenario": "approve-accept",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-36-01a124a6-3d05-79a1-b285-777cd6ec669c.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "source": "startup"
+    },
+    {
+      "at_ms": 40,
+      "session_id": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+      "turn_id": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-36-01a124a6-3d05-79a1-b285-777cd6ec669c.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "prompt": "Run exactly this shell command once: touch c.txt . If it needs approval, request it. Do not retry after a refusal. Then reply DONE."
+    },
+    {
+      "at_ms": 3695,
+      "session_id": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+      "turn_id": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-36-01a124a6-3d05-79a1-b285-777cd6ec669c.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "touch c.txt"
+      },
+      "tool_use_id": "exec-cd1945eb-929d-4792-a004-b294e40bf32e"
+    },
+    {
+      "at_ms": 3753,
+      "session_id": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+      "turn_id": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-36-01a124a6-3d05-79a1-b285-777cd6ec669c.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PermissionRequest",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "touch c.txt",
+        "description": "May I run the requested command, touch c.txt, to create the file?"
+      }
+    },
+    {
+      "at_ms": 3826,
+      "session_id": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+      "turn_id": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-36-01a124a6-3d05-79a1-b285-777cd6ec669c.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "touch c.txt"
+      },
+      "tool_response": "",
+      "tool_use_id": "exec-cd1945eb-929d-4792-a004-b294e40bf32e"
+    },
+    {
+      "at_ms": 6165,
+      "session_id": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+      "turn_id": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-36-01a124a6-3d05-79a1-b285-777cd6ec669c.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Stop",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE"
+    },
+    {
+      "at_ms": 8224,
+      "session_id": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-36-01a124a6-3d05-79a1-b285-777cd6ec669c.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ],
+  "app": [
+    {
+      "at_ms": -1556,
+      "dir": "reply",
+      "id": 2,
+      "result": {
+        "thread": {
+          "id": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+          "environments": [
+            {
+              "environmentId": "local",
+              "cwd": "<CWD>",
+              "runtimeWorkspaceRoots": [
+                "<CWD>"
+              ]
+            }
+          ],
+          "extra": null,
+          "sessionId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": false,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "openai",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "createdAt": 1791616236,
+          "updatedAt": 1791616236,
+          "recencyAt": 1791616236,
+          "status": {
+            "type": "idle"
+          },
+          "path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-36-01a124a6-3d05-79a1-b285-777cd6ec669c.jsonl",
+          "cwd": "<CWD>",
+          "cliVersion": "0.160.0",
+          "originator": "agentarium-spike",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        },
+        "model": "gpt-6.1-sol",
+        "modelProvider": "openai",
+        "serviceTier": null,
+        "disabledPluginIds": [],
+        "cwd": "<CWD>",
+        "runtimeWorkspaceRoots": [
+          "<CWD>"
+        ],
+        "instructionSources": [],
+        "approvalPolicy": "untrusted",
+        "approvalsReviewer": "user",
+        "sandbox": {
+          "type": "readOnly",
+          "networkAccess": false
+        },
+        "activePermissionProfile": null,
+        "reasoningEffort": "low",
+        "multiAgentMode": "explicitRequestOnly"
+      }
+    },
+    {
+      "at_ms": -1555,
+      "dir": "notify",
+      "method": "thread/started",
+      "params": {
+        "thread": {
+          "id": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+          "environments": [
+            {
+              "environmentId": "local",
+              "cwd": "<CWD>",
+              "runtimeWorkspaceRoots": [
+                "<CWD>"
+              ]
+            }
+          ],
+          "extra": null,
+          "sessionId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": false,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "openai",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "createdAt": 1791616236,
+          "updatedAt": 1791616236,
+          "recencyAt": 1791616236,
+          "status": {
+            "type": "idle"
+          },
+          "path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-36-01a124a6-3d05-79a1-b285-777cd6ec669c.jsonl",
+          "cwd": "<CWD>",
+          "cliVersion": "0.160.0",
+          "originator": "agentarium-spike",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        }
+      },
+      "emittedAtMs": 1791616236899
+    },
+    {
+      "at_ms": -1544,
+      "dir": "reply",
+      "id": 3,
+      "result": {
+        "turn": {
+          "id": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+          "items": [],
+          "itemsView": "notLoaded",
+          "status": "inProgress",
+          "error": null,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null
+        }
+      }
+    },
+    {
+      "at_ms": -1516,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "status": {
+          "type": "active",
+          "activeFlags": []
+        }
+      },
+      "emittedAtMs": 1791616236941
+    },
+    {
+      "at_ms": -1515,
+      "dir": "notify",
+      "method": "turn/started",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turn": {
+          "id": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+          "items": [],
+          "itemsView": "notLoaded",
+          "status": "inProgress",
+          "error": null,
+          "startedAt": 1791616236,
+          "completedAt": null,
+          "durationMs": null
+        }
+      },
+      "emittedAtMs": 1791616236941
+    },
+    {
+      "at_ms": -31,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "run": {
+          "id": "session-start:5:<DIR1>/hooks.json",
+          "eventName": "sessionStart",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "thread",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 5,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791616238,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616238425
+    },
+    {
+      "at_ms": 3,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "run": {
+          "id": "session-start:5:<DIR1>/hooks.json",
+          "eventName": "sessionStart",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "thread",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 5,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791616238,
+          "completedAt": 1791616238,
+          "durationMs": 35,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616238460
+    },
+    {
+      "at_ms": 7,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "run": {
+          "id": "user-prompt-submit:7:<DIR1>/hooks.json",
+          "eventName": "userPromptSubmit",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 7,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791616238,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616238463
+    },
+    {
+      "at_ms": 43,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "run": {
+          "id": "user-prompt-submit:7:<DIR1>/hooks.json",
+          "eventName": "userPromptSubmit",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 7,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791616238,
+          "completedAt": 1791616238,
+          "durationMs": 37,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616238499
+    },
+    {
+      "at_ms": 44,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "userMessage",
+          "id": "01a124a6-43a3-7bd2-b3a1-77735033cc67",
+          "clientId": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "Run exactly this shell command once: touch c.txt . If it needs approval, request it. Do not retry after a refusal. Then reply DONE.",
+              "text_elements": []
+            }
+          ]
+        },
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "startedAtMs": 1791616238501
+      },
+      "emittedAtMs": 1791616238501
+    },
+    {
+      "at_ms": 47,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "userMessage",
+          "id": "01a124a6-43a3-7bd2-b3a1-77735033cc67",
+          "clientId": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "Run exactly this shell command once: touch c.txt . If it needs approval, request it. Do not retry after a refusal. Then reply DONE.",
+              "text_elements": []
+            }
+          ]
+        },
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "completedAtMs": 1791616238501
+      },
+      "emittedAtMs": 1791616238504
+    },
+    {
+      "at_ms": 2239,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_021360e313c3258d016ac9e4f0b01887d0b03dc7598aec17a6",
+          "text": "",
+          "phase": "commentary",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "startedAtMs": 1791616240695
+      },
+      "emittedAtMs": 1791616240695
+    },
+    {
+      "at_ms": 2731,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_021360e313c3258d016ac9e4f0b01887d0b03dc7598aec17a6",
+          "text": "I’ll run the command once and request approval if required.\n",
+          "phase": "commentary",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "completedAtMs": 1791616241186
+      },
+      "emittedAtMs": 1791616241188
+    },
+    {
+      "at_ms": 3663,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "run": {
+          "id": "pre-tool-use:0:<DIR1>/hooks.json:exec-cd1945eb-929d-4792-a004-b294e40bf32e",
+          "eventName": "preToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 0,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791616242,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616242120
+    },
+    {
+      "at_ms": 3717,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "run": {
+          "id": "pre-tool-use:0:<DIR1>/hooks.json:exec-cd1945eb-929d-4792-a004-b294e40bf32e",
+          "eventName": "preToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 0,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791616242,
+          "completedAt": 1791616242,
+          "durationMs": 35,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616242174
+    },
+    {
+      "at_ms": 3720,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "run": {
+          "id": "permission-request:1:<DIR1>/hooks.json:exec-cd1945eb-929d-4792-a004-b294e40bf32e",
+          "eventName": "permissionRequest",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 1,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791616242,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616242177
+    },
+    {
+      "at_ms": 3756,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "run": {
+          "id": "permission-request:1:<DIR1>/hooks.json:exec-cd1945eb-929d-4792-a004-b294e40bf32e",
+          "eventName": "permissionRequest",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 1,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791616242,
+          "completedAt": 1791616242,
+          "durationMs": 36,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616242213
+    },
+    {
+      "at_ms": 3759,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "status": {
+          "type": "active",
+          "activeFlags": [
+            "waitingOnApproval"
+          ]
+        }
+      },
+      "emittedAtMs": 1791616242214
+    },
+    {
+      "at_ms": 3759,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "commandExecution",
+          "id": "exec-cd1945eb-929d-4792-a004-b294e40bf32e",
+          "pluginId": null,
+          "scriptPath": null,
+          "command": "/bin/bash -lc 'touch c.txt'",
+          "cwd": "<CWD>",
+          "processId": null,
+          "source": "agent",
+          "status": "inProgress",
+          "commandActions": [
+            {
+              "type": "unknown",
+              "command": "touch c.txt"
+            }
+          ],
+          "aggregatedOutput": null,
+          "exitCode": null,
+          "durationMs": null
+        },
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "startedAtMs": 1791616242215
+      },
+      "emittedAtMs": 1791616242215
+    },
+    {
+      "at_ms": 3759,
+      "dir": "request",
+      "method": "item/commandExecution/requestApproval",
+      "id": 0,
+      "params": {
+        "kind": "command",
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "itemId": "exec-cd1945eb-929d-4792-a004-b294e40bf32e",
+        "startedAtMs": 1791616242214,
+        "environmentId": "local",
+        "reason": "May I run the requested command, touch c.txt, to create the file?",
+        "command": "/bin/bash -lc 'touch c.txt'",
+        "cwd": "<CWD>",
+        "commandActions": [
+          {
+            "type": "unknown",
+            "command": "touch c.txt"
+          }
+        ],
+        "proposedExecpolicyAmendment": [
+          "touch",
+          "c.txt"
+        ],
+        "availableDecisions": [
+          "accept",
+          {
+            "acceptWithExecpolicyAmendment": {
+              "execpolicy_amendment": [
+                "touch",
+                "c.txt"
+              ]
+            }
+          },
+          "cancel"
+        ]
+      }
+    },
+    {
+      "at_ms": 3759,
+      "dir": "notify",
+      "method": "serverRequest/resolved",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "requestId": 0
+      },
+      "emittedAtMs": 1791616242216
+    },
+    {
+      "at_ms": 3760,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "status": {
+          "type": "active",
+          "activeFlags": []
+        }
+      },
+      "emittedAtMs": 1791616242216
+    },
+    {
+      "at_ms": 3792,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "commandExecution",
+          "id": "exec-cd1945eb-929d-4792-a004-b294e40bf32e",
+          "pluginId": null,
+          "scriptPath": null,
+          "command": "/bin/bash -lc 'touch c.txt'",
+          "cwd": "<CWD>",
+          "processId": "8577",
+          "source": "unifiedExecStartup",
+          "status": "completed",
+          "commandActions": [
+            {
+              "type": "unknown",
+              "command": "touch c.txt"
+            }
+          ],
+          "aggregatedOutput": null,
+          "exitCode": 0,
+          "durationMs": 0
+        },
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "completedAtMs": 1791616242247
+      },
+      "emittedAtMs": 1791616242249
+    },
+    {
+      "at_ms": 3794,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "run": {
+          "id": "post-tool-use:2:<DIR1>/hooks.json:exec-cd1945eb-929d-4792-a004-b294e40bf32e",
+          "eventName": "postToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 2,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791616242,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616242251
+    },
+    {
+      "at_ms": 3829,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "run": {
+          "id": "post-tool-use:2:<DIR1>/hooks.json:exec-cd1945eb-929d-4792-a004-b294e40bf32e",
+          "eventName": "postToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 2,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791616242,
+          "completedAt": 1791616242,
+          "durationMs": 35,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616242286
+    },
+    {
+      "at_ms": 6014,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_021360e313c3258d016ac9e4f476ac87d0b1d4132c53f7dce3",
+          "text": "",
+          "phase": "final_answer",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "startedAtMs": 1791616244471
+      },
+      "emittedAtMs": 1791616244471
+    },
+    {
+      "at_ms": 6112,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_021360e313c3258d016ac9e4f476ac87d0b1d4132c53f7dce3",
+          "text": "DONE",
+          "phase": "final_answer",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "completedAtMs": 1791616244567
+      },
+      "emittedAtMs": 1791616244569
+    },
+    {
+      "at_ms": 6134,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "run": {
+          "id": "stop:10:<DIR1>/hooks.json",
+          "eventName": "stop",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 10,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791616244,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616244591
+    },
+    {
+      "at_ms": 6168,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turnId": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+        "run": {
+          "id": "stop:10:<DIR1>/hooks.json",
+          "eventName": "stop",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 10,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791616244,
+          "completedAt": 1791616244,
+          "durationMs": 34,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616244625
+    },
+    {
+      "at_ms": 6170,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "status": {
+          "type": "idle"
+        }
+      },
+      "emittedAtMs": 1791616244627
+    },
+    {
+      "at_ms": 6170,
+      "dir": "notify",
+      "method": "turn/completed",
+      "params": {
+        "threadId": "01a124a6-3d05-79a1-b285-777cd6ec669c",
+        "turn": {
+          "id": "01a124a6-3d6c-70b2-9d9e-1f31afe4f7c5",
+          "items": [
+            {
+              "type": "agentMessage",
+              "id": "msg_021360e313c3258d016ac9e4f476ac87d0b1d4132c53f7dce3",
+              "text": "DONE",
+              "phase": "final_answer",
+              "memoryCitation": null,
+              "delivery": null,
+              "questions": null
+            }
+          ],
+          "itemsView": "summary",
+          "status": "completed",
+          "error": null,
+          "startedAt": 1791616236,
+          "completedAt": 1791616244,
+          "durationMs": 7715
+        }
+      },
+      "emittedAtMs": 1791616244627
+    }
+  ]
+}

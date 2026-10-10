@@ -1,0 +1,763 @@
+{
+  "codex_cli_version": "0.160.0",
+  "scenario": "approve-cancel",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-59-01a124a6-96c7-7e92-8b09-d71dded2cfe7.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "source": "startup"
+    },
+    {
+      "at_ms": 35,
+      "session_id": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+      "turn_id": "01a124a6-9735-7673-8727-6b39759224db",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-59-01a124a6-96c7-7e92-8b09-d71dded2cfe7.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "prompt": "Run exactly this shell command once: touch c.txt . If it needs approval, request it. Do not retry after a refusal. Then reply DONE."
+    },
+    {
+      "at_ms": 4265,
+      "session_id": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+      "turn_id": "01a124a6-9735-7673-8727-6b39759224db",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-59-01a124a6-96c7-7e92-8b09-d71dded2cfe7.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "touch c.txt"
+      },
+      "tool_use_id": "exec-72b3eff1-d337-45b6-bc92-ba19d5343794"
+    },
+    {
+      "at_ms": 4319,
+      "session_id": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+      "turn_id": "01a124a6-9735-7673-8727-6b39759224db",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-59-01a124a6-96c7-7e92-8b09-d71dded2cfe7.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PermissionRequest",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "touch c.txt",
+        "description": "May I run the requested command, touch c.txt, to create the file?"
+      }
+    },
+    {
+      "at_ms": 4362,
+      "session_id": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+      "turn_id": "01a124a6-9735-7673-8727-6b39759224db",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-59-01a124a6-96c7-7e92-8b09-d71dded2cfe7.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Interrupt",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default"
+    },
+    {
+      "at_ms": 6420,
+      "session_id": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-59-01a124a6-96c7-7e92-8b09-d71dded2cfe7.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ],
+  "app": [
+    {
+      "at_ms": -1448,
+      "dir": "notify",
+      "method": "thread/started",
+      "params": {
+        "thread": {
+          "id": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+          "environments": [
+            {
+              "environmentId": "local",
+              "cwd": "<CWD>",
+              "runtimeWorkspaceRoots": [
+                "<CWD>"
+              ]
+            }
+          ],
+          "extra": null,
+          "sessionId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": false,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "openai",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "createdAt": 1791616259,
+          "updatedAt": 1791616259,
+          "recencyAt": 1791616259,
+          "status": {
+            "type": "idle"
+          },
+          "path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-59-01a124a6-96c7-7e92-8b09-d71dded2cfe7.jsonl",
+          "cwd": "<CWD>",
+          "cliVersion": "0.160.0",
+          "originator": "agentarium-spike",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        }
+      },
+      "emittedAtMs": 1791616259883
+    },
+    {
+      "at_ms": -1447,
+      "dir": "reply",
+      "id": 2,
+      "result": {
+        "thread": {
+          "id": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+          "environments": [
+            {
+              "environmentId": "local",
+              "cwd": "<CWD>",
+              "runtimeWorkspaceRoots": [
+                "<CWD>"
+              ]
+            }
+          ],
+          "extra": null,
+          "sessionId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": false,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "openai",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "createdAt": 1791616259,
+          "updatedAt": 1791616259,
+          "recencyAt": 1791616259,
+          "status": {
+            "type": "idle"
+          },
+          "path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-10-59-01a124a6-96c7-7e92-8b09-d71dded2cfe7.jsonl",
+          "cwd": "<CWD>",
+          "cliVersion": "0.160.0",
+          "originator": "agentarium-spike",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        },
+        "model": "gpt-6.1-sol",
+        "modelProvider": "openai",
+        "serviceTier": null,
+        "disabledPluginIds": [],
+        "cwd": "<CWD>",
+        "runtimeWorkspaceRoots": [
+          "<CWD>"
+        ],
+        "instructionSources": [],
+        "approvalPolicy": "untrusted",
+        "approvalsReviewer": "user",
+        "sandbox": {
+          "type": "readOnly",
+          "networkAccess": false
+        },
+        "activePermissionProfile": null,
+        "reasoningEffort": "low",
+        "multiAgentMode": "explicitRequestOnly"
+      }
+    },
+    {
+      "at_ms": -1438,
+      "dir": "reply",
+      "id": 3,
+      "result": {
+        "turn": {
+          "id": "01a124a6-9735-7673-8727-6b39759224db",
+          "items": [],
+          "itemsView": "notLoaded",
+          "status": "inProgress",
+          "error": null,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null
+        }
+      }
+    },
+    {
+      "at_ms": -1412,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "status": {
+          "type": "active",
+          "activeFlags": []
+        }
+      },
+      "emittedAtMs": 1791616259924
+    },
+    {
+      "at_ms": -1412,
+      "dir": "notify",
+      "method": "turn/started",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turn": {
+          "id": "01a124a6-9735-7673-8727-6b39759224db",
+          "items": [],
+          "itemsView": "notLoaded",
+          "status": "inProgress",
+          "error": null,
+          "startedAt": 1791616259,
+          "completedAt": null,
+          "durationMs": null
+        }
+      },
+      "emittedAtMs": 1791616259924
+    },
+    {
+      "at_ms": -30,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "run": {
+          "id": "session-start:5:<DIR1>/hooks.json",
+          "eventName": "sessionStart",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "thread",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 5,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791616261,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616261306
+    },
+    {
+      "at_ms": 3,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "run": {
+          "id": "session-start:5:<DIR1>/hooks.json",
+          "eventName": "sessionStart",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "thread",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 5,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791616261,
+          "completedAt": 1791616261,
+          "durationMs": 33,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616261339
+    },
+    {
+      "at_ms": 4,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "run": {
+          "id": "user-prompt-submit:7:<DIR1>/hooks.json",
+          "eventName": "userPromptSubmit",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 7,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791616261,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616261341
+    },
+    {
+      "at_ms": 38,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "run": {
+          "id": "user-prompt-submit:7:<DIR1>/hooks.json",
+          "eventName": "userPromptSubmit",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 7,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791616261,
+          "completedAt": 1791616261,
+          "durationMs": 34,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616261375
+    },
+    {
+      "at_ms": 39,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "userMessage",
+          "id": "01a124a6-9cff-7963-bbe9-629032f731ad",
+          "clientId": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "Run exactly this shell command once: touch c.txt . If it needs approval, request it. Do not retry after a refusal. Then reply DONE.",
+              "text_elements": []
+            }
+          ]
+        },
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "startedAtMs": 1791616261376
+      },
+      "emittedAtMs": 1791616261376
+    },
+    {
+      "at_ms": 43,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "userMessage",
+          "id": "01a124a6-9cff-7963-bbe9-629032f731ad",
+          "clientId": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "Run exactly this shell command once: touch c.txt . If it needs approval, request it. Do not retry after a refusal. Then reply DONE.",
+              "text_elements": []
+            }
+          ]
+        },
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "completedAtMs": 1791616261376
+      },
+      "emittedAtMs": 1791616261379
+    },
+    {
+      "at_ms": 2333,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0394200c0367f7e7016ac9e507a5cc8191829fd4ccb75d621b",
+          "text": "",
+          "phase": "commentary",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "startedAtMs": 1791616263670
+      },
+      "emittedAtMs": 1791616263670
+    },
+    {
+      "at_ms": 2936,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0394200c0367f7e7016ac9e507a5cc8191829fd4ccb75d621b",
+          "text": "I’ll run the command once, requesting approval if needed.\n",
+          "phase": "commentary",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "completedAtMs": 1791616264271
+      },
+      "emittedAtMs": 1791616264273
+    },
+    {
+      "at_ms": 4232,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "run": {
+          "id": "pre-tool-use:0:<DIR1>/hooks.json:exec-72b3eff1-d337-45b6-bc92-ba19d5343794",
+          "eventName": "preToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 0,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791616265,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616265569
+    },
+    {
+      "at_ms": 4285,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "run": {
+          "id": "pre-tool-use:0:<DIR1>/hooks.json:exec-72b3eff1-d337-45b6-bc92-ba19d5343794",
+          "eventName": "preToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 0,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791616265,
+          "completedAt": 1791616265,
+          "durationMs": 37,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616265622
+    },
+    {
+      "at_ms": 4288,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "run": {
+          "id": "permission-request:1:<DIR1>/hooks.json:exec-72b3eff1-d337-45b6-bc92-ba19d5343794",
+          "eventName": "permissionRequest",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 1,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791616265,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616265624
+    },
+    {
+      "at_ms": 4322,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "run": {
+          "id": "permission-request:1:<DIR1>/hooks.json:exec-72b3eff1-d337-45b6-bc92-ba19d5343794",
+          "eventName": "permissionRequest",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 1,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791616265,
+          "completedAt": 1791616265,
+          "durationMs": 34,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616265659
+    },
+    {
+      "at_ms": 4324,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "status": {
+          "type": "active",
+          "activeFlags": [
+            "waitingOnApproval"
+          ]
+        }
+      },
+      "emittedAtMs": 1791616265659
+    },
+    {
+      "at_ms": 4324,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "commandExecution",
+          "id": "exec-72b3eff1-d337-45b6-bc92-ba19d5343794",
+          "pluginId": null,
+          "scriptPath": null,
+          "command": "/bin/bash -lc 'touch c.txt'",
+          "cwd": "<CWD>",
+          "processId": null,
+          "source": "agent",
+          "status": "inProgress",
+          "commandActions": [
+            {
+              "type": "unknown",
+              "command": "touch c.txt"
+            }
+          ],
+          "aggregatedOutput": null,
+          "exitCode": null,
+          "durationMs": null
+        },
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "startedAtMs": 1791616265661
+      },
+      "emittedAtMs": 1791616265661
+    },
+    {
+      "at_ms": 4324,
+      "dir": "request",
+      "method": "item/commandExecution/requestApproval",
+      "id": 0,
+      "params": {
+        "kind": "command",
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "itemId": "exec-72b3eff1-d337-45b6-bc92-ba19d5343794",
+        "startedAtMs": 1791616265659,
+        "environmentId": "local",
+        "reason": "May I run the requested command, touch c.txt, to create the file?",
+        "command": "/bin/bash -lc 'touch c.txt'",
+        "cwd": "<CWD>",
+        "commandActions": [
+          {
+            "type": "unknown",
+            "command": "touch c.txt"
+          }
+        ],
+        "proposedExecpolicyAmendment": [
+          "touch",
+          "c.txt"
+        ],
+        "availableDecisions": [
+          "accept",
+          {
+            "acceptWithExecpolicyAmendment": {
+              "execpolicy_amendment": [
+                "touch",
+                "c.txt"
+              ]
+            }
+          },
+          "cancel"
+        ]
+      }
+    },
+    {
+      "at_ms": 4325,
+      "dir": "notify",
+      "method": "serverRequest/resolved",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "requestId": 0
+      },
+      "emittedAtMs": 1791616265661
+    },
+    {
+      "at_ms": 4325,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "commandExecution",
+          "id": "exec-72b3eff1-d337-45b6-bc92-ba19d5343794",
+          "pluginId": null,
+          "scriptPath": null,
+          "command": "/bin/bash -lc 'touch c.txt'",
+          "cwd": "<CWD>",
+          "processId": null,
+          "source": "agent",
+          "status": "declined",
+          "commandActions": [
+            {
+              "type": "unknown",
+              "command": "touch c.txt"
+            }
+          ],
+          "aggregatedOutput": null,
+          "exitCode": null,
+          "durationMs": null
+        },
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "completedAtMs": 1791616265662
+      },
+      "emittedAtMs": 1791616265662
+    },
+    {
+      "at_ms": 4325,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "status": {
+          "type": "active",
+          "activeFlags": []
+        }
+      },
+      "emittedAtMs": 1791616265662
+    },
+    {
+      "at_ms": 4333,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "run": {
+          "id": "interrupt:11:<DIR1>/hooks.json",
+          "eventName": "interrupt",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 11,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791616265,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616265670
+    },
+    {
+      "at_ms": 4365,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turnId": "01a124a6-9735-7673-8727-6b39759224db",
+        "run": {
+          "id": "interrupt:11:<DIR1>/hooks.json",
+          "eventName": "interrupt",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>/hooks.json",
+          "source": "user",
+          "displayOrder": 11,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791616265,
+          "completedAt": 1791616265,
+          "durationMs": 33,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791616265702
+    },
+    {
+      "at_ms": 4367,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "status": {
+          "type": "idle"
+        }
+      },
+      "emittedAtMs": 1791616265704
+    },
+    {
+      "at_ms": 4367,
+      "dir": "notify",
+      "method": "turn/completed",
+      "params": {
+        "threadId": "01a124a6-96c7-7e92-8b09-d71dded2cfe7",
+        "turn": {
+          "id": "01a124a6-9735-7673-8727-6b39759224db",
+          "items": [],
+          "itemsView": "notLoaded",
+          "status": "interrupted",
+          "error": null,
+          "startedAt": 1791616259,
+          "completedAt": 1791616265,
+          "durationMs": 5807
+        }
+      },
+      "emittedAtMs": 1791616265704
+    }
+  ]
+}

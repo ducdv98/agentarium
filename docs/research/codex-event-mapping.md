@@ -175,6 +175,16 @@ Agentarium-side gaps:
 10. How should unknown tools, command classifiers, source priorities, duplicate identifiers, out-of-order asynchronous hooks/OTel, and intentionally nonzero command exits be handled?
 11. Validate full tool coverage for code mode, specialized local tools, hosted tools, resumable sub-agents, and root-client/server termination. Source inspection cannot replace these fixtures.
 
+## Answers from live captures
+
+Captured 2026-10-10 against Codex CLI 0.160.0. Details and fixtures: [codex-captures.md](codex-captures.md).
+
+1. **Answered in part.** Pinned to 0.160.0. The minimum released version is still unresolved, because only 0.160.0 was tested.
+2. **Answered.** A hook's `session_id` is the root session at every depth, and `agent_id` is the sub-agent's own thread. Hooks never name the immediate parent. Rollout `session_meta.parent_thread_id` does. How OTel conversation IDs join stays unresolved, because OTel was not captured.
+3. **Answered.** `PostToolUse` fires for every Bash completion, including non-zero exits and sandbox failures. Its response is the raw output string with no exit code. It does not fire for a failed `apply_patch`, an MCP `isError`, a declined or cancelled approval, or an interrupted call. `apply_patch` responses start with `Exit code: N`, and MCP responses carry `isError`. Hosted web search reaches hooks as `webrun`, which corrects gap 3 above.
+4. **Answered for command approvals.** Every human command approval emitted `PermissionRequest`, with no `tool_use_id`. File-change, permission, user-input and elicitation requests, and auto-review, remain unresolved.
+5. **Answered.** Sessions on the shared app-server daemon (the 0.160.0 TUI default) can be observed from a second client on the control socket. That client receives pending approvals, their resolution and item outcomes, and never has to answer. `codex exec` sessions are hook-only.
+
 [hooks-doc]: https://learn.chatgpt.com/docs/hooks
 [config-doc]: https://learn.chatgpt.com/docs/config-file/config-advanced
 [protocol]: https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/protocol/src/protocol.rs

@@ -1,0 +1,113 @@
+{
+  "codex_cli_version": "0.160.0",
+  "scenario": "sandbox-deny",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "01a124a5-2313-7992-b238-5357432f358b",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-24-01a124a5-2313-7992-b238-5357432f358b.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "source": "startup"
+    },
+    {
+      "at_ms": 34,
+      "session_id": "01a124a5-2313-7992-b238-5357432f358b",
+      "turn_id": "01a124a5-235c-7021-92a2-7e057340d8b1",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-24-01a124a5-2313-7992-b238-5357432f358b.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "prompt": "Run exactly this shell command once: touch /etc/agentarium-probe . Do not retry or escalate. Then reply DONE."
+    },
+    {
+      "at_ms": 3221,
+      "session_id": "01a124a5-2313-7992-b238-5357432f358b",
+      "turn_id": "01a124a5-235c-7021-92a2-7e057340d8b1",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-24-01a124a5-2313-7992-b238-5357432f358b.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "touch /etc/agentarium-probe"
+      },
+      "tool_use_id": "exec-f74630cc-12b5-4380-8358-85f9dd172072"
+    },
+    {
+      "at_ms": 3313,
+      "session_id": "01a124a5-2313-7992-b238-5357432f358b",
+      "turn_id": "01a124a5-235c-7021-92a2-7e057340d8b1",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-24-01a124a5-2313-7992-b238-5357432f358b.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "touch /etc/agentarium-probe"
+      },
+      "tool_response": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted\n",
+      "tool_use_id": "exec-f74630cc-12b5-4380-8358-85f9dd172072"
+    },
+    {
+      "at_ms": 5443,
+      "session_id": "01a124a5-2313-7992-b238-5357432f358b",
+      "turn_id": "01a124a5-235c-7021-92a2-7e057340d8b1",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-24-01a124a5-2313-7992-b238-5357432f358b.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Stop",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE"
+    },
+    {
+      "at_ms": 5499,
+      "session_id": "01a124a5-2313-7992-b238-5357432f358b",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-24-01a124a5-2313-7992-b238-5357432f358b.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ],
+  "exec": [
+    {
+      "type": "thread.started",
+      "thread_id": "01a124a5-2313-7992-b238-5357432f358b"
+    },
+    {
+      "type": "turn.started"
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_0",
+        "type": "agent_message",
+        "text": "I’ll run the command once without retrying or escalating.\n"
+      }
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_1",
+        "type": "agent_message",
+        "text": "DONE"
+      }
+    },
+    {
+      "type": "turn.completed",
+      "usage": {
+        "input_tokens": 30821,
+        "cached_input_tokens": 27520,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 58,
+        "reasoning_output_tokens": 0
+      }
+    }
+  ]
+}

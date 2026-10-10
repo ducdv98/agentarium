@@ -1,0 +1,97 @@
+{
+  "codex_cli_version": "0.160.0",
+  "scenario": "patch-fail",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "01a124a4-5149-7881-aca4-c2b332e3fa6e",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-30-01a124a4-5149-7881-aca4-c2b332e3fa6e.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "source": "startup"
+    },
+    {
+      "at_ms": 35,
+      "session_id": "01a124a4-5149-7881-aca4-c2b332e3fa6e",
+      "turn_id": "01a124a4-518e-7882-9efe-b6b8eaa8aef9",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-30-01a124a4-5149-7881-aca4-c2b332e3fa6e.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "prompt": "Use the apply_patch tool exactly once to update the existing-looking file missing.txt, replacing the line 'foo' with 'bar'. The file does not exist; do not create it and do not retry or use any other tool. Then reply DONE."
+    },
+    {
+      "at_ms": 4802,
+      "session_id": "01a124a4-5149-7881-aca4-c2b332e3fa6e",
+      "turn_id": "01a124a4-518e-7882-9efe-b6b8eaa8aef9",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-30-01a124a4-5149-7881-aca4-c2b332e3fa6e.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "apply_patch",
+      "tool_input": {
+        "command": "*** Begin Patch\n*** Update File: <CWD>/missing.txt\n@@\n-foo\n+bar\n*** End Patch"
+      },
+      "tool_use_id": "exec-ef3da355-13aa-44f0-ad94-8ade8d1cf6d4"
+    },
+    {
+      "at_ms": 7176,
+      "session_id": "01a124a4-5149-7881-aca4-c2b332e3fa6e",
+      "turn_id": "01a124a4-518e-7882-9efe-b6b8eaa8aef9",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-30-01a124a4-5149-7881-aca4-c2b332e3fa6e.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Stop",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE"
+    },
+    {
+      "at_ms": 7231,
+      "session_id": "01a124a4-5149-7881-aca4-c2b332e3fa6e",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-08-30-01a124a4-5149-7881-aca4-c2b332e3fa6e.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ],
+  "exec": [
+    {
+      "type": "thread.started",
+      "thread_id": "01a124a4-5149-7881-aca4-c2b332e3fa6e"
+    },
+    {
+      "type": "turn.started"
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_0",
+        "type": "agent_message",
+        "text": "I’ll attempt the requested patch once without creating the file or retrying.\n"
+      }
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_1",
+        "type": "agent_message",
+        "text": "DONE"
+      }
+    },
+    {
+      "type": "turn.completed",
+      "usage": {
+        "input_tokens": 30927,
+        "cached_input_tokens": 27520,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 109,
+        "reasoning_output_tokens": 0
+      }
+    }
+  ]
+}

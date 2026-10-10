@@ -1,0 +1,366 @@
+{
+  "codex_cli_version": "0.160.0",
+  "scenario": "subagents",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-32-01a124a5-4204-7020-9135-29be768e4f12.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "source": "startup"
+    },
+    {
+      "at_ms": 35,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-4251-7f32-8929-4ee802452ec8",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-32-01a124a5-4204-7020-9135-29be768e4f12.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "prompt": "Spawn exactly one sub-agent (call it child). Instruct the child to spawn exactly one sub-agent of its own (grandchild) whose only task is to run the shell command 'echo grandchild' and report back. The child must wait for the grandchild and then report back. Wait for the child to finish, close it, t…[truncated]"
+    },
+    {
+      "at_ms": 4610,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-4251-7f32-8929-4ee802452ec8",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-32-01a124a5-4204-7020-9135-29be768e4f12.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "collaborationspawn_agent",
+      "tool_input": {
+        "task_name": "child",
+        "fork_turns": "none",
+        "message": "gAAAAABqyeSyYtNZyNH9zMUTDjK5MjrBj5v7pvFNAdOcPNpNc0qk5SNIYB_YMz9qUGcYdCkKcbpTkOuGoqnIFmoUvWig0JfnRifg9wyrnGNLgAxowo3A4Hc_BSodXlnGPXaJXQwV3yhhjHe3LHVOFnqypYGAC-onZu6nOCgxgLdjeH1bEu5aAPMUHoYpHB6WLx2s05v15szwVH7XIjpAAIZCOOpU_gCpjCsJR8S684-3QPR00_KlOhllctd5G72AUvQHmSAlJkxN8h7EPdT20R3-Sbk2wo-c4DFY7IbQI3iM…[truncated]"
+      },
+      "tool_use_id": "call_2bd8a538d8e0426eb212a966e0f5b0be"
+    },
+    {
+      "at_ms": 4699,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-4251-7f32-8929-4ee802452ec8",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-32-01a124a5-4204-7020-9135-29be768e4f12.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "collaborationspawn_agent",
+      "tool_input": {
+        "task_name": "child",
+        "fork_turns": "none",
+        "message": "gAAAAABqyeSyYtNZyNH9zMUTDjK5MjrBj5v7pvFNAdOcPNpNc0qk5SNIYB_YMz9qUGcYdCkKcbpTkOuGoqnIFmoUvWig0JfnRifg9wyrnGNLgAxowo3A4Hc_BSodXlnGPXaJXQwV3yhhjHe3LHVOFnqypYGAC-onZu6nOCgxgLdjeH1bEu5aAPMUHoYpHB6WLx2s05v15szwVH7XIjpAAIZCOOpU_gCpjCsJR8S684-3QPR00_KlOhllctd5G72AUvQHmSAlJkxN8h7EPdT20R3-Sbk2wo-c4DFY7IbQI3iM…[truncated]"
+      },
+      "tool_response": "{\"task_name\":\"/root/child\"}",
+      "tool_use_id": "call_2bd8a538d8e0426eb212a966e0f5b0be"
+    },
+    {
+      "at_ms": 5947,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-599b-7ec3-b7ba-27e3c0f44b1a",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-38-01a124a5-5974-7b41-8f32-0ff17629e0d6.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SubagentStart",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "agent_id": "01a124a5-5974-7b41-8f32-0ff17629e0d6",
+      "agent_type": "default"
+    },
+    {
+      "at_ms": 7343,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-4251-7f32-8929-4ee802452ec8",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-32-01a124a5-4204-7020-9135-29be768e4f12.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "collaborationwait_agent",
+      "tool_input": {
+        "timeout_ms": 60000
+      },
+      "tool_use_id": "call_1f8234da473c4758bcd260ed64a9363d"
+    },
+    {
+      "at_ms": 9123,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-599b-7ec3-b7ba-27e3c0f44b1a",
+      "agent_id": "01a124a5-5974-7b41-8f32-0ff17629e0d6",
+      "agent_type": "default",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-38-01a124a5-5974-7b41-8f32-0ff17629e0d6.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "collaborationspawn_agent",
+      "tool_input": {
+        "task_name": "grandchild",
+        "message": "gAAAAABqyeS3EKYnbPRZK6M0i3Gh2hDDAhh2f49GfU8NezayXXAF7k5mN8J7LJuM4Vw6w9w8llVVQCrTon-qmybfGJ6_N0vHyarKUniAE8dQb8S_surh_23ZB5G2U-Yqd3AoLM-bWslQilyvWQl8mb2hsowCD1Is767o7yxMIhTIbza4sVR-aJPmPHNnahK1XusE8uSVgLxtLlBnmLCkX2WRsmE58LizwATvdlWSBSM-JRayMD-H-Ti8ypLVJV-oz5gangBb62c5"
+      },
+      "tool_use_id": "call_e7dedf9bca2343d8a3de84e1256c5a8d"
+    },
+    {
+      "at_ms": 9193,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-599b-7ec3-b7ba-27e3c0f44b1a",
+      "agent_id": "01a124a5-5974-7b41-8f32-0ff17629e0d6",
+      "agent_type": "default",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-38-01a124a5-5974-7b41-8f32-0ff17629e0d6.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "collaborationspawn_agent",
+      "tool_input": {
+        "task_name": "grandchild",
+        "message": "gAAAAABqyeS3EKYnbPRZK6M0i3Gh2hDDAhh2f49GfU8NezayXXAF7k5mN8J7LJuM4Vw6w9w8llVVQCrTon-qmybfGJ6_N0vHyarKUniAE8dQb8S_surh_23ZB5G2U-Yqd3AoLM-bWslQilyvWQl8mb2hsowCD1Is767o7yxMIhTIbza4sVR-aJPmPHNnahK1XusE8uSVgLxtLlBnmLCkX2WRsmE58LizwATvdlWSBSM-JRayMD-H-Ti8ypLVJV-oz5gangBb62c5"
+      },
+      "tool_response": "{\"task_name\":\"/root/child/grandchild\"}",
+      "tool_use_id": "call_e7dedf9bca2343d8a3de84e1256c5a8d"
+    },
+    {
+      "at_ms": 10370,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-6b32-73e3-a222-b6e883755bab",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-43-01a124a5-6b16-7393-948f-4f26e5eaa131.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SubagentStart",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "agent_id": "01a124a5-6b16-7393-948f-4f26e5eaa131",
+      "agent_type": "default"
+    },
+    {
+      "at_ms": 11570,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-599b-7ec3-b7ba-27e3c0f44b1a",
+      "agent_id": "01a124a5-5974-7b41-8f32-0ff17629e0d6",
+      "agent_type": "default",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-38-01a124a5-5974-7b41-8f32-0ff17629e0d6.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "collaborationwait_agent",
+      "tool_input": {
+        "timeout_ms": 60000
+      },
+      "tool_use_id": "call_44ccedda52c04cc9abe8c67c9a6a5135"
+    },
+    {
+      "at_ms": 13923,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-6b32-73e3-a222-b6e883755bab",
+      "agent_id": "01a124a5-6b16-7393-948f-4f26e5eaa131",
+      "agent_type": "default",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-43-01a124a5-6b16-7393-948f-4f26e5eaa131.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "echo grandchild"
+      },
+      "tool_use_id": "exec-b1fedcd3-c493-42e0-969c-6109247d73be"
+    },
+    {
+      "at_ms": 14008,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-6b32-73e3-a222-b6e883755bab",
+      "agent_id": "01a124a5-6b16-7393-948f-4f26e5eaa131",
+      "agent_type": "default",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-43-01a124a5-6b16-7393-948f-4f26e5eaa131.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "echo grandchild"
+      },
+      "tool_response": "grandchild\n",
+      "tool_use_id": "exec-b1fedcd3-c493-42e0-969c-6109247d73be"
+    },
+    {
+      "at_ms": 16615,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-6b32-73e3-a222-b6e883755bab",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-38-01a124a5-5974-7b41-8f32-0ff17629e0d6.jsonl",
+      "agent_transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-43-01a124a5-6b16-7393-948f-4f26e5eaa131.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SubagentStop",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "stop_hook_active": false,
+      "agent_id": "01a124a5-6b16-7393-948f-4f26e5eaa131",
+      "agent_type": "default",
+      "last_assistant_message": "Command output: `grandchild`"
+    },
+    {
+      "at_ms": 16657,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-599b-7ec3-b7ba-27e3c0f44b1a",
+      "agent_id": "01a124a5-5974-7b41-8f32-0ff17629e0d6",
+      "agent_type": "default",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-38-01a124a5-5974-7b41-8f32-0ff17629e0d6.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "collaborationwait_agent",
+      "tool_input": {
+        "timeout_ms": 60000
+      },
+      "tool_response": "{\"message\":\"Wait completed.\",\"timed_out\":false}",
+      "tool_use_id": "call_44ccedda52c04cc9abe8c67c9a6a5135"
+    },
+    {
+      "at_ms": 18594,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-599b-7ec3-b7ba-27e3c0f44b1a",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-32-01a124a5-4204-7020-9135-29be768e4f12.jsonl",
+      "agent_transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-38-01a124a5-5974-7b41-8f32-0ff17629e0d6.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SubagentStop",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "stop_hook_active": false,
+      "agent_id": "01a124a5-5974-7b41-8f32-0ff17629e0d6",
+      "agent_type": "default",
+      "last_assistant_message": "Grandchild finished. Command output: `grandchild`."
+    },
+    {
+      "at_ms": 18637,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-4251-7f32-8929-4ee802452ec8",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-32-01a124a5-4204-7020-9135-29be768e4f12.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "collaborationwait_agent",
+      "tool_input": {
+        "timeout_ms": 60000
+      },
+      "tool_response": "{\"message\":\"Wait completed.\",\"timed_out\":false}",
+      "tool_use_id": "call_1f8234da473c4758bcd260ed64a9363d"
+    },
+    {
+      "at_ms": 20489,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-4251-7f32-8929-4ee802452ec8",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-32-01a124a5-4204-7020-9135-29be768e4f12.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "collaborationinterrupt_agent",
+      "tool_input": {
+        "target": "child"
+      },
+      "tool_use_id": "call_a965b367937f4680bb249cd7d1be351b"
+    },
+    {
+      "at_ms": 20529,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-4251-7f32-8929-4ee802452ec8",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-32-01a124a5-4204-7020-9135-29be768e4f12.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "collaborationinterrupt_agent",
+      "tool_input": {
+        "target": "child"
+      },
+      "tool_response": "{\"previous_status\":{\"completed\":\"Grandchild finished. Command output: `grandchild`.\"}}",
+      "tool_use_id": "call_a965b367937f4680bb249cd7d1be351b"
+    },
+    {
+      "at_ms": 22445,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "turn_id": "01a124a5-4251-7f32-8929-4ee802452ec8",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-32-01a124a5-4204-7020-9135-29be768e4f12.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Stop",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE"
+    },
+    {
+      "at_ms": 22505,
+      "session_id": "01a124a5-4204-7020-9135-29be768e4f12",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-09-32-01a124a5-4204-7020-9135-29be768e4f12.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ],
+  "exec": [
+    {
+      "type": "thread.started",
+      "thread_id": "01a124a5-4204-7020-9135-29be768e4f12"
+    },
+    {
+      "type": "turn.started"
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_0",
+        "type": "agent_message",
+        "text": "I’ll spawn child, have it wait for grandchild, then close child after it finishes.\n"
+      }
+    },
+    {
+      "type": "item.started",
+      "item": {
+        "id": "item_1",
+        "type": "collab_tool_call",
+        "tool": "wait",
+        "sender_thread_id": "01a124a5-4204-7020-9135-29be768e4f12",
+        "receiver_thread_ids": [],
+        "prompt": null,
+        "agents_states": {},
+        "status": "in_progress"
+      }
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_1",
+        "type": "collab_tool_call",
+        "tool": "wait",
+        "sender_thread_id": "01a124a5-4204-7020-9135-29be768e4f12",
+        "receiver_thread_ids": [],
+        "prompt": null,
+        "agents_states": {},
+        "status": "completed"
+      }
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_2",
+        "type": "agent_message",
+        "text": "DONE"
+      }
+    },
+    {
+      "type": "turn.completed",
+      "usage": {
+        "input_tokens": 62153,
+        "cached_input_tokens": 55168,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 150,
+        "reasoning_output_tokens": 0
+      }
+    }
+  ]
+}
