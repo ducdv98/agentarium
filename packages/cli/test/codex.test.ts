@@ -20,7 +20,7 @@ describe("Codex hooks", () => {
     const path = join(dir(), "hooks.json");
     const original = '{\n  "hooks": { "Stop": [{ "hooks": [{ "type": "command", "command": "echo user" }] }] }\n}\n';
     writeFileSync(path, original);
-    const target = codexTarget(47821, "/tmp/agentarium cli.js", "/tmp/agentarium home");
+    const target = codexTarget(47821, "/tmp/agentarium cli.js", "/tmp/agentarium home", "linux");
     const opts = { port: 47821, token: "private" };
     expect(installHooks(path, opts, {}, target)).toEqual({ changed: true, backedUp: true });
     const written = readFileSync(path, "utf8");
@@ -33,11 +33,26 @@ describe("Codex hooks", () => {
     expect(existsSync(backupPath(path))).toBe(false);
   });
   it("quotes shell metacharacters in the CLI path", () => {
-    const command = codexTarget(1, '/tmp/a "$(touch /tmp/nope)`x\\y', "/h").handler.command;
+    const command = codexTarget(1, '/tmp/a "$(touch /tmp/nope)`x\\y', "/h", "linux").handler.command;
     expect(command).toContain('\\"');
     expect(command).toContain('\\$');
     expect(command).toContain('\\`');
     expect(command).toContain('\\\\');
+  });
+  it("uses the PowerShell call operator with literal quoting on Windows", () => {
+    const command = codexTarget(1, "C:\\a b\\it's $x`y.js", "C:\\h", "win32").handler.command;
+    expect(command).toMatch(/^& '/);
+    expect(command).toContain("'C:\\a b\\it''s $x`y.js' hook codex --port 1 --home 'C:\\h'");
+    expect(codexTarget(1, "/cli", "/h", "win32").isOurs({ type: "command", command })).toBe(true);
+  });
+  it.runIf(process.platform === "win32")("runs under PowerShell the way Codex spawns hooks on Windows", async () => {
+    const base = dir();
+    const script = join(base, "it's $x`y.js");
+    writeFileSync(script, "require('node:fs').writeFileSync(process.argv[process.argv.length - 1] + '.out', JSON.stringify(process.argv.slice(2)));");
+    const home = join(base, "home dir");
+    const { command } = codexTarget(47821, script, home, "win32").handler as { command: string };
+    await promisify(execFile)("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", command]);
+    expect(JSON.parse(readFileSync(`${home}.out`, "utf8"))).toEqual(["hook", "codex", "--port", "47821", "--home", home]);
   });
   it("keeps user commands while replacing and removing only Codex handlers", () => {
     const path = join(dir(), "hooks.json");

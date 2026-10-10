@@ -47,15 +47,28 @@ const claudeTarget = (opts: { port: number; token: string }): HookTarget => ({
 });
 
 const shellQuote = (value: string): string => `"${value.replace(/[\\"$`]/g, (c) => `\\${c}`)}"`;
+/** PowerShell single quotes are literal; only `'` itself needs doubling. */
+const psQuote = (value: string): string => `'${value.replace(/'/g, "''")}'`;
 const quotedArg = String.raw`"(?:\\.|[^"\\])*"`;
-const codexCommand = new RegExp(`^${quotedArg} ${quotedArg} hook codex --port \\d+(?: --home ${quotedArg})?$`);
+const psArg = String.raw`'(?:''|[^'])*'`;
+const codexCommand = new RegExp(
+  `^(?:${quotedArg} ${quotedArg} hook codex --port \\d+(?: --home ${quotedArg})?|& ${psArg} ${psArg} hook codex --port \\d+ --home ${psArg})$`,
+);
 
-/** The hook runs in Codex's environment, not ours, so the port and Agentarium home travel in the command. */
-export const codexTarget = (port: number, script: string, home: string): HookTarget => ({
-  events: ["SessionStart", "UserPromptSubmit", "PreToolUse", "PermissionRequest", "PostToolUse", "SubagentStart", "SubagentStop", "Stop", "Interrupt", "SessionEnd"],
-  isOurs: (h) => isObj(h) && h.type === "command" && typeof h.command === "string" && codexCommand.test(h.command),
-  handler: { type: "command", command: `${shellQuote(process.execPath)} ${shellQuote(script)} hook codex --port ${port} --home ${shellQuote(home)}`, timeout: HOOK_TIMEOUT_S },
-});
+/**
+ * The hook runs in Codex's environment, not ours, so the port and Agentarium home travel in the command.
+ * On Windows Codex runs hooks through PowerShell, where a leading quoted string is an expression, not a
+ * command, so the call operator `&` is required or every hook fails with a parse error (exit 1).
+ */
+export const codexTarget = (port: number, script: string, home: string, platform: NodeJS.Platform = process.platform): HookTarget => {
+  const q = platform === "win32" ? psQuote : shellQuote;
+  const call = platform === "win32" ? "& " : "";
+  return {
+    events: ["SessionStart", "UserPromptSubmit", "PreToolUse", "PermissionRequest", "PostToolUse", "SubagentStart", "SubagentStop", "Stop", "Interrupt", "SessionEnd"],
+    isOurs: (h) => isObj(h) && h.type === "command" && typeof h.command === "string" && codexCommand.test(h.command),
+    handler: { type: "command", command: `${call}${q(process.execPath)} ${q(script)} hook codex --port ${port} --home ${q(home)}`, timeout: HOOK_TIMEOUT_S },
+  };
+};
 
 export const backupPath = (settingsPath: string): string => `${settingsPath}.agentarium-backup`;
 
