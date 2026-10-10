@@ -1,5 +1,5 @@
-import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
-import { copyFileSync } from "node:fs";
+import { randomBytes } from "node:crypto";
+import { closeSync, existsSync, mkdirSync, openSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 
@@ -19,6 +19,13 @@ export const HOOK_EVENTS = [
 
 /** Seconds. Short so a hung daemon cannot stall a session; failures are non-blocking anyway. */
 export const HOOK_TIMEOUT_S = 2;
+
+export const SETTINGS_WRITE_ATTEMPTS = 5;
+
+interface WriteOptions {
+  /** Test seam: inject a concurrent edit after preparation, before the final re-read. Attempts start at 1. */
+  onPrepared?: (attempt: number) => void;
+}
 
 const OURS = /^http:\/\/127\.0\.0\.1:\d+\/hooks\/claude-code$/;
 
@@ -95,10 +102,18 @@ export function withHooks(settings: Json, opts: { port: number; token: string })
   return { ...clean, hooks };
 }
 
-function readSettings(path: string): { settings: Json; raw: string | null } {
-  if (!existsSync(path)) return { settings: {}, raw: null };
-  const raw = readFileSync(path, "utf8");
-  if (!raw.trim()) return { settings: {}, raw };
+function snapshot(path: string): Buffer | null {
+  try {
+    return readFileSync(path);
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw err;
+  }
+}
+
+function readSettings(path: string, bytes: Buffer | null): Json {
+  const raw = bytes?.toString("utf8") ?? "";
+  if (!raw.trim()) return {};
   let parsed: unknown;
   try {
     parsed = JSON.parse(raw);
@@ -106,16 +121,60 @@ function readSettings(path: string): { settings: Json; raw: string | null } {
     throw new Error(`${path} is not valid JSON; refusing to modify it (${(err as Error).message})`);
   }
   if (!isObj(parsed)) throw new Error(`${path} is not a JSON object; refusing to modify it`);
-  return { settings: parsed, raw };
+  return parsed;
 }
 
 const serialize = (settings: Json): string => `${JSON.stringify(settings, null, 2)}\n`;
 
-function writeAtomic(path: string, content: string): void {
-  mkdirSync(dirname(path), { recursive: true });
-  const tmp = `${path}.agentarium-tmp`;
-  writeFileSync(tmp, content);
-  renameSync(tmp, path);
+type Commit = { kind: "write" | "restore"; content: Buffer; backup?: boolean } | { kind: "delete" };
+type Plan<T> = { result: T; commit?: Commit };
+
+/**
+ * Compare-and-swap guard for every settings commit. Claude Code and editors do not lock:
+ * a non-cooperating writer can still land a change between the final re-read and rename
+ * (or delete) that we replace. The single re-read plus rename window only narrows the race.
+ * Everything else, the backup included, is prepared before that re-read and undone if the attempt does not commit.
+ */
+function compareAndSwap<T>(path: string, plan: (raw: Buffer | null) => Plan<T>, opts: WriteOptions): T {
+  for (let attempt = 1; attempt <= SETTINGS_WRITE_ATTEMPTS; attempt++) {
+    const raw = snapshot(path);
+    const { result, commit } = plan(raw);
+    if (!commit) return result;
+    let tmp: string | undefined;
+    let ownBackup = false; // A backup written by this attempt, dropped unless the attempt commits.
+    let committed = false;
+    try {
+      if (commit.kind !== "delete") {
+        mkdirSync(dirname(path), { recursive: true });
+        const candidate = `${path}.agentarium-${process.pid}-${randomBytes(16).toString("hex")}.tmp`;
+        const fd = openSync(candidate, "wx");
+        tmp = candidate; // Only clean up a temp we successfully created ourselves.
+        try {
+          writeFileSync(fd, commit.content);
+        } finally {
+          closeSync(fd);
+        }
+      }
+      if (commit.kind === "write" && commit.backup && raw !== null) {
+        writeFileSync(backupPath(path), raw, { flag: "wx" });
+        ownBackup = true;
+      }
+      opts.onPrepared?.(attempt);
+      const current = snapshot(path);
+      if (raw === null ? current !== null : current === null || !raw.equals(current)) continue;
+      if (commit.kind === "delete") rmSync(path);
+      else {
+        renameSync(tmp!, path);
+        if (commit.kind === "restore") rmSync(backupPath(path));
+      }
+      committed = true;
+      return result;
+    } finally {
+      if (tmp) rmSync(tmp, { force: true });
+      if (ownBackup && !committed) rmSync(backupPath(path), { force: true });
+    }
+  }
+  throw new Error(`${path} kept changing while Agentarium was updating it; gave up after ${SETTINGS_WRITE_ATTEMPTS} attempts and left it as the other writer left it`);
 }
 
 export interface InstallResult {
@@ -124,26 +183,24 @@ export interface InstallResult {
 }
 
 /** Idempotent. Backs up pre-existing settings once, before our first change. */
-export function installHooks(settingsPath: string, opts: { port: number; token: string }): InstallResult {
-  const { settings, raw } = readSettings(settingsPath);
-  const problem = hookShapeProblem(settings);
-  if (problem) throw new Error(`${settingsPath}: ${problem}; refusing to modify it`);
-  const next = serialize(withHooks(settings, opts));
-  if (next === raw) return { changed: false, backedUp: false };
-  let backedUp = false;
-  if (raw !== null && !existsSync(backupPath(settingsPath))) {
-    copyFileSync(settingsPath, backupPath(settingsPath));
-    backedUp = true;
-  }
-  writeAtomic(settingsPath, next);
-  return { changed: true, backedUp };
+export function installHooks(settingsPath: string, opts: { port: number; token: string }, writeOpts: WriteOptions = {}): InstallResult {
+  return compareAndSwap<InstallResult>(settingsPath, (raw) => {
+    const settings = readSettings(settingsPath, raw);
+    const problem = hookShapeProblem(settings);
+    if (problem) throw new Error(`${settingsPath}: ${problem}; refusing to modify it`);
+    const next = Buffer.from(serialize(withHooks(settings, opts)));
+    if (raw?.equals(next)) return { result: { changed: false, backedUp: false } };
+    const backedUp = raw !== null && !existsSync(backupPath(settingsPath));
+    return { result: { changed: true, backedUp }, commit: { kind: "write", content: next, backup: backedUp } };
+  }, writeOpts);
 }
 
 /** The pre-install snapshot, or null when it is unreadable (uninstall then falls back to the surgical result). */
-function readBackup(path: string): Json | null {
+function readBackup(path: string): { settings: Json; raw: Buffer } | null {
   try {
-    const parsed: unknown = JSON.parse(readFileSync(path, "utf8"));
-    return isObj(parsed) ? parsed : null;
+    const raw = readFileSync(path);
+    const parsed: unknown = JSON.parse(raw.toString("utf8"));
+    return isObj(parsed) ? { settings: parsed, raw } : null;
   } catch {
     return null;
   }
@@ -159,26 +216,25 @@ export interface UninstallResult {
  * Removes only our handlers. If that leaves exactly what the backup holds, the backup is
  * restored verbatim; otherwise the user's later edits are kept and the backup is left in place.
  */
-export function uninstallHooks(settingsPath: string): UninstallResult {
-  const { settings, raw } = readSettings(settingsPath);
-  if (raw === null) return { changed: false, restoredBackup: false };
-  const backup = backupPath(settingsPath);
-  const hasBackup = existsSync(backup);
-  const before = hasBackup ? readBackup(backup) : null;
-  const cleaned = withoutHooks(settings, before ?? {});
-  if (isDeepStrictEqual(cleaned, settings)) return { changed: false, restoredBackup: false };
-  if (before && isDeepStrictEqual(before, cleaned)) {
-    copyFileSync(backup, settingsPath);
-    rmSync(backup);
-    return { changed: true, restoredBackup: true };
-  }
-  if (!hasBackup && isDeepStrictEqual(cleaned, {})) {
-    // We created the file ourselves (no backup was ever taken), so remove it.
-    rmSync(settingsPath);
-    return { changed: true, restoredBackup: false };
-  }
-  const next = serialize(cleaned);
-  if (next === raw) return { changed: false, restoredBackup: false };
-  writeAtomic(settingsPath, next);
-  return { changed: true, restoredBackup: false };
+export function uninstallHooks(settingsPath: string, writeOpts: WriteOptions = {}): UninstallResult {
+  return compareAndSwap<UninstallResult>(settingsPath, (raw) => {
+    const settings = readSettings(settingsPath, raw);
+    const unchanged = { changed: false, restoredBackup: false };
+    if (raw === null) return { result: unchanged };
+    const backup = backupPath(settingsPath);
+    const hasBackup = existsSync(backup);
+    const before = hasBackup ? readBackup(backup) : null;
+    const cleaned = withoutHooks(settings, before?.settings ?? {});
+    if (isDeepStrictEqual(cleaned, settings)) return { result: unchanged };
+    if (before && isDeepStrictEqual(before.settings, cleaned)) {
+      return { result: { changed: true, restoredBackup: true }, commit: { kind: "restore", content: before.raw } };
+    }
+    if (!hasBackup && isDeepStrictEqual(cleaned, {})) {
+      // We created the file ourselves (no backup was ever taken), so remove it.
+      return { result: { changed: true, restoredBackup: false }, commit: { kind: "delete" } };
+    }
+    const next = Buffer.from(serialize(cleaned));
+    if (raw.equals(next)) return { result: unchanged };
+    return { result: { changed: true, restoredBackup: false }, commit: { kind: "write", content: next } };
+  }, writeOpts);
 }

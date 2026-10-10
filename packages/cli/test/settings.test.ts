@@ -1,8 +1,8 @@
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { beforeEach, describe, expect, it } from "vitest";
-import { HOOK_EVENTS, HOOK_TIMEOUT_S, backupPath, installHooks, uninstallHooks } from "../src/settings";
+import { HOOK_EVENTS, HOOK_TIMEOUT_S, SETTINGS_WRITE_ATTEMPTS, backupPath, installHooks, uninstallHooks } from "../src/settings";
 
 const opts = { port: 47821, token: "tok" };
 let file: string;
@@ -14,6 +14,96 @@ const userSettings = {
   model: "opus",
   hooks: { PreToolUse: [{ matcher: "Bash", hooks: [{ type: "command", command: "echo hi" }] }] },
 };
+
+describe("concurrent edits", () => {
+  const temps = () => readdirSync(dirname(file)).filter((name) => name.endsWith(".tmp"));
+  const permissions = { allow: ["Bash(ls)"] };
+  const edit = () => writeFileSync(file, JSON.stringify({ ...JSON.parse(read()), permissions }));
+
+  it("replans install and backs up exactly the concurrent writer's bytes", () => {
+    writeFileSync(file, JSON.stringify(userSettings));
+    let edited = "";
+    const attempts: number[] = [];
+    expect(installHooks(file, opts, { onPrepared: (attempt) => {
+      attempts.push(attempt);
+      if (attempt === 1) { edit(); edited = read(); }
+    } })).toEqual({ changed: true, backedUp: true });
+    expect(attempts).toEqual([1, 2]);
+    expect(JSON.parse(read()).permissions).toEqual(permissions);
+    expect(JSON.parse(read()).hooks.PreToolUse).toHaveLength(2);
+    expect(readFileSync(backupPath(file), "utf8")).toBe(edited);
+    expect(temps()).toEqual([]);
+  });
+
+  it.each(["surgical", "restore", "delete"])("replans %s uninstall and keeps the concurrent edit", (kind) => {
+    if (kind !== "delete") writeFileSync(file, JSON.stringify(userSettings));
+    installHooks(file, opts);
+    const backup = kind !== "delete" ? readFileSync(backupPath(file), "utf8") : null;
+    if (kind === "surgical") writeFileSync(file, JSON.stringify({ ...JSON.parse(read()), theme: "dark" }));
+    const attempts: number[] = [];
+    expect(uninstallHooks(file, { onPrepared: (attempt) => {
+      attempts.push(attempt);
+      if (attempt === 1) edit();
+    } })).toEqual({ changed: true, restoredBackup: false });
+    expect(attempts).toEqual([1, 2]);
+    expect(JSON.parse(read())).toEqual({
+      ...(kind !== "delete" ? userSettings : {}),
+      ...(kind === "surgical" ? { theme: "dark" } : {}),
+      permissions,
+    });
+    if (backup !== null) expect(readFileSync(backupPath(file), "utf8")).toBe(backup);
+    else expect(existsSync(backupPath(file))).toBe(false);
+    expect(temps()).toEqual([]);
+  });
+
+  it.each(["install", "surgical", "restore", "delete"])("refuses invalid JSON injected during %s", (kind) => {
+    if (kind !== "delete") writeFileSync(file, JSON.stringify(userSettings));
+    if (kind !== "install") installHooks(file, opts);
+    if (kind === "surgical") writeFileSync(file, JSON.stringify({ ...JSON.parse(read()), theme: "dark" }));
+    const seam = { onPrepared: () => writeFileSync(file, "{ concurrent invalid JSON") };
+    expect(() => kind === "install" ? installHooks(file, opts, seam) : uninstallHooks(file, seam)).toThrow(/not valid JSON/);
+    expect(read()).toBe("{ concurrent invalid JSON");
+    expect(existsSync(backupPath(file))).toBe(kind === "surgical" || kind === "restore");
+    expect(temps()).toEqual([]);
+  });
+
+  it("gives up after the budget without a backup or leftover temps", () => {
+    writeFileSync(file, JSON.stringify(userSettings));
+    const attempts: number[] = [];
+    let edited = "";
+    expect(() => installHooks(file, opts, { onPrepared: (attempt) => {
+      attempts.push(attempt);
+      edited = JSON.stringify({ ...userSettings, theme: `edit-${attempt}` });
+      writeFileSync(file, edited);
+    } })).toThrow(`${file} kept changing while Agentarium was updating it; gave up after ${SETTINGS_WRITE_ATTEMPTS} attempts and left it as the other writer left it`);
+    expect(attempts).toEqual(Array.from({ length: SETTINGS_WRITE_ATTEMPTS }, (_, i) => i + 1));
+    expect(read()).toBe(edited);
+    expect(existsSync(backupPath(file))).toBe(false);
+    expect(temps()).toEqual([]);
+  });
+
+  it("uses distinct exclusive temps for overlapping preparations and cleans up a thrown seam", () => {
+    writeFileSync(file, JSON.stringify(userSettings));
+    const original = read();
+    expect(() => installHooks(file, opts, { onPrepared: () => {
+      const outer = temps();
+      expect(outer).toHaveLength(1);
+      expect(outer[0]).toMatch(new RegExp(`\\.agentarium-${process.pid}-[a-f0-9]+\\.tmp$`));
+      expect(() => installHooks(file, opts, { onPrepared: () => {
+        const both = temps();
+        expect(both).toHaveLength(2);
+        expect(new Set(both).size).toBe(2);
+        expect(both).toContain(outer[0]);
+        throw new Error("inner failure");
+      } })).toThrow("inner failure");
+      expect(temps()).toEqual(outer);
+      throw new Error("outer failure");
+    } })).toThrow("outer failure");
+    expect(read()).toBe(original);
+    expect(existsSync(backupPath(file))).toBe(false);
+    expect(temps()).toEqual([]);
+  });
+});
 
 describe("installHooks", () => {
   it("writes non-blocking http hooks with a short timeout and the real port", () => {

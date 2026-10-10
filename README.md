@@ -32,6 +32,8 @@ agentarium start
 | `agentarium stop` | Stops the daemon. |
 | `agentarium uninstall` | Removes Agentarium's hooks from the Claude Code settings file and leaves your other settings alone. If removing the hooks leaves exactly what the backup holds, the backup file is restored as it was; otherwise the backup is left in place. |
 
+`init` and `uninstall` re-read settings before committing and retry if another writer changed them. This guard only narrows the race: Claude Code and editors do not cooperate through locking, so a change between the final re-read and rename (or delete) can still be replaced. The remaining window is a single re-read plus rename (or delete).
+
 The daemon does not start on login; run `agentarium start` after a reboot.
 
 Settings, read from the environment:
