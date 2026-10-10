@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { ROOT_AGENT, replay, type AgentEvent, type NewEvent } from "@agentarium/core";
+import { ROOT_AGENT, needsInput, replay, type AgentEvent, type NewEvent } from "@agentarium/core";
 import { categoryForTool, createClaudeCodeAdapter } from "../src";
 
 const fx = (name: string): Record<string, unknown> =>
@@ -152,5 +152,80 @@ describe("claude code adapter", () => {
     const evs = seq.map((e, i) => ({ ...e, ts: i + 1 }) as AgentEvent);
     expect(Object.values(replay(evs.slice(0, 3)).agents)[0]?.status).toBe("waiting");
     expect(Object.values(replay(evs).agents)[0]?.status).toBe("working");
+  });
+});
+
+describe("claude code permission modes (2.1.296 fixtures)", () => {
+  const seq = (name: string): Record<string, unknown>[] =>
+    (JSON.parse(readFileSync(join(__dirname, "../../../spikes/fixtures/claude-code/modes", `${name}.json`), "utf8")) as { hooks: Record<string, unknown>[] }).hooks;
+  /** Events per hook, in order, from one adapter. */
+  const mapAll = (name: string) => {
+    const a = adapter();
+    return seq(name).map((payload) => ({ hook: String(payload.hook_event_name), events: a.map(payload).events }));
+  };
+  const flat = (name: string) => mapAll(name).flatMap((h) => h.events);
+  const asEvents = (evs: NewEvent[]) => evs.map((e, i) => ({ ...e, ts: i + 1 }) as AgentEvent);
+  const failures = (evs: NewEvent[]) => evs.filter((e) => e.kind === "tool_end" && !e.ok);
+
+  it("keeps the payload's permission mode on every event", () => {
+    const evs = flat("plan").filter((e) => e.kind === "tool_start");
+    expect(evs[0]).toMatchObject({ tool: "Write", permission_mode: "plan" });
+    expect(evs.at(-1)).toMatchObject({ tool: "Bash", permission_mode: "default" });
+    expect(Object.values(replay(asEvents(flat("dontask"))).agents)[0]?.permissionMode).toBe("dontAsk");
+  });
+
+  it.each(["auto", "auto-risky", "dontask", "bypass", "deny-rule"])("never shows %s as waiting", (name) => {
+    expect(flat(name).some((e) => e.kind === "needs_input")).toBe(false);
+  });
+
+  it.each(["manual-allow", "acceptedits", "plan", "ask-rule", "manual-deny"])("shows a person-routed prompt in %s as waiting", (name) => {
+    const hooks = mapAll(name);
+    const upTo = hooks.findIndex((h) => h.hook === "PermissionRequest");
+    const world = replay(asEvents(hooks.slice(0, upTo + 1).flatMap((h) => h.events)));
+    expect(Object.values(world.agents)[0]?.status).toBe("waiting");
+  });
+
+  it.each(["manual-deny", "ask-rule"])("records a denial in %s as a failed outcome when the turn stops without it", (name) => {
+    const hooks = mapAll(name);
+    const stop = hooks.find((h) => h.hook === "Stop")!;
+    const bashId = flat(name).find((e) => e.kind === "tool_start" && e.tool === "Bash");
+    expect(kinds(stop.events)).toEqual(["tool_end", "stop"]);
+    expect(stop.events[0]).toMatchObject({ ok: false, tool_use_id: bashId?.kind === "tool_start" ? bashId.tool_use_id : "" });
+    const throughStop = hooks.slice(0, hooks.indexOf(stop) + 1).flatMap((h) => h.events);
+    expect(Object.values(replay(asEvents(throughStop)).agents)[0]?.status).toBe("idle");
+  });
+
+  it.each(["manual-allow", "acceptedits", "plan", "auto", "bypass"])("records no failure when %s runs everything it asked for", (name) => {
+    expect(failures(flat(name))).toEqual([]);
+  });
+
+  it("raises the flag on a sub-agent's prompt and through it on its lead, and records the sub-agent's denial", () => {
+    const hooks = mapAll("subagent-deny");
+    const upTo = hooks.findIndex((h) => h.hook === "PermissionRequest");
+    const world = replay(asEvents(hooks.slice(0, upTo + 1).flatMap((h) => h.events)));
+    const waiting = Object.values(world.agents).find((a) => a.status === "waiting");
+    expect(waiting?.ref.agent).not.toBe(ROOT_AGENT);
+    expect(needsInput(world, waiting!.parent!)).toBe(true);
+    const stop = hooks.find((h) => h.hook === "SubagentStop")!;
+    expect(kinds(stop.events)).toEqual(["tool_end", "end"]);
+    expect(stop.events[0]).toMatchObject({ ok: false, agent: { agent: waiting!.ref.agent } });
+  });
+
+  it("keeps a prompt open across its permission_prompt notification and closes it on the tool's own result", () => {
+    const a = adapter();
+    const evs = ["UserPromptSubmit", "PreToolUse.Bash", "PermissionRequest.Bash", "Notification.permission_prompt", "PostToolUse.Bash", "Stop"]
+      .flatMap((n) => a.map({ ...fx(n), session_id: "s" }).events);
+    expect(failures(evs)).toEqual([]);
+  });
+
+  it("matches the prompt to its own call when calls run in parallel", () => {
+    const a = adapter();
+    const base = { session_id: "s", tool_name: "Read" };
+    a.map({ ...base, hook_event_name: "PreToolUse", tool_use_id: "r1", tool_input: { file_path: "/a" } });
+    a.map({ ...base, hook_event_name: "PreToolUse", tool_use_id: "r2", tool_input: { file_path: "/b" } });
+    a.map({ ...base, hook_event_name: "PermissionRequest", tool_input: { file_path: "/a" } });
+    a.map({ ...base, hook_event_name: "PostToolUse", tool_use_id: "r2" });
+    const stop = a.map({ session_id: "s", hook_event_name: "Stop" }).events;
+    expect(stop[0]).toMatchObject({ kind: "tool_end", tool_use_id: "r1", ok: false });
   });
 });

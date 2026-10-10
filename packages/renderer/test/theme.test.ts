@@ -13,6 +13,7 @@ const agent = (over: Partial<AgentState> = {}): AgentState => ({
   category: null,
   tool: null,
   summary: null,
+  permissionMode: null,
   pending: {},
   firstTs: 0,
   lastTs: 0,

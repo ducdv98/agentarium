@@ -1,3 +1,4 @@
+import { createPermissionPrompts } from "./permission-prompts";
 import { basename, categoryForMcpTool, clip, isObj, text } from "./shared";
 import {
   ROOT_AGENT,
@@ -91,6 +92,7 @@ function summarize(tool: string, input: unknown): string | undefined {
 export function createClaudeCodeAdapter(opts: { machine: string }): ClaudeCodeAdapter {
   /** Per session: callers of `Agent` whose SubagentStart has not been seen yet, oldest first. */
   const pendingAgentCalls = new Map<string, string[]>();
+  const prompts = createPermissionPrompts();
 
   const ref = (session: string, agent: string): AgentRef => ({
     machine: opts.machine,
@@ -108,9 +110,13 @@ export function createClaudeCodeAdapter(opts: { machine: string }): ClaudeCodeAd
 
       const agentId = text(payload.agent_id) ?? ROOT_AGENT;
       const agent = ref(session, agentId);
-      const base = { schema_version: SCHEMA_VERSION, agent } as const;
+      const mode = text(payload.permission_mode);
+      const base = { schema_version: SCHEMA_VERSION, agent, ...(mode ? { permission_mode: mode } : {}) } as const;
       const cwd = text(payload.cwd);
       const out = (...events: NewEvent[]): AdapterOutput => (cwd ? { cwd, events } : { events });
+      /** The turn is over: a prompted call that never finished was denied or aborted. */
+      const closing = (...events: NewEvent[]): AdapterOutput =>
+        out(...prompts.close(session, agentId).map((id): NewEvent => ({ ...base, kind: "tool_end", tool_use_id: id, ok: false })), ...events);
       const toolName = text(payload.tool_name);
       const toolUseId = text(payload.tool_use_id);
 
@@ -118,9 +124,10 @@ export function createClaudeCodeAdapter(opts: { machine: string }): ClaudeCodeAd
         case "SessionStart":
           return out({ ...base, kind: "session_start" });
         case "UserPromptSubmit":
-          return out({ ...base, kind: "prompt" });
+          return closing({ ...base, kind: "prompt" });
         case "PreToolUse": {
           if (!toolName || !toolUseId) return out();
+          prompts.started(session, agentId, toolUseId, toolName, payload.tool_input);
           if (toolName === "Agent") {
             const queue = pendingAgentCalls.get(session) ?? [];
             queue.push(agentId);
@@ -140,6 +147,7 @@ export function createClaudeCodeAdapter(opts: { machine: string }): ClaudeCodeAd
         case "PostToolUse":
         case "PostToolUseFailure": {
           if (!toolUseId) return out();
+          prompts.ended(session, agentId, toolUseId);
           const events: NewEvent[] = [
             { ...base, kind: "tool_end", tool_use_id: toolUseId, ok: hook === "PostToolUse" },
           ];
@@ -152,6 +160,7 @@ export function createClaudeCodeAdapter(opts: { machine: string }): ClaudeCodeAd
           return out(...events);
         }
         case "PermissionRequest":
+          prompts.prompted(session, agentId, toolName, payload.tool_input);
           return out({ ...base, kind: "needs_input", ...(toolName ? { summary: clip(toolName) } : {}) });
         case "Notification": {
           const type = text(payload.notification_type);
@@ -167,12 +176,15 @@ export function createClaudeCodeAdapter(opts: { machine: string }): ClaudeCodeAd
           return out({ ...base, kind: "spawn", parent: ref(session, caller), provenance: "inferred" });
         }
         case "SubagentStop":
-          return agentId === ROOT_AGENT ? out() : out({ ...base, kind: "end" });
+          return agentId === ROOT_AGENT ? out() : closing({ ...base, kind: "end" });
         case "Stop":
-          return out({ ...base, kind: "stop" });
-        case "SessionEnd":
+          return closing({ ...base, kind: "stop" });
+        case "SessionEnd": {
           pendingAgentCalls.delete(session);
-          return out({ ...base, agent: ref(session, ROOT_AGENT), kind: "end" });
+          const result = closing({ ...base, agent: ref(session, ROOT_AGENT), kind: "end" });
+          prompts.forgetSession(session);
+          return result;
+        }
         default:
           return out();
       }

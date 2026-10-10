@@ -24,7 +24,7 @@ export function parseIngest(body: unknown): IngestRequest | string {
   const ev = body.event;
   if (ev.schema_version !== SCHEMA_VERSION) return `unsupported schema_version (want ${SCHEMA_VERSION})`;
   if (!isRef(ev.agent)) return "event.agent must be {machine, provider, session, agent}";
-  const base = { schema_version: SCHEMA_VERSION, agent: ev.agent } as const;
+  const base = { schema_version: SCHEMA_VERSION, agent: ev.agent, ...(str(ev.permission_mode) ? { permission_mode: ev.permission_mode } : {}) } as const;
   const cwd = body.cwd;
   const ok = (event: IngestRequest["event"]): IngestRequest =>
     cwd === undefined ? { event } : { cwd, event };

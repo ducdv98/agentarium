@@ -16,6 +16,10 @@ export const ref = (agent: string = ROOT_AGENT, session = "s1"): AgentRef => ({
 
 const base = (ts: number) => ({ schema_version: SCHEMA_VERSION, ts }) as const;
 
+/** Adds the provider's reported permission mode to an agent event. */
+export const withMode = (ev: AgentEvent, permission_mode: string): AgentEvent =>
+  ev.kind === "tick" ? ev : { ...ev, permission_mode };
+
 export const e = {
   sessionStart: (ts: number, agent = ref()): AgentEvent => ({ ...base(ts), kind: "session_start", agent }),
   prompt: (ts: number, agent = ref()): AgentEvent => ({ ...base(ts), kind: "prompt", agent }),

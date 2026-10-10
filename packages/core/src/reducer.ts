@@ -36,6 +36,7 @@ export function reduce(
   if (event.kind === "end" && !world.agents[key]) return world;
   const current = world.agents[key] ?? create(event.agent, key, event.ts);
   const agent: AgentState = { ...current, pending: { ...current.pending }, lastTs: event.ts };
+  if (event.permission_mode) agent.permissionMode = event.permission_mode;
   world.agents[key] = agent;
 
   switch (event.kind) {
@@ -109,6 +110,7 @@ function create(ref: AgentRef, key: string, ts: number): AgentState {
     category: null,
     tool: null,
     summary: null,
+    permissionMode: null,
     pending: {},
     firstTs: ts,
     lastTs: ts,

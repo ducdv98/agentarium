@@ -188,8 +188,9 @@ describe("lifecycle", () => {
   it("rebuilds state from the log after a restart", async () => {
     const dataDir = tmp("agentarium-restart-");
     const d1 = await start(dataDir);
-    const room = ((await (await post(d1, { event: ev("tool_start", { tool_use_id: "t", tool: "Bash", category: "exec" }) })).json()) as { room: string }).room;
+    const room = ((await (await post(d1, { event: ev("tool_start", { tool_use_id: "t", tool: "Bash", category: "exec", permission_mode: "plan" }) })).json()) as { room: string }).room;
     const before = d1.world(room);
+    expect(before.agents["m1:claude-code:s1:root"]?.permissionMode).toBe("plan");
     await d1.close();
     const d2 = await start(dataDir);
     expect(d2.world(room).agents).toEqual(before.agents);
@@ -230,12 +231,13 @@ describe("claude code hook endpoint", () => {
         body,
       });
     const cwd = tmp("agentarium-hook-");
-    const payload = { session_id: "s9", hook_event_name: "UserPromptSubmit", cwd };
+    const payload = { session_id: "s9", hook_event_name: "UserPromptSubmit", cwd, permission_mode: "dontAsk" };
     expect((await hook(JSON.stringify(payload))).status).toBe(204);
     expect((await hook("not json")).status).toBe(204);
     expect((await hook("{}")).status).toBe(204);
     expect((await hook(JSON.stringify(payload), "bad")).status).toBe(401);
     expect(Object.keys(d.world("unassigned").agents)).toHaveLength(1);
+    expect(Object.values(d.world("unassigned").agents)[0]?.permissionMode).toBe("dontAsk");
   });
 });
 

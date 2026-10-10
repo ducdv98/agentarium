@@ -38,6 +38,8 @@ interface EventBase {
 
 interface AgentEventBase extends EventBase {
   agent: AgentRef;
+  /** The provider's permission mode as its payload reports it (e.g. Claude Code `plan`, `dontAsk`). */
+  permission_mode?: string;
 }
 
 export type AgentEvent =
@@ -76,6 +78,8 @@ export interface AgentState {
   category: ActionCategory | null;
   tool: string | null;
   summary: string | null;
+  /** Latest permission mode reported by the provider; null until one is seen. Observed, never imposed (ADR 0006). */
+  permissionMode: string | null;
   pending: Record<string, PendingTool>;
   firstTs: number;
   lastTs: number;

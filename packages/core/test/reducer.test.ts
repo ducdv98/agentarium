@@ -11,7 +11,7 @@ import {
   visibleAgents,
   type AgentEvent,
 } from "../src";
-import { e, ref } from "./builders";
+import { e, ref, withMode } from "./builders";
 
 const run = (events: AgentEvent[]) => replay(events);
 const root = agentKey(ref());
@@ -66,6 +66,15 @@ describe("needs-input", () => {
     w = reduce(w, e.toolEnd(3, "t1"));
     expect(w.agents[root]?.status).toBe("working");
     expect(needsInput(w, root)).toBe(false);
+  });
+
+  it("keeps the latest reported permission mode on the agent", () => {
+    let w = run([withMode(e.prompt(0), "plan")]);
+    expect(w.agents[root]?.permissionMode).toBe("plan");
+    w = reduce(w, e.toolStart(1, "t1"));
+    expect(w.agents[root]?.permissionMode).toBe("plan");
+    w = reduce(w, withMode(e.toolStart(2, "t2"), "default"));
+    expect(w.agents[root]?.permissionMode).toBe("default");
   });
 
   it("duplicate signals (PermissionRequest plus Notification) are idempotent", () => {
