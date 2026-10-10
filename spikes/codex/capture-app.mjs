@@ -4,12 +4,13 @@
 // <raw-dir>/<scenario>.{hooks,app}.jsonl.
 // `answer` is the reply to every approval request: accept | decline | cancel, or
 // `interrupt` to send turn/interrupt once the first command starts.
-// Usage: node capture-app.mjs <codex-home> <workdir> <payloads.jsonl> <raw-dir> <scenario> <answer> <approval-policy> <sandbox> <prompt>
+// `thread-params` is optional JSON merged into thread/start, e.g. {"approvalsReviewer":"auto_review"}.
+// Usage: node capture-app.mjs <codex-home> <workdir> <payloads.jsonl> <raw-dir> <scenario> <answer> <approval-policy> <sandbox> <prompt> [thread-params]
 import { appendFileSync, existsSync, mkdirSync, renameSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { rpcSession } from "./rpc.mjs";
 
-const [home, work, payloads, rawDir, scenario, answer, approvalPolicy, sandbox, prompt] = process.argv.slice(2);
+const [home, work, payloads, rawDir, scenario, answer, approvalPolicy, sandbox, prompt, threadParams] = process.argv.slice(2);
 if (!prompt) {
   console.error("usage: capture-app.mjs <codex-home> <workdir> <payloads.jsonl> <raw-dir> <scenario> <answer> <approval-policy> <sandbox> <prompt>");
   process.exit(1);
@@ -37,11 +38,25 @@ const rpc = await rpcSession(
     },
     onRequest: (m) => {
       record("request", m);
-      return { decision: answer === "interrupt" ? "accept" : answer };
+      const decision = answer === "interrupt" ? "accept" : answer;
+      if (m.method === "item/tool/requestUserInput") {
+        return { answers: Object.fromEntries((m.params.questions ?? []).map((q) => [q.id, [q.options?.[0]?.label ?? "fixture answer"]])) };
+      }
+      if (m.method === "mcpServer/elicitation/request") {
+        return decision === "decline" || decision === "cancel"
+          ? { action: "decline" }
+          : { action: "accept", content: { answer: "fixture answer" } };
+      }
+      if (m.method === "item/permissions/requestApproval") {
+        return decision === "decline" || decision === "cancel"
+          ? { permissions: null }
+          : { permissions: m.params.permissions };
+      }
+      return { decision };
     },
   },
 );
-const started = await rpc.call("thread/start", { cwd: resolve(work), approvalPolicy, sandbox });
+const started = await rpc.call("thread/start", { cwd: resolve(work), approvalPolicy, sandbox, ...JSON.parse(threadParams ?? "{}") });
 record("reply", started);
 threadId = started.result.thread.id;
 record("reply", await rpc.call("turn/start", { threadId, input: [{ type: "text", text: prompt }] }));

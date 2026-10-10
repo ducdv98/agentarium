@@ -1,0 +1,932 @@
+{
+  "codex_cli_version": "0.162.1",
+  "scenario": "mcp-elicit",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "01a12556-fab0-77a0-b74e-6e22be756a70",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-23-40-01a12556-fab0-77a0-b74e-6e22be756a70.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "source": "startup"
+    },
+    {
+      "at_ms": 247,
+      "session_id": "01a12556-fab0-77a0-b74e-6e22be756a70",
+      "turn_id": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-23-40-01a12556-fab0-77a0-b74e-6e22be756a70.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "prompt": "Use the fixture MCP tool fx_elicit exactly once, answer its question, then reply DONE."
+    },
+    {
+      "at_ms": 8549,
+      "session_id": "01a12556-fab0-77a0-b74e-6e22be756a70",
+      "turn_id": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-23-40-01a12556-fab0-77a0-b74e-6e22be756a70.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "mcp__fx__fx_elicit",
+      "tool_input": {},
+      "tool_use_id": "exec-818c1a0d-437a-4465-bd5f-edeb096dce7a"
+    },
+    {
+      "at_ms": 8816,
+      "session_id": "01a12556-fab0-77a0-b74e-6e22be756a70",
+      "turn_id": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-23-40-01a12556-fab0-77a0-b74e-6e22be756a70.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PermissionRequest",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "mcp__fx__fx_elicit",
+      "tool_input": {}
+    },
+    {
+      "at_ms": 9108,
+      "session_id": "01a12556-fab0-77a0-b74e-6e22be756a70",
+      "turn_id": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-23-40-01a12556-fab0-77a0-b74e-6e22be756a70.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "mcp__fx__fx_elicit",
+      "tool_input": {},
+      "tool_response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "fx elicited: fixture answer"
+          }
+        ],
+        "isError": false
+      },
+      "tool_use_id": "exec-818c1a0d-437a-4465-bd5f-edeb096dce7a"
+    },
+    {
+      "at_ms": 10973,
+      "session_id": "01a12556-fab0-77a0-b74e-6e22be756a70",
+      "turn_id": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-23-40-01a12556-fab0-77a0-b74e-6e22be756a70.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Stop",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE"
+    }
+  ],
+  "app": [
+    {
+      "at_ms": -2540,
+      "dir": "reply",
+      "id": 2,
+      "result": {
+        "thread": {
+          "id": "01a12556-fab0-77a0-b74e-6e22be756a70",
+          "environments": [
+            {
+              "environmentId": "local",
+              "cwd": "<CWD>",
+              "runtimeWorkspaceRoots": [
+                "<CWD>"
+              ]
+            }
+          ],
+          "extra": null,
+          "sessionId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": false,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "openai",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "createdAt": 1791627820,
+          "updatedAt": 1791627820,
+          "recencyAt": 1791627820,
+          "status": {
+            "type": "idle"
+          },
+          "path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-23-40-01a12556-fab0-77a0-b74e-6e22be756a70.jsonl",
+          "cwd": "<CWD>",
+          "cliVersion": "0.162.1",
+          "originator": "agentarium-spike",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        },
+        "model": "gpt-6.1-sol",
+        "modelProvider": "openai",
+        "serviceTier": null,
+        "disabledPluginIds": [],
+        "cwd": "<CWD>",
+        "runtimeWorkspaceRoots": [
+          "<CWD>"
+        ],
+        "instructionSources": [],
+        "approvalPolicy": "on-request",
+        "approvalsReviewer": "user",
+        "sandbox": {
+          "type": "workspaceWrite",
+          "writableRoots": [],
+          "networkAccess": false,
+          "excludeTmpdirEnvVar": false,
+          "excludeSlashTmp": false
+        },
+        "activePermissionProfile": null,
+        "reasoningEffort": "low",
+        "multiAgentMode": "explicitRequestOnly"
+      }
+    },
+    {
+      "at_ms": -2539,
+      "dir": "notify",
+      "method": "thread/started",
+      "params": {
+        "thread": {
+          "id": "01a12556-fab0-77a0-b74e-6e22be756a70",
+          "environments": [
+            {
+              "environmentId": "local",
+              "cwd": "<CWD>",
+              "runtimeWorkspaceRoots": [
+                "<CWD>"
+              ]
+            }
+          ],
+          "extra": null,
+          "sessionId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": false,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "openai",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "createdAt": 1791627820,
+          "updatedAt": 1791627820,
+          "recencyAt": 1791627820,
+          "status": {
+            "type": "idle"
+          },
+          "path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-23-40-01a12556-fab0-77a0-b74e-6e22be756a70.jsonl",
+          "cwd": "<CWD>",
+          "cliVersion": "0.162.1",
+          "originator": "agentarium-spike",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        }
+      },
+      "emittedAtMs": 1791627820490
+    },
+    {
+      "at_ms": -2522,
+      "dir": "reply",
+      "id": 3,
+      "result": {
+        "turn": {
+          "id": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+          "rootTurnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+          "items": [],
+          "itemsView": "notLoaded",
+          "status": "inProgress",
+          "error": null,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null
+        }
+      }
+    },
+    {
+      "at_ms": -2386,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "status": {
+          "type": "active",
+          "activeFlags": []
+        }
+      },
+      "emittedAtMs": 1791627820644
+    },
+    {
+      "at_ms": -2386,
+      "dir": "notify",
+      "method": "turn/started",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turn": {
+          "id": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+          "rootTurnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+          "items": [],
+          "itemsView": "notLoaded",
+          "status": "inProgress",
+          "error": null,
+          "startedAt": 1791627820,
+          "completedAt": null,
+          "durationMs": null
+        }
+      },
+      "emittedAtMs": 1791627820644
+    },
+    {
+      "at_ms": -240,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "run": {
+          "id": "session-start:5:<DIR1>\\hooks.json",
+          "eventName": "sessionStart",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "thread",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 5,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791627822,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627822790
+    },
+    {
+      "at_ms": 23,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "run": {
+          "id": "session-start:5:<DIR1>\\hooks.json",
+          "eventName": "sessionStart",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "thread",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 5,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791627822,
+          "completedAt": 1791627823,
+          "durationMs": 552,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627823053
+    },
+    {
+      "at_ms": 27,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "run": {
+          "id": "user-prompt-submit:7:<DIR1>\\hooks.json",
+          "eventName": "userPromptSubmit",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 7,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791627823,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627823057
+    },
+    {
+      "at_ms": 271,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "run": {
+          "id": "user-prompt-submit:7:<DIR1>\\hooks.json",
+          "eventName": "userPromptSubmit",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 7,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791627823,
+          "completedAt": 1791627823,
+          "durationMs": 246,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627823301
+    },
+    {
+      "at_ms": 281,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "userMessage",
+          "id": "01a12557-08c5-7f42-aebb-6ae6d18f4229",
+          "clientId": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "Use the fixture MCP tool fx_elicit exactly once, answer its question, then reply DONE.",
+              "text_elements": []
+            }
+          ]
+        },
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "startedAtMs": 1791627823311
+      },
+      "emittedAtMs": 1791627823311
+    },
+    {
+      "at_ms": 291,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "userMessage",
+          "id": "01a12557-08c5-7f42-aebb-6ae6d18f4229",
+          "clientId": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "Use the fixture MCP tool fx_elicit exactly once, answer its question, then reply DONE.",
+              "text_elements": []
+            }
+          ]
+        },
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "completedAtMs": 1791627823311
+      },
+      "emittedAtMs": 1791627823321
+    },
+    {
+      "at_ms": 4675,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0b43e1deaa8c53f3016aca123467a48191a58fa345eb14a9f3",
+          "text": "",
+          "phase": "commentary",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "startedAtMs": 1791627827704
+      },
+      "emittedAtMs": 1791627827704
+    },
+    {
+      "at_ms": 4797,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0b43e1deaa8c53f3016aca123467a48191a58fa345eb14a9f3",
+          "text": "I’ll find the fixture tool and call it once.",
+          "phase": "commentary",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "completedAtMs": 1791627827817
+      },
+      "emittedAtMs": 1791627827827
+    },
+    {
+      "at_ms": 8339,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "run": {
+          "id": "pre-tool-use:0:<DIR1>\\hooks.json:exec-818c1a0d-437a-4465-bd5f-edeb096dce7a",
+          "eventName": "preToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 0,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791627831,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627831369
+    },
+    {
+      "at_ms": 8582,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "run": {
+          "id": "pre-tool-use:0:<DIR1>\\hooks.json:exec-818c1a0d-437a-4465-bd5f-edeb096dce7a",
+          "eventName": "preToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 0,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791627831,
+          "completedAt": 1791627831,
+          "durationMs": 245,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627831611
+    },
+    {
+      "at_ms": 8583,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "mcpToolCall",
+          "id": "exec-818c1a0d-437a-4465-bd5f-edeb096dce7a",
+          "server": "fx",
+          "tool": "fx_elicit",
+          "status": "inProgress",
+          "arguments": {},
+          "appContext": null,
+          "mcpAppUi": null,
+          "pluginId": null,
+          "readOnlyHint": null,
+          "result": null,
+          "error": null,
+          "durationMs": null
+        },
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "startedAtMs": 1791627831611
+      },
+      "emittedAtMs": 1791627831611
+    },
+    {
+      "at_ms": 8589,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "run": {
+          "id": "permission-request:1:<DIR1>\\hooks.json:exec-818c1a0d-437a-4465-bd5f-edeb096dce7a",
+          "eventName": "permissionRequest",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 1,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791627831,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627831619
+    },
+    {
+      "at_ms": 8863,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "run": {
+          "id": "permission-request:1:<DIR1>\\hooks.json:exec-818c1a0d-437a-4465-bd5f-edeb096dce7a",
+          "eventName": "permissionRequest",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 1,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791627831,
+          "completedAt": 1791627831,
+          "durationMs": 277,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627831893
+    },
+    {
+      "at_ms": 8864,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "status": {
+          "type": "active",
+          "activeFlags": [
+            "waitingOnApproval"
+          ]
+        }
+      },
+      "emittedAtMs": 1791627831894
+    },
+    {
+      "at_ms": 8865,
+      "dir": "request",
+      "method": "mcpServer/elicitation/request",
+      "id": 0,
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "serverName": "fx",
+        "mode": "form",
+        "_meta": {
+          "codex_approval_kind": "mcp_tool_call",
+          "persist": [
+            "session",
+            "always"
+          ],
+          "tool_description": "Requests one answer from the user, then returns ok.",
+          "tool_params": {},
+          "tool_params_display": []
+        },
+        "message": "Allow the fx MCP server to run tool \"fx_elicit\"?",
+        "requestedSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      }
+    },
+    {
+      "at_ms": 8866,
+      "dir": "notify",
+      "method": "serverRequest/resolved",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "requestId": 0
+      },
+      "emittedAtMs": 1791627831896
+    },
+    {
+      "at_ms": 8866,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "status": {
+          "type": "active",
+          "activeFlags": []
+        }
+      },
+      "emittedAtMs": 1791627831896
+    },
+    {
+      "at_ms": 8867,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "status": {
+          "type": "active",
+          "activeFlags": [
+            "waitingOnApproval"
+          ]
+        }
+      },
+      "emittedAtMs": 1791627831897
+    },
+    {
+      "at_ms": 8868,
+      "dir": "request",
+      "method": "mcpServer/elicitation/request",
+      "id": 1,
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "serverName": "fx",
+        "mode": "form",
+        "_meta": null,
+        "message": "Provide a short answer for the fixture.",
+        "requestedSchema": {
+          "type": "object",
+          "properties": {
+            "answer": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "answer"
+          ]
+        }
+      }
+    },
+    {
+      "at_ms": 8869,
+      "dir": "notify",
+      "method": "serverRequest/resolved",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "requestId": 1
+      },
+      "emittedAtMs": 1791627831899
+    },
+    {
+      "at_ms": 8870,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "status": {
+          "type": "active",
+          "activeFlags": []
+        }
+      },
+      "emittedAtMs": 1791627831899
+    },
+    {
+      "at_ms": 8881,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "mcpToolCall",
+          "id": "exec-818c1a0d-437a-4465-bd5f-edeb096dce7a",
+          "server": "fx",
+          "tool": "fx_elicit",
+          "status": "completed",
+          "arguments": {},
+          "appContext": null,
+          "mcpAppUi": null,
+          "pluginId": null,
+          "readOnlyHint": null,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "fx elicited: fixture answer"
+              }
+            ],
+            "structuredContent": null,
+            "_meta": null
+          },
+          "error": null,
+          "durationMs": 4
+        },
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "completedAtMs": 1791627831900
+      },
+      "emittedAtMs": 1791627831911
+    },
+    {
+      "at_ms": 8888,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "run": {
+          "id": "post-tool-use:2:<DIR1>\\hooks.json:exec-818c1a0d-437a-4465-bd5f-edeb096dce7a",
+          "eventName": "postToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 2,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791627831,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627831917
+    },
+    {
+      "at_ms": 9136,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "run": {
+          "id": "post-tool-use:2:<DIR1>\\hooks.json:exec-818c1a0d-437a-4465-bd5f-edeb096dce7a",
+          "eventName": "postToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 2,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791627831,
+          "completedAt": 1791627832,
+          "durationMs": 252,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627832166
+    },
+    {
+      "at_ms": 10640,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0b43e1deaa8c53f3016aca123aa0248191b42b447d19d8195b",
+          "text": "",
+          "phase": "final_answer",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "startedAtMs": 1791627833670
+      },
+      "emittedAtMs": 1791627833670
+    },
+    {
+      "at_ms": 10671,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0b43e1deaa8c53f3016aca123aa0248191b42b447d19d8195b",
+          "text": "DONE",
+          "phase": "final_answer",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "completedAtMs": 1791627833686
+      },
+      "emittedAtMs": 1791627833701
+    },
+    {
+      "at_ms": 10736,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "run": {
+          "id": "stop:10:<DIR1>\\hooks.json",
+          "eventName": "stop",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 10,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791627833,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627833766
+    },
+    {
+      "at_ms": 10999,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+        "run": {
+          "id": "stop:10:<DIR1>\\hooks.json",
+          "eventName": "stop",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 10,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791627833,
+          "completedAt": 1791627834,
+          "durationMs": 265,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627834028
+    },
+    {
+      "at_ms": 11010,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "status": {
+          "type": "idle"
+        }
+      },
+      "emittedAtMs": 1791627834040
+    },
+    {
+      "at_ms": 11011,
+      "dir": "notify",
+      "method": "turn/completed",
+      "params": {
+        "threadId": "01a12556-fab0-77a0-b74e-6e22be756a70",
+        "turn": {
+          "id": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+          "rootTurnId": "01a12556-fdcc-7173-a505-c8106d7b8eba",
+          "items": [
+            {
+              "type": "agentMessage",
+              "id": "msg_0b43e1deaa8c53f3016aca123aa0248191b42b447d19d8195b",
+              "text": "DONE",
+              "phase": "final_answer",
+              "memoryCitation": null,
+              "delivery": null,
+              "questions": null
+            }
+          ],
+          "itemsView": "summary",
+          "status": "completed",
+          "error": null,
+          "startedAt": 1791627820,
+          "completedAt": 1791627834,
+          "durationMs": 13530
+        }
+      },
+      "emittedAtMs": 1791627834040
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "claude_code_version": "2.1.296",
+  "scenario": "exec-fail",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "b152af7d-a708-43e5-8262-6204010f86d4",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-Feae1Y-repo\\b152af7d-a708-43e5-8262-6204010f86d4.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "source": "startup"
+    },
+    {
+      "at_ms": 599,
+      "session_id": "b152af7d-a708-43e5-8262-6204010f86d4",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-Feae1Y-repo\\b152af7d-a708-43e5-8262-6204010f86d4.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "088de442-d823-49b8-b426-cc78b2131a59",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "Run this exact shell command with the Bash tool: node -e \"process.exit(3)\" . Do not retry. Then reply DONE."
+    },
+    {
+      "at_ms": 5610,
+      "session_id": "b152af7d-a708-43e5-8262-6204010f86d4",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-Feae1Y-repo\\b152af7d-a708-43e5-8262-6204010f86d4.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "088de442-d823-49b8-b426-cc78b2131a59",
+      "permission_mode": "bypassPermissions",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PreToolUse",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"process.exit(3)\"",
+        "description": "Run node command that exits with code 3"
+      },
+      "tool_use_id": "toolu_01Jt3hj9JKxEkYEXG8pjsQ1D"
+    },
+    {
+      "at_ms": 7586,
+      "session_id": "b152af7d-a708-43e5-8262-6204010f86d4",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-Feae1Y-repo\\b152af7d-a708-43e5-8262-6204010f86d4.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "088de442-d823-49b8-b426-cc78b2131a59",
+      "permission_mode": "bypassPermissions",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PostToolUseFailure",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"process.exit(3)\"",
+        "description": "Run node command that exits with code 3"
+      },
+      "tool_use_id": "toolu_01Jt3hj9JKxEkYEXG8pjsQ1D",
+      "error": "Exit code 3",
+      "is_interrupt": false,
+      "duration_ms": 1814
+    },
+    {
+      "at_ms": 10956,
+      "session_id": "b152af7d-a708-43e5-8262-6204010f86d4",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-Feae1Y-repo\\b152af7d-a708-43e5-8262-6204010f86d4.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "088de442-d823-49b8-b426-cc78b2131a59",
+      "permission_mode": "bypassPermissions",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "Stop",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE. The command ran once and exited with code 3, which is what `process.exit(3)` is meant to do. I didn't retry it.",
+      "background_tasks": [],
+      "session_crons": []
+    },
+    {
+      "at_ms": 11117,
+      "session_id": "b152af7d-a708-43e5-8262-6204010f86d4",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-Feae1Y-repo\\b152af7d-a708-43e5-8262-6204010f86d4.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "088de442-d823-49b8-b426-cc78b2131a59",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ]
+}

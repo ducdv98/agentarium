@@ -7,6 +7,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const out =
+  process.argv[2] ??
   process.env.AGENTARIUM_SPIKE_OUT ??
   join(dirname(fileURLToPath(import.meta.url)), "payloads.jsonl");
 

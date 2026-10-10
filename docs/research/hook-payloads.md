@@ -4,6 +4,8 @@ Ticket: `.scratch/mvp-slice/issues/01-payload-dump-spike.md`. Captured 2026-10-0
 
 Re-run: `node spikes/setup-scratch-repo.mjs <dir>`, set `AGENTARIUM_SPIKE_OUT`, run `claude` in `<dir>`, then `node spikes/sanitize-fixtures.mjs`.
 
+Permission-mode sequences for Claude Code 2.1.296 (every mode, allow/deny, rules, sub-agent prompts) are in `spikes/fixtures/claude-code/modes/`; see [permission-modes.md](permission-modes.md).
+
 ## What was captured
 
 Captured, via two headless (`claude -p`) sessions: `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse` (Read, Write, Bash, Grep, Agent, ToolSearch), `PermissionRequest` (Bash, WebFetch), `SubagentStart`, `SubagentStop`, `Stop`, `SessionEnd`.

@@ -1,0 +1,161 @@
+{
+  "claude_code_version": "2.1.296",
+  "scenario": "bypass",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "f61e9b81-a419-4c8e-bb62-e7a0408eeb78",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-q9wlET-repo\\f61e9b81-a419-4c8e-bb62-e7a0408eeb78.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "source": "startup"
+    },
+    {
+      "at_ms": 621,
+      "session_id": "f61e9b81-a419-4c8e-bb62-e7a0408eeb78",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-q9wlET-repo\\f61e9b81-a419-4c8e-bb62-e7a0408eeb78.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "c4f8542e-9b38-4913-a164-857cfe9e2bee",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "First create the file a.txt containing hi with the Write tool. Then run this exact shell command with the Bash tool: node -e \"require('fs').writeFileSync('b.txt','x')\" . If anything is refused, do not retry. Then reply DONE."
+    },
+    {
+      "at_ms": 3006,
+      "session_id": "f61e9b81-a419-4c8e-bb62-e7a0408eeb78",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-q9wlET-repo\\f61e9b81-a419-4c8e-bb62-e7a0408eeb78.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "c4f8542e-9b38-4913-a164-857cfe9e2bee",
+      "permission_mode": "bypassPermissions",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PreToolUse",
+      "tool_name": "Write",
+      "tool_input": {
+        "file_path": "<CWD>\\a.txt",
+        "content": "hi"
+      },
+      "tool_use_id": "toolu_016pqAPbzV8sETzCgoxmE19V"
+    },
+    {
+      "at_ms": 3165,
+      "session_id": "f61e9b81-a419-4c8e-bb62-e7a0408eeb78",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-q9wlET-repo\\f61e9b81-a419-4c8e-bb62-e7a0408eeb78.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "c4f8542e-9b38-4913-a164-857cfe9e2bee",
+      "permission_mode": "bypassPermissions",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PostToolUse",
+      "tool_name": "Write",
+      "tool_input": {
+        "file_path": "<CWD>\\a.txt",
+        "content": "hi"
+      },
+      "tool_response": {
+        "type": "create",
+        "filePath": "<CWD>\\a.txt",
+        "content": "hi",
+        "structuredPatch": [],
+        "originalFile": null,
+        "userModified": false
+      },
+      "tool_use_id": "toolu_016pqAPbzV8sETzCgoxmE19V",
+      "duration_ms": 14
+    },
+    {
+      "at_ms": 5277,
+      "session_id": "f61e9b81-a419-4c8e-bb62-e7a0408eeb78",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-q9wlET-repo\\f61e9b81-a419-4c8e-bb62-e7a0408eeb78.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "c4f8542e-9b38-4913-a164-857cfe9e2bee",
+      "permission_mode": "bypassPermissions",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PreToolUse",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write b.txt using node"
+      },
+      "tool_use_id": "toolu_01QYSCmstvk6GqyrnqKJJTf4"
+    },
+    {
+      "at_ms": 7627,
+      "session_id": "f61e9b81-a419-4c8e-bb62-e7a0408eeb78",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-q9wlET-repo\\f61e9b81-a419-4c8e-bb62-e7a0408eeb78.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "c4f8542e-9b38-4913-a164-857cfe9e2bee",
+      "permission_mode": "bypassPermissions",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PostToolUse",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write b.txt using node"
+      },
+      "tool_response": {
+        "stdout": "",
+        "stderr": "",
+        "interrupted": false,
+        "isImage": false,
+        "noOutputExpected": false,
+        "bashEditDiff": {
+          "files": [
+            {
+              "filePath": "<CWD>\\b.txt",
+              "hunks": [
+                {
+                  "oldStart": 0,
+                  "oldLines": 0,
+                  "newStart": 1,
+                  "newLines": 1,
+                  "lines": [
+                    "+x"
+                  ]
+                }
+              ],
+              "created": true
+            }
+          ],
+          "moreFiles": 0,
+          "changedFiles": [
+            "<CWD>\\b.txt"
+          ]
+        }
+      },
+      "tool_use_id": "toolu_01QYSCmstvk6GqyrnqKJJTf4",
+      "duration_ms": 2207
+    },
+    {
+      "at_ms": 9699,
+      "session_id": "f61e9b81-a419-4c8e-bb62-e7a0408eeb78",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-q9wlET-repo\\f61e9b81-a419-4c8e-bb62-e7a0408eeb78.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "c4f8542e-9b38-4913-a164-857cfe9e2bee",
+      "permission_mode": "bypassPermissions",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "Stop",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE. I created `a.txt` containing `hi`, and the node command ran without errors and wrote `b.txt` containing `x`. Nothing was refused.",
+      "background_tasks": [],
+      "session_crons": []
+    },
+    {
+      "at_ms": 9850,
+      "session_id": "f61e9b81-a419-4c8e-bb62-e7a0408eeb78",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-q9wlET-repo\\f61e9b81-a419-4c8e-bb62-e7a0408eeb78.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "c4f8542e-9b38-4913-a164-857cfe9e2bee",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ]
+}

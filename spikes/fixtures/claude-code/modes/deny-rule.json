@@ -1,0 +1,67 @@
+{
+  "claude_code_version": "2.1.296",
+  "scenario": "deny-rule",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "34f402f5-e71b-4eef-9174-549f827862f7",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-NRnbNW-repo\\34f402f5-e71b-4eef-9174-549f827862f7.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "source": "startup"
+    },
+    {
+      "at_ms": 690,
+      "session_id": "34f402f5-e71b-4eef-9174-549f827862f7",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-NRnbNW-repo\\34f402f5-e71b-4eef-9174-549f827862f7.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "75b64d7f-6859-42f2-a9ec-f62e7f3ab84f",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "Run this exact shell command with the Bash tool: node -e \"require('fs').writeFileSync('b.txt','x')\" . If it is refused, do not retry. Then reply DONE."
+    },
+    {
+      "at_ms": 5010,
+      "session_id": "34f402f5-e71b-4eef-9174-549f827862f7",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-NRnbNW-repo\\34f402f5-e71b-4eef-9174-549f827862f7.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "75b64d7f-6859-42f2-a9ec-f62e7f3ab84f",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PreToolUse",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write b.txt using Node"
+      },
+      "tool_use_id": "toolu_012XxJkMqDNH2rBRND6SqWbm"
+    },
+    {
+      "at_ms": 8272,
+      "session_id": "34f402f5-e71b-4eef-9174-549f827862f7",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-NRnbNW-repo\\34f402f5-e71b-4eef-9174-549f827862f7.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "75b64d7f-6859-42f2-a9ec-f62e7f3ab84f",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "Stop",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE. The command was refused at the permission prompt, so it didn't run and `b.txt` wasn't created. As you asked, I didn't retry it.",
+      "background_tasks": [],
+      "session_crons": []
+    },
+    {
+      "at_ms": 8433,
+      "session_id": "34f402f5-e71b-4eef-9174-549f827862f7",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-NRnbNW-repo\\34f402f5-e71b-4eef-9174-549f827862f7.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "75b64d7f-6859-42f2-a9ec-f62e7f3ab84f",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ]
+}

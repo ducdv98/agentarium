@@ -4,7 +4,7 @@
 
 **Blocked by:** 01
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] `on-request` with `workspace-write` and with `read-only`: exec approval accepted, declined, and cancelled
 - [ ] File-change approval, `request_permissions`, `request_user_input`, and MCP elicitation, each where reachable
@@ -16,3 +16,13 @@
 - [ ] Fixtures are sanitized and sit beside the existing Codex fixtures, and the research doc's "needs human capture" list is updated
 
 **Hazard:** on Windows, Codex runs shell commands through PowerShell, where `$home` is the read-only `$HOME`. Do not use it as a variable name for the isolated home.
+
+## Answer
+
+Fixtures are in `spikes/fixtures/codex/` (`onreq-*`, `file-*`, `mcp-elicit`, `auto-*`, `never-sandbox-deny`), and the findings are in [permission-modes.md](../../../docs/research/permission-modes.md#codex-01621-approval-fixtures). The harness now writes PowerShell hook commands on Windows. `capture-app.mjs` takes optional `thread/start` params, and `sanitize.mjs` keeps the rollout `turn_context` permission fields.
+
+Key finding: under auto-review the `PermissionRequest` hook still fires, and its `permission_mode` is `default`, the same as for a person-routed request. Only the live `item/autoApprovalReview/*` messages or the rollout `turn_context.approvals_reviewer` tell the two apart.
+
+Not reached: `request_user_input`, `request_permissions`, a granular policy, and an auto-review denial. TUI presets have a human-run script, `spikes/codex/capture-tui.mjs`, which has not been run. The real `~/.codex` files were checked by SHA-256 before and after: unchanged.
+
+Checklist: on-request + workspace-write/read-only accept/decline (cancel on read-only only) ✔; file change ✔; MCP elicitation ✔; request_permissions/user_input unreachable ✘; auto-review approved ✔, rejected ✘; never vs on-request sandbox ✔; permission_mode mapping ✔; TUI script ✔ (not run); isolation ✔; sanitized + docs ✔.

@@ -4,6 +4,32 @@ Capture date: 2026-10-10. Platform: Windows 11, PowerShell. Installed CLIs: Code
 
 The key distinction is between a permission mode (whether a tool call may run), a sandbox (what the command can reach), and the observer surface. A hook is not an approval ledger: some approval waits have no hook, and a successful/failed hook process does not mean that the requested tool ran.
 
+### Codex 0.162.1 approval fixtures
+
+Captured 2026-10-10 on Windows 11 with isolated `CODEX_HOME` directories (Windows `elevated` sandbox) and scratch Git repositories. Each fixture in `spikes/fixtures/codex/` holds the hook payloads and the live app-server messages of one turn. Fixtures that also carry `turn_context` record the rollout's approval policy, reviewer and sandbox.
+
+| Approval policy | Sandbox | Hook `permission_mode` |
+|---|---|---|
+| `never` | `read-only` | `bypassPermissions` |
+| `on-request` | `read-only` | `default` |
+| `on-request` | `workspace-write` | `default` |
+| `on-request` + `approvals_reviewer = "auto_review"` | `read-only`, `workspace-write` | `default` |
+| granular object | any | not reached |
+
+| Fixture | Hooks | Live |
+|---|---|---|
+| `onreq-ro-accept`, `onreq-ww-accept` | `PreToolUse`, `PermissionRequest`, `PostToolUse` | `waitingOnApproval`, `item/commandExecution/requestApproval`, `serverRequest/resolved`, item `completed` |
+| `onreq-ro-decline`, `onreq-ww-decline` | `PreToolUse`, `PermissionRequest`, then `Stop` with no `PostToolUse` | request, `serverRequest/resolved`, item `declined` |
+| `onreq-ro-cancel` | `PreToolUse`, `PermissionRequest`, `Interrupt` | request, `serverRequest/resolved`, item `declined`, turn interrupted |
+| `file-ro-accept`, `file-decline` | `PreToolUse(apply_patch)`, `PermissionRequest(apply_patch)`, then `PostToolUse` or `Stop` | `item/fileChange/requestApproval`, resolved, item `completed` or `declined` |
+| `mcp-elicit` | `PermissionRequest(mcp__fx__fx_elicit)` before the call | two `mcpServer/elicitation/request`s: the tool-call approval (`_meta.codex_approval_kind = "mcp_tool_call"`) and the server's own form |
+| `auto-approve`, `auto-approve-failed` | `PreToolUse`, **`PermissionRequest`**, `PostToolUse` | no client request; `item/autoApprovalReview/started` about 25 ms after the hook, then `.../completed` with `review.status` (`approved`) and `targetItemId`; a `guardianWarning` carries the rationale |
+| `never-sandbox-deny` | `PreToolUse`, `PostToolUse` with the access-denied text | item `failed`; no request |
+
+An in-workspace patch under `workspace-write` needs no approval. `request_user_input` and `request_permissions` never reached a server request from this model, so their shapes remain unverified. A reviewer denial was not captured: the reviewer approved a `git push --force origin main` in a repo without a remote, which then failed.
+
+**Auto-review fires the `PermissionRequest` hook** with the same payload shape and `permission_mode` (`default`) as a person-routed request. Hooks alone cannot tell them apart. Two sources can: the live `item/autoApprovalReview/started` notification, and the rollout's `turn_context.approvals_reviewer = "auto_review"` (the rollout path is the hook's `transcript_path`). Under `never` + `read-only` a write is a tool failure with no request. Under `on-request` the same write, or a write outside `workspace-write`, becomes an escalation request.
+
 Sources: the installed `codex --help`, `codex exec --help`, `claude --help` and `claude -p --help` outputs (versions above); [Codex configuration basics](https://developers.openai.com/codex/config-file/config-basic), [Codex configuration reference](https://developers.openai.com/codex/config-file/config-reference), [Codex sandboxing](https://developers.openai.com/codex/sandboxing), [Claude permissions](https://code.claude.com/docs/en/permissions), [Claude hooks](https://code.claude.com/docs/en/hooks), and [Claude sandboxing](https://code.claude.com/docs/en/sandboxing). Repository evidence is in [codex-captures.md](codex-captures.md), [hook-payloads.md](hook-payloads.md), [codex-gap-decisions.md](codex-gap-decisions.md), and the fixtures under `spikes/fixtures/`.
 
 ## Codex CLI
@@ -35,9 +61,9 @@ Managed requirements are constraints, not an ordinary lower-precedence default: 
 | `never` + `read-only` | Launch args/config if known; otherwise infer only from sandbox error text. | No human approval prompt. | `PostToolUse` for shell/sandbox failure; no approval event. | Hook `PostToolUse` contains error text but no exit code; live `item/completed`/OTel can provide outcome when available. | Hook-only cannot distinguish a successful shell command from a non-zero exit. A blocked command is not a user wait. |
 | `never` + `workspace-write` | Same. | No approval wait for sandbox escalation; failures return to the model. | Normal `PostToolUse` on completion. | Sandbox denial commonly appears as tool output/error text and returns to the model; no `PermissionRequest`. | No user-facing denial hook; rollout has no approval record. |
 | `never` + `danger-full-access` | `-s danger-full-access`, config, or bypass flag if observed. | None for command execution. | `PostToolUse`; OTel result may arrive later. | Tool/turn error only. | No approval signal and shell exit status is absent from the hook payload. |
-| `on-request` + any sandbox | Hook `permission_mode` (expected `default`; `untrusted` reported `default` in 0.160.0), CLI/config, plus live `thread/status/changed.activeFlags`. | For a command approval: `PreToolUse`, then `PermissionRequest`; live `item/commandExecution/requestApproval` and `waitingOnApproval`. File changes use `item/fileChange/requestApproval`; `request_permissions`, `request_user_input`, and MCP elicitation use their corresponding app-server requests. | Hook `PostToolUse` after execution; live `serverRequest/resolved`, `item/started`, then `item/completed`; OTel decision/result. | Decline: live item completes `declined`, generally no `PostToolUse`. Cancel/Esc: `Interrupt`, interrupted turn, no `PostToolUse`. | Rollout JSONL has no durable approval-start/end entry. Hook `PermissionRequest` has no `tool_use_id`, and command matching is by order. File-change, permission, user-input, and elicitation hook shapes were not captured. |
+| `on-request` + any sandbox | Hook `permission_mode = default` in 0.162.1 captures, CLI/config, plus live `thread/status/changed.activeFlags`. | For a command approval: `PreToolUse`, then `PermissionRequest`; live `item/commandExecution/requestApproval` and `waitingOnApproval`. File changes use `item/fileChange/requestApproval`; MCP elicitation uses `mcpServer/elicitation/request`. | Hook `PostToolUse` after execution; live `serverRequest/resolved`, `item/started`, then `item/completed`; OTel decision/result. | Decline: live item completes `declined`, generally no `PostToolUse`. Cancel/Esc: interrupted turn, no `PostToolUse`. | `request_permissions` and `request_user_input` were not reachable in the 0.162.1 model/tool surface. |
 | Granular approval object | Config inspection only; no equivalent complete mode field in normal hook payload. | Only enabled categories can pause: sandbox escalation, rules, MCP elicitation, `request_permissions`, or skill approval. | Same live request/resolution signals as above for enabled categories. | Same decline/cancel signals as above. | Auto-rejected categories have no user wait and may look like ordinary tool failure. |
-| `on-request` + `approvals_reviewer = auto_review` / `--approve-for-me` | Config/flag if known; live request may show automatic reviewer metadata, but do not treat it as user need. | Eligible requests are reviewed by Codex's reviewer, not the user; do not raise needs-input solely for `PermissionRequest`. | Tool starts/completes; live resolution and OTel. | Reviewer rejection or tool failure; no confirmed dedicated hook. | Exact hook behavior for auto-review was not captured. |
+| `on-request` + `approvals_reviewer = auto_review` / `--approve-for-me` | Rollout `turn_context.approvals_reviewer`; live `item/autoApprovalReview/*`. Hook `permission_mode` stays `default`. | None: the reviewer decides. The `PermissionRequest` hook still fires, so it must not raise needs-input on its own. | Live `autoApprovalReview/completed` with `review.status = approved`, then the item completes and `PostToolUse` fires. | Reviewer denial: `review.status` other than approved, then the item fails (not captured). | Hook-only cannot see the reviewer without reading the rollout. |
 | `/permissions` preset / custom profile | Read selected profile and config only when Agentarium launched Codex; TUI selection itself is not a hook field. | Depends on resolved sandbox/policy; use the underlying signals above. | Underlying tool completion. | Underlying decline/interrupt/failure. | Outside observer cannot reliably reconstruct a TUI-selected custom profile from hooks alone. |
 | `--dangerously-bypass-approvals-and-sandbox` | CLI arg if Agentarium launched it. | None. | Normal completion hooks/OTel. | Tool/turn failure only. | Never infer this from “no PermissionRequest”: `never` and auto-approved cases look the same. |
 
@@ -71,6 +97,28 @@ The `permission_mode` field in hook payloads is the best outside-process mode si
 
 Interactive-only findings: `Notification(permission_prompt)` was captured beside a permission request, and `Notification(idle_prompt)` appeared about 60 seconds after `Stop`. Headless `-p` does not fire `Notification`; `--permission-prompts none` denies anything that would prompt. `Elicitation`, `ElicitationResult`, `PermissionDenied`, `PostToolUseFailure`, and plan-exit approval were not captured, so their exact payloads remain open. A user answering `AskUserQuestion` eventually caused `PostToolUse`, but there was no answer-start event.
 
+### Claude Code 2.1.296 headless fixtures
+
+Captured 2026-10-10 with `spikes/claude/capture-headless.mjs`: one `claude -p` session per scenario in a throwaway repo, with hooks and rules from `--settings` and `--setting-sources project,local`, so the user's own settings stay out. Prompts are answered over the stream-json control protocol (`--permission-prompt-tool stdio`), which lets a script approve or deny. Sequences are in `spikes/fixtures/claude-code/modes/`.
+
+| Fixture | Mode / rule | Hooks after the prompt |
+|---|---|---|
+| `manual-allow` | `default` | `PreToolUse`, `PermissionRequest`, `PostToolUse` |
+| `manual-deny` | `default`, host denies | `PreToolUse`, `PermissionRequest`, `Stop` |
+| `manual-noprompt` | `default`, `--permission-prompts none` | `PreToolUse`, **`PermissionRequest`**, `Stop` (auto-denied: nobody was asked) |
+| `acceptedits` | `acceptEdits` | `Write` runs without a prompt; `Bash` prompts |
+| `plan` | `plan` | the plan file is written without a prompt; `PermissionRequest(ExitPlanMode)` is the plan-exit approval; after it, payloads report `default` and later tools prompt |
+| `auto` | `auto` | no prompts; the classifier allowed everything |
+| `auto-risky` | `auto` | `PreToolUse`, `Stop`: a built-in safety check denied `rm -rf /…` with no `PermissionRequest` |
+| `dontask` | `dontAsk` | `PreToolUse` then nothing for each call; tool result says "denied because Claude Code is running in don't ask mode" |
+| `bypass` | `bypassPermissions` | no prompts |
+| `ask-rule` | `bypassPermissions` + `ask: Bash(node:*)`, host denies | `PreToolUse`, `PermissionRequest`, `Stop` |
+| `deny-rule` | `default` + `deny: Bash(node:*)` | `PreToolUse`, `Stop`; no `PermissionRequest` |
+| `exec-fail` | `bypassPermissions` | `PreToolUse`, `PostToolUseFailure` |
+| `subagent`, `subagent-deny` | `default` | the sub-agent's own `PreToolUse` and `PermissionRequest` carry its `agent_id`; a denial ends at `SubagentStop` with no `PostToolUse` |
+
+No mode fired `PermissionDenied`, and no denial (by the user, a rule, `dontAsk` or the `auto` safety check) fired `PostToolUseFailure`. A denied call simply never gets a `PostToolUse`, and the turn's `Stop` (or the sub-agent's `SubagentStop`) is the first closing signal. `permission_mode` is on every payload except `SessionStart` and `SessionEnd`, and changes mid-session when plan mode is exited. `--permission-prompts none` is the one case where `PermissionRequest` fires without a person being asked. It reports `default` and closes at `Stop` within milliseconds.
+
 ## Implications for Agentarium
 
 * Codex adapters must combine hook `PermissionRequest` with app-server approval requests/status when a daemon connection exists. Raise needs-input only for a human-routed request, not for `auto_review`, `never`, `dontAsk`, sandbox failure, or a hook decision that merely ran.
@@ -81,11 +129,9 @@ Interactive-only findings: `Notification(permission_prompt)` was captured beside
 
 ## Open / needs human capture
 
-1. Codex TUI: capture each `/permissions` preset/custom profile and the exact effective mode shown after changing it.
-2. Codex: capture file-change approval, `request_permissions`, `request_user_input`, MCP elicitation, granular auto-denial, and `auto_review`; record hook payloads and live app-server messages together.
-3. Codex: capture `on-request` sandbox escalation versus a sandbox failure that is not eligible for escalation, for each Windows `elevated`/`unelevated` implementation.
+1. Codex TUI: capture each `/permissions` preset/custom profile and the exact effective mode shown after changing it; use [`spikes/codex/capture-tui.mjs`](../../spikes/codex/capture-tui.mjs).
+2. Codex: capture granular auto-denial, an auto-review denial, and `request_permissions`/`request_user_input` if a future model/tool surface makes them reachable.
+3. Codex: repeat the sandbox escalation/failure comparison for Windows `unelevated`; current fixtures are `elevated`.
 4. Codex: capture managed `requirements.toml` rejection/constraint behavior without changing the user's managed configuration.
-5. Claude interactive: capture approve, deny, Esc/abort, `PermissionDenied`, `PostToolUseFailure`, `Elicitation`/`Notification(elicitation_dialog)`, subagent prompt propagation, and plan-mode exit approval.
-6. Claude: repeat the important headless captures on installed 2.1.296; existing payload fixtures are from 2.1.294.
-7. OTel: verify whether either CLI emits a stable resolved permission-mode attribute in the installed versions; current evidence does not establish one.
-
+5. Claude interactive: deny and Esc in the TUI, `Notification(permission_prompt)` timing, `AskUserQuestion`, a sub-agent prompt, and an `auto` safety-check denial; use [`spikes/claude/capture-interactive.mjs`](../../spikes/claude/capture-interactive.mjs). `Elicitation`/`Notification(elicitation_dialog)` still needs an MCP server that elicits.
+6. OTel: verify whether either CLI emits a stable resolved permission-mode attribute in the installed versions; current evidence does not establish one.

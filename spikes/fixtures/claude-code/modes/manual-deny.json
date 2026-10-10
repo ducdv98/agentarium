@@ -1,0 +1,97 @@
+{
+  "claude_code_version": "2.1.296",
+  "scenario": "manual-deny",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "eca36476-bdd3-499e-a634-9407217dada3",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-KCjjnK-repo\\eca36476-bdd3-499e-a634-9407217dada3.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "source": "startup"
+    },
+    {
+      "at_ms": 1131,
+      "session_id": "eca36476-bdd3-499e-a634-9407217dada3",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-KCjjnK-repo\\eca36476-bdd3-499e-a634-9407217dada3.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "bd512c5e-de1f-48c1-ad0c-33f3f4f6331e",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "Run this exact shell command with the Bash tool: node -e \"require('fs').writeFileSync('b.txt','x')\" . If it is refused, do not retry. Then reply DONE."
+    },
+    {
+      "at_ms": 3525,
+      "session_id": "eca36476-bdd3-499e-a634-9407217dada3",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-KCjjnK-repo\\eca36476-bdd3-499e-a634-9407217dada3.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "bd512c5e-de1f-48c1-ad0c-33f3f4f6331e",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PreToolUse",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write b.txt using Node"
+      },
+      "tool_use_id": "toolu_012dTZsMK8hLwQuQ2WNFawQx"
+    },
+    {
+      "at_ms": 3673,
+      "session_id": "eca36476-bdd3-499e-a634-9407217dada3",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-KCjjnK-repo\\eca36476-bdd3-499e-a634-9407217dada3.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "bd512c5e-de1f-48c1-ad0c-33f3f4f6331e",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PermissionRequest",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write b.txt using Node"
+      },
+      "permission_suggestions": [
+        {
+          "type": "addRules",
+          "rules": [
+            {
+              "toolName": "Bash",
+              "ruleContent": "node -e \"require('fs').writeFileSync('b.txt','x')\""
+            }
+          ],
+          "behavior": "allow",
+          "destination": "localSettings"
+        }
+      ]
+    },
+    {
+      "at_ms": 5679,
+      "session_id": "eca36476-bdd3-499e-a634-9407217dada3",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-KCjjnK-repo\\eca36476-bdd3-499e-a634-9407217dada3.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "bd512c5e-de1f-48c1-ad0c-33f3f4f6331e",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "Stop",
+      "stop_hook_active": false,
+      "last_assistant_message": "I ran `node -e \"require('fs').writeFileSync('b.txt','x')\"` once, and the environment refused it (\"Denied by the capture script\"). As you asked, I didn't retry, so `b.txt` was not created.\n\nDONE",
+      "background_tasks": [],
+      "session_crons": []
+    },
+    {
+      "at_ms": 5830,
+      "session_id": "eca36476-bdd3-499e-a634-9407217dada3",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-KCjjnK-repo\\eca36476-bdd3-499e-a634-9407217dada3.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "bd512c5e-de1f-48c1-ad0c-33f3f4f6331e",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ]
+}

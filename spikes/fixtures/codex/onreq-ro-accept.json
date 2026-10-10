@@ -1,0 +1,884 @@
+{
+  "codex_cli_version": "0.162.1",
+  "scenario": "onreq-ro-accept",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-21-27-01a12554-f218-73f2-bbb4-2d4270ffb1d8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "source": "startup"
+    },
+    {
+      "at_ms": 260,
+      "session_id": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+      "turn_id": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-21-27-01a12554-f218-73f2-bbb4-2d4270ffb1d8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "prompt": "Run exactly this shell command once: Set-Content -LiteralPath approval-inside.txt -Value ok. Then reply DONE."
+    },
+    {
+      "at_ms": 4441,
+      "session_id": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+      "turn_id": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-21-27-01a12554-f218-73f2-bbb4-2d4270ffb1d8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "Set-Content -LiteralPath approval-inside.txt -Value ok"
+      },
+      "tool_use_id": "exec-fe64d1e2-17e9-47e4-91bd-d61e8b875758"
+    },
+    {
+      "at_ms": 4796,
+      "session_id": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+      "turn_id": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-21-27-01a12554-f218-73f2-bbb4-2d4270ffb1d8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PermissionRequest",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "Set-Content -LiteralPath approval-inside.txt -Value ok",
+        "description": "Allow this exact command to write approval-inside.txt in the workspace?"
+      }
+    },
+    {
+      "at_ms": 5483,
+      "session_id": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+      "turn_id": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-21-27-01a12554-f218-73f2-bbb4-2d4270ffb1d8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "Set-Content -LiteralPath approval-inside.txt -Value ok"
+      },
+      "tool_response": "",
+      "tool_use_id": "exec-fe64d1e2-17e9-47e4-91bd-d61e8b875758"
+    },
+    {
+      "at_ms": 7832,
+      "session_id": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+      "turn_id": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-21-27-01a12554-f218-73f2-bbb4-2d4270ffb1d8.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Stop",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE"
+    }
+  ],
+  "app": [
+    {
+      "at_ms": -3494,
+      "dir": "reply",
+      "id": 2,
+      "result": {
+        "thread": {
+          "id": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+          "environments": [
+            {
+              "environmentId": "local",
+              "cwd": "<CWD>",
+              "runtimeWorkspaceRoots": [
+                "<CWD>"
+              ]
+            }
+          ],
+          "extra": null,
+          "sessionId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": false,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "openai",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "createdAt": 1791627687,
+          "updatedAt": 1791627687,
+          "recencyAt": 1791627687,
+          "status": {
+            "type": "idle"
+          },
+          "path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-21-27-01a12554-f218-73f2-bbb4-2d4270ffb1d8.jsonl",
+          "cwd": "<CWD>",
+          "cliVersion": "0.162.1",
+          "originator": "agentarium-spike",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        },
+        "model": "gpt-6.1-sol",
+        "modelProvider": "openai",
+        "serviceTier": null,
+        "disabledPluginIds": [],
+        "cwd": "<CWD>",
+        "runtimeWorkspaceRoots": [
+          "<CWD>"
+        ],
+        "instructionSources": [],
+        "approvalPolicy": "on-request",
+        "approvalsReviewer": "user",
+        "sandbox": {
+          "type": "readOnly",
+          "networkAccess": false
+        },
+        "activePermissionProfile": null,
+        "reasoningEffort": "low",
+        "multiAgentMode": "explicitRequestOnly"
+      }
+    },
+    {
+      "at_ms": -3492,
+      "dir": "notify",
+      "method": "thread/started",
+      "params": {
+        "thread": {
+          "id": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+          "environments": [
+            {
+              "environmentId": "local",
+              "cwd": "<CWD>",
+              "runtimeWorkspaceRoots": [
+                "<CWD>"
+              ]
+            }
+          ],
+          "extra": null,
+          "sessionId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": false,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "openai",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "createdAt": 1791627687,
+          "updatedAt": 1791627687,
+          "recencyAt": 1791627687,
+          "status": {
+            "type": "idle"
+          },
+          "path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-21-27-01a12554-f218-73f2-bbb4-2d4270ffb1d8.jsonl",
+          "cwd": "<CWD>",
+          "cliVersion": "0.162.1",
+          "originator": "agentarium-spike",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        }
+      },
+      "emittedAtMs": 1791627687627
+    },
+    {
+      "at_ms": -3464,
+      "dir": "reply",
+      "id": 3,
+      "result": {
+        "turn": {
+          "id": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+          "rootTurnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+          "items": [],
+          "itemsView": "notLoaded",
+          "status": "inProgress",
+          "error": null,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null
+        }
+      }
+    },
+    {
+      "at_ms": -3332,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "status": {
+          "type": "active",
+          "activeFlags": []
+        }
+      },
+      "emittedAtMs": 1791627687790
+    },
+    {
+      "at_ms": -3332,
+      "dir": "notify",
+      "method": "turn/started",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turn": {
+          "id": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+          "rootTurnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+          "items": [],
+          "itemsView": "notLoaded",
+          "status": "inProgress",
+          "error": null,
+          "startedAt": 1791627687,
+          "completedAt": null,
+          "durationMs": null
+        }
+      },
+      "emittedAtMs": 1791627687790
+    },
+    {
+      "at_ms": -266,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "run": {
+          "id": "session-start:5:<DIR1>\\hooks.json",
+          "eventName": "sessionStart",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "thread",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 5,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791627690,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627690856
+    },
+    {
+      "at_ms": 23,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "run": {
+          "id": "session-start:5:<DIR1>\\hooks.json",
+          "eventName": "sessionStart",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "thread",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 5,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791627690,
+          "completedAt": 1791627691,
+          "durationMs": 548,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627691144
+    },
+    {
+      "at_ms": 27,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "run": {
+          "id": "user-prompt-submit:7:<DIR1>\\hooks.json",
+          "eventName": "userPromptSubmit",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 7,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791627691,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627691149
+    },
+    {
+      "at_ms": 287,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "run": {
+          "id": "user-prompt-submit:7:<DIR1>\\hooks.json",
+          "eventName": "userPromptSubmit",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 7,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791627691,
+          "completedAt": 1791627691,
+          "durationMs": 262,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627691409
+    },
+    {
+      "at_ms": 320,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "userMessage",
+          "id": "01a12555-0591-71e3-8ed0-386919c00b9a",
+          "clientId": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "Run exactly this shell command once: Set-Content -LiteralPath approval-inside.txt -Value ok. Then reply DONE.",
+              "text_elements": []
+            }
+          ]
+        },
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "startedAtMs": 1791627691442
+      },
+      "emittedAtMs": 1791627691442
+    },
+    {
+      "at_ms": 352,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "userMessage",
+          "id": "01a12555-0591-71e3-8ed0-386919c00b9a",
+          "clientId": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "Run exactly this shell command once: Set-Content -LiteralPath approval-inside.txt -Value ok. Then reply DONE.",
+              "text_elements": []
+            }
+          ]
+        },
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "completedAtMs": 1791627691442
+      },
+      "emittedAtMs": 1791627691474
+    },
+    {
+      "at_ms": 2424,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0e1c5a3b23fedc9e016aca11ae8280819188b7c6d21afa4f7b",
+          "text": "",
+          "phase": "commentary",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "startedAtMs": 1791627693546
+      },
+      "emittedAtMs": 1791627693546
+    },
+    {
+      "at_ms": 3009,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0e1c5a3b23fedc9e016aca11ae8280819188b7c6d21afa4f7b",
+          "text": "I’ll run the command once. Writing the file requires approval under the read-only sandbox.\n",
+          "phase": "commentary",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "completedAtMs": 1791627694089
+      },
+      "emittedAtMs": 1791627694131
+    },
+    {
+      "at_ms": 4186,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "run": {
+          "id": "pre-tool-use:0:<DIR1>\\hooks.json:exec-fe64d1e2-17e9-47e4-91bd-d61e8b875758",
+          "eventName": "preToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 0,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791627695,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627695308
+    },
+    {
+      "at_ms": 4538,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "run": {
+          "id": "pre-tool-use:0:<DIR1>\\hooks.json:exec-fe64d1e2-17e9-47e4-91bd-d61e8b875758",
+          "eventName": "preToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 0,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791627695,
+          "completedAt": 1791627695,
+          "durationMs": 302,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627695660
+    },
+    {
+      "at_ms": 4542,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "run": {
+          "id": "permission-request:1:<DIR1>\\hooks.json:exec-fe64d1e2-17e9-47e4-91bd-d61e8b875758",
+          "eventName": "permissionRequest",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 1,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791627695,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627695664
+    },
+    {
+      "at_ms": 4828,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "run": {
+          "id": "permission-request:1:<DIR1>\\hooks.json:exec-fe64d1e2-17e9-47e4-91bd-d61e8b875758",
+          "eventName": "permissionRequest",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 1,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791627695,
+          "completedAt": 1791627695,
+          "durationMs": 288,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627695950
+    },
+    {
+      "at_ms": 4831,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "status": {
+          "type": "active",
+          "activeFlags": [
+            "waitingOnApproval"
+          ]
+        }
+      },
+      "emittedAtMs": 1791627695951
+    },
+    {
+      "at_ms": 4831,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "commandExecution",
+          "id": "exec-fe64d1e2-17e9-47e4-91bd-d61e8b875758",
+          "pluginId": null,
+          "scriptPath": null,
+          "command": "\"C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'Set-Content -LiteralPath approval-inside.txt -Value ok'",
+          "cwd": "<CWD>",
+          "processId": null,
+          "source": "agent",
+          "status": "inProgress",
+          "commandActions": [
+            {
+              "type": "unknown",
+              "command": "Set-Content -LiteralPath approval-inside.txt -Value ok"
+            }
+          ],
+          "aggregatedOutput": null,
+          "exitCode": null,
+          "durationMs": null
+        },
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "startedAtMs": 1791627695952
+      },
+      "emittedAtMs": 1791627695952
+    },
+    {
+      "at_ms": 4832,
+      "dir": "request",
+      "method": "item/commandExecution/requestApproval",
+      "id": 0,
+      "params": {
+        "kind": "command",
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "itemId": "exec-fe64d1e2-17e9-47e4-91bd-d61e8b875758",
+        "startedAtMs": 1791627695951,
+        "environmentId": "local",
+        "reason": "Allow this exact command to write approval-inside.txt in the workspace?",
+        "command": "\"C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'Set-Content -LiteralPath approval-inside.txt -Value ok'",
+        "cwd": "<CWD>",
+        "commandActions": [
+          {
+            "type": "unknown",
+            "command": "Set-Content -LiteralPath approval-inside.txt -Value ok"
+          }
+        ],
+        "proposedExecpolicyAmendment": [
+          "Set-Content",
+          "-LiteralPath",
+          "approval-inside.txt",
+          "-Value",
+          "ok"
+        ],
+        "availableDecisions": [
+          "accept",
+          {
+            "acceptWithExecpolicyAmendment": {
+              "execpolicy_amendment": [
+                "Set-Content",
+                "-LiteralPath",
+                "approval-inside.txt",
+                "-Value",
+                "ok"
+              ]
+            }
+          },
+          "cancel"
+        ]
+      }
+    },
+    {
+      "at_ms": 4833,
+      "dir": "notify",
+      "method": "serverRequest/resolved",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "requestId": 0
+      },
+      "emittedAtMs": 1791627695955
+    },
+    {
+      "at_ms": 4834,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "status": {
+          "type": "active",
+          "activeFlags": []
+        }
+      },
+      "emittedAtMs": 1791627695955
+    },
+    {
+      "at_ms": 5188,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "commandExecution",
+          "id": "exec-fe64d1e2-17e9-47e4-91bd-d61e8b875758",
+          "pluginId": null,
+          "scriptPath": null,
+          "command": "\"C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'Set-Content -LiteralPath approval-inside.txt -Value ok'",
+          "cwd": "<CWD>",
+          "processId": "85374",
+          "source": "unifiedExecStartup",
+          "status": "completed",
+          "commandActions": [
+            {
+              "type": "unknown",
+              "command": "Set-Content -LiteralPath approval-inside.txt -Value ok"
+            }
+          ],
+          "aggregatedOutput": null,
+          "exitCode": 0,
+          "durationMs": 147
+        },
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "completedAtMs": 1791627696269
+      },
+      "emittedAtMs": 1791627696310
+    },
+    {
+      "at_ms": 5195,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "run": {
+          "id": "post-tool-use:2:<DIR1>\\hooks.json:exec-fe64d1e2-17e9-47e4-91bd-d61e8b875758",
+          "eventName": "postToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 2,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791627696,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627696317
+    },
+    {
+      "at_ms": 5529,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "run": {
+          "id": "post-tool-use:2:<DIR1>\\hooks.json:exec-fe64d1e2-17e9-47e4-91bd-d61e8b875758",
+          "eventName": "postToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 2,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791627696,
+          "completedAt": 1791627696,
+          "durationMs": 338,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627696651
+    },
+    {
+      "at_ms": 7451,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0e1c5a3b23fedc9e016aca11b38a3c8191a6372bcfa5497158",
+          "text": "",
+          "phase": "final_answer",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "startedAtMs": 1791627698572
+      },
+      "emittedAtMs": 1791627698573
+    },
+    {
+      "at_ms": 7501,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0e1c5a3b23fedc9e016aca11b38a3c8191a6372bcfa5497158",
+          "text": "DONE",
+          "phase": "final_answer",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "completedAtMs": 1791627698573
+      },
+      "emittedAtMs": 1791627698622
+    },
+    {
+      "at_ms": 7603,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "run": {
+          "id": "stop:10:<DIR1>\\hooks.json",
+          "eventName": "stop",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 10,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791627698,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627698725
+    },
+    {
+      "at_ms": 7856,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+        "run": {
+          "id": "stop:10:<DIR1>\\hooks.json",
+          "eventName": "stop",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 10,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791627698,
+          "completedAt": 1791627698,
+          "durationMs": 255,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791627698978
+    },
+    {
+      "at_ms": 7867,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "status": {
+          "type": "idle"
+        }
+      },
+      "emittedAtMs": 1791627698988
+    },
+    {
+      "at_ms": 7867,
+      "dir": "notify",
+      "method": "turn/completed",
+      "params": {
+        "threadId": "01a12554-f218-73f2-bbb4-2d4270ffb1d8",
+        "turn": {
+          "id": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+          "rootTurnId": "01a12554-f6d0-7093-8d49-b8f8bc81bd29",
+          "items": [
+            {
+              "type": "agentMessage",
+              "id": "msg_0e1c5a3b23fedc9e016aca11b38a3c8191a6372bcfa5497158",
+              "text": "DONE",
+              "phase": "final_answer",
+              "memoryCitation": null,
+              "delivery": null,
+              "questions": null
+            }
+          ],
+          "itemsView": "summary",
+          "status": "completed",
+          "error": null,
+          "startedAt": 1791627687,
+          "completedAt": 1791627698,
+          "durationMs": 11336
+        }
+      },
+      "emittedAtMs": 1791627698989
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "claude_code_version": "2.1.296",
+  "scenario": "dontask",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "6b697c48-74f8-46e5-b935-1a3ac4cc1dfe",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-4NsLuD-repo\\6b697c48-74f8-46e5-b935-1a3ac4cc1dfe.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "source": "startup"
+    },
+    {
+      "at_ms": 642,
+      "session_id": "6b697c48-74f8-46e5-b935-1a3ac4cc1dfe",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-4NsLuD-repo\\6b697c48-74f8-46e5-b935-1a3ac4cc1dfe.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "f61bc7b0-7d4b-4404-a237-f35da58e5c5c",
+      "permission_mode": "dontAsk",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "First create the file a.txt containing hi with the Write tool. Then run this exact shell command with the Bash tool: node -e \"require('fs').writeFileSync('b.txt','x')\" . If anything is refused, do not retry. Then reply DONE."
+    },
+    {
+      "at_ms": 3127,
+      "session_id": "6b697c48-74f8-46e5-b935-1a3ac4cc1dfe",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-4NsLuD-repo\\6b697c48-74f8-46e5-b935-1a3ac4cc1dfe.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "f61bc7b0-7d4b-4404-a237-f35da58e5c5c",
+      "permission_mode": "dontAsk",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PreToolUse",
+      "tool_name": "Write",
+      "tool_input": {
+        "file_path": "<CWD>\\a.txt",
+        "content": "hi"
+      },
+      "tool_use_id": "toolu_01YTSM8xGSAfizuL9H5pfBt1"
+    },
+    {
+      "at_ms": 6167,
+      "session_id": "6b697c48-74f8-46e5-b935-1a3ac4cc1dfe",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-4NsLuD-repo\\6b697c48-74f8-46e5-b935-1a3ac4cc1dfe.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "f61bc7b0-7d4b-4404-a237-f35da58e5c5c",
+      "permission_mode": "dontAsk",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PreToolUse",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write b.txt using Node"
+      },
+      "tool_use_id": "toolu_011p8h5t6RCv5Pi5kV9xxDs7"
+    },
+    {
+      "at_ms": 8993,
+      "session_id": "6b697c48-74f8-46e5-b935-1a3ac4cc1dfe",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-4NsLuD-repo\\6b697c48-74f8-46e5-b935-1a3ac4cc1dfe.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "f61bc7b0-7d4b-4404-a237-f35da58e5c5c",
+      "permission_mode": "dontAsk",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "Stop",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE. Neither file was created, because both steps were blocked:\n\n- **Write tool (`a.txt`):** denied because Claude Code is running in \"don't ask\" mode.\n- **Bash command (`b.txt`):** denied for the same reason.\n\nAs you asked, I didn't retry either one or try other tools. To let these run, allow the …[truncated]",
+      "background_tasks": [],
+      "session_crons": []
+    },
+    {
+      "at_ms": 9136,
+      "session_id": "6b697c48-74f8-46e5-b935-1a3ac4cc1dfe",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-4NsLuD-repo\\6b697c48-74f8-46e5-b935-1a3ac4cc1dfe.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "f61bc7b0-7d4b-4404-a237-f35da58e5c5c",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ]
+}

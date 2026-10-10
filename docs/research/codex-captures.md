@@ -14,6 +14,18 @@ Tooling, in [`spikes/codex/`](../../spikes/codex/):
 
 `codex exec` waits for stdin when stdin is not a TTY. Run it with stdin closed (`</dev/null`).
 
+## 0.162.1 permission captures
+
+On 2026-10-10 (Windows 11, PowerShell), the harness was fixed for PowerShell hook commands and TOML-escaped Windows paths, then run sequentially with fresh temp `CODEX_HOME` directories and scratch Git repositories. Exact capture commands were:
+
+```text
+node spikes/codex/setup-codex-home.mjs <temp>\codex-home <temp>\repo <temp>\payloads.jsonl
+node spikes/codex/capture-app.mjs <temp>\codex-home <temp>\repo <temp>\payloads.jsonl <raw> <scenario> <accept|decline|cancel> <on-request|never> <read-only|workspace-write> <tiny prompt>
+node spikes/codex/sanitize.mjs <one-scenario-raw> spikes/fixtures/codex 0.162.1 <repo> <isolated-codex-home>
+```
+
+New fixtures: `onreq-ro-{accept,decline,cancel}`, `onreq-ww-{accept,decline}`, `file-ro-accept`, `file-decline`, `mcp-elicit`, `auto-approve`, `auto-approve-failed`, and `never-sandbox-deny`. They contain hooks plus live app messages; the `onreq-ww-*`, `file-ro-accept` and `auto-*` fixtures also carry the rollout's `turn_context` permission fields. Auto-review runs pass `'{"approvalsReviewer":"auto_review"}'` as the optional last argument of `capture-app.mjs`. `request_user_input` and `request_permissions` were attempted but did not reach a server request in this model/tool surface. TUI-only `/permissions` work is intentionally left to [`capture-tui.mjs`](../../spikes/codex/capture-tui.mjs).
+
 ## Scenarios
 
 | Fixture | What ran |

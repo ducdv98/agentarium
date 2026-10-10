@@ -1,0 +1,123 @@
+{
+  "claude_code_version": "2.1.296",
+  "scenario": "manual-allow",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "73c19ea2-fde2-41e2-90d9-f042cbf20d1c",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-aButgs-repo\\73c19ea2-fde2-41e2-90d9-f042cbf20d1c.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "source": "startup"
+    },
+    {
+      "at_ms": 703,
+      "session_id": "73c19ea2-fde2-41e2-90d9-f042cbf20d1c",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-aButgs-repo\\73c19ea2-fde2-41e2-90d9-f042cbf20d1c.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "a656fe77-ec08-4510-afd0-90b56e646e1d",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "Run this exact shell command with the Bash tool: node -e \"require('fs').writeFileSync('b.txt','x')\" . If it is refused, do not retry. Then reply DONE."
+    },
+    {
+      "at_ms": 3228,
+      "session_id": "73c19ea2-fde2-41e2-90d9-f042cbf20d1c",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-aButgs-repo\\73c19ea2-fde2-41e2-90d9-f042cbf20d1c.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "a656fe77-ec08-4510-afd0-90b56e646e1d",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PreToolUse",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write b.txt containing x via Node"
+      },
+      "tool_use_id": "toolu_01CkXjH1rCr3zWnHMw8JuKrt"
+    },
+    {
+      "at_ms": 3474,
+      "session_id": "73c19ea2-fde2-41e2-90d9-f042cbf20d1c",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-aButgs-repo\\73c19ea2-fde2-41e2-90d9-f042cbf20d1c.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "a656fe77-ec08-4510-afd0-90b56e646e1d",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PermissionRequest",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write b.txt containing x via Node"
+      },
+      "permission_suggestions": [
+        {
+          "type": "addRules",
+          "rules": [
+            {
+              "toolName": "Bash",
+              "ruleContent": "node -e \"require('fs').writeFileSync('b.txt','x')\""
+            }
+          ],
+          "behavior": "allow",
+          "destination": "localSettings"
+        }
+      ]
+    },
+    {
+      "at_ms": 6291,
+      "session_id": "73c19ea2-fde2-41e2-90d9-f042cbf20d1c",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-aButgs-repo\\73c19ea2-fde2-41e2-90d9-f042cbf20d1c.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "a656fe77-ec08-4510-afd0-90b56e646e1d",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PostToolUse",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write b.txt containing x via Node"
+      },
+      "tool_response": {
+        "stdout": "",
+        "stderr": "",
+        "interrupted": false,
+        "isImage": false,
+        "noOutputExpected": false
+      },
+      "tool_use_id": "toolu_01CkXjH1rCr3zWnHMw8JuKrt",
+      "duration_ms": 2833
+    },
+    {
+      "at_ms": 7691,
+      "session_id": "73c19ea2-fde2-41e2-90d9-f042cbf20d1c",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-aButgs-repo\\73c19ea2-fde2-41e2-90d9-f042cbf20d1c.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "a656fe77-ec08-4510-afd0-90b56e646e1d",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "Stop",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE",
+      "background_tasks": [],
+      "session_crons": []
+    },
+    {
+      "at_ms": 7864,
+      "session_id": "73c19ea2-fde2-41e2-90d9-f042cbf20d1c",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-aButgs-repo\\73c19ea2-fde2-41e2-90d9-f042cbf20d1c.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "a656fe77-ec08-4510-afd0-90b56e646e1d",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ]
+}

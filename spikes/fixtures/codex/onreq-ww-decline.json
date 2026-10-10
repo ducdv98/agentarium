@@ -1,0 +1,831 @@
+{
+  "codex_cli_version": "0.162.1",
+  "scenario": "onreq-ww-decline",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-32-40-01a1255f-3978-7f63-a60d-b8a8b415eef5.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "source": "startup"
+    },
+    {
+      "at_ms": 255,
+      "session_id": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+      "turn_id": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-32-40-01a1255f-3978-7f63-a60d-b8a8b415eef5.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "prompt": "Write hi into the file F:/codex-sandbox-probe/w.txt with one shell command (Set-Content -Path F:/codex-sandbox-probe/w.txt -Value hi). It is outside the writable workspace, so request escalated permissions for that command up front. Do not retry after a refusal. Then reply DONE."
+    },
+    {
+      "at_ms": 4301,
+      "session_id": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+      "turn_id": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-32-40-01a1255f-3978-7f63-a60d-b8a8b415eef5.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "Set-Content -Path F:/codex-sandbox-probe/w.txt -Value hi"
+      },
+      "tool_use_id": "exec-268af39b-829e-4bf6-a7a3-f9ad6430bcb0"
+    },
+    {
+      "at_ms": 4588,
+      "session_id": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+      "turn_id": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-32-40-01a1255f-3978-7f63-a60d-b8a8b415eef5.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PermissionRequest",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "Set-Content -Path F:/codex-sandbox-probe/w.txt -Value hi",
+        "description": "Allow writing hi to F:/codex-sandbox-probe/w.txt outside the writable workspace?"
+      }
+    },
+    {
+      "at_ms": 6789,
+      "session_id": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+      "turn_id": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-32-40-01a1255f-3978-7f63-a60d-b8a8b415eef5.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Stop",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE"
+    }
+  ],
+  "app": [
+    {
+      "at_ms": -2475,
+      "dir": "reply",
+      "id": 2,
+      "result": {
+        "thread": {
+          "id": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+          "environments": [
+            {
+              "environmentId": "local",
+              "cwd": "<CWD>",
+              "runtimeWorkspaceRoots": [
+                "<CWD>"
+              ]
+            }
+          ],
+          "extra": null,
+          "sessionId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": false,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "openai",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "createdAt": 1791628360,
+          "updatedAt": 1791628360,
+          "recencyAt": 1791628360,
+          "status": {
+            "type": "idle"
+          },
+          "path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-32-40-01a1255f-3978-7f63-a60d-b8a8b415eef5.jsonl",
+          "cwd": "<CWD>",
+          "cliVersion": "0.162.1",
+          "originator": "agentarium-spike",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        },
+        "model": "gpt-6.1-sol",
+        "modelProvider": "openai",
+        "serviceTier": null,
+        "disabledPluginIds": [],
+        "cwd": "<CWD>",
+        "runtimeWorkspaceRoots": [
+          "<CWD>"
+        ],
+        "instructionSources": [],
+        "approvalPolicy": "on-request",
+        "approvalsReviewer": "user",
+        "sandbox": {
+          "type": "workspaceWrite",
+          "writableRoots": [],
+          "networkAccess": false,
+          "excludeTmpdirEnvVar": false,
+          "excludeSlashTmp": false
+        },
+        "activePermissionProfile": null,
+        "reasoningEffort": "low",
+        "multiAgentMode": "explicitRequestOnly"
+      }
+    },
+    {
+      "at_ms": -2474,
+      "dir": "notify",
+      "method": "thread/started",
+      "params": {
+        "thread": {
+          "id": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+          "environments": [
+            {
+              "environmentId": "local",
+              "cwd": "<CWD>",
+              "runtimeWorkspaceRoots": [
+                "<CWD>"
+              ]
+            }
+          ],
+          "extra": null,
+          "sessionId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": false,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "openai",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "createdAt": 1791628360,
+          "updatedAt": 1791628360,
+          "recencyAt": 1791628360,
+          "status": {
+            "type": "idle"
+          },
+          "path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T17-32-40-01a1255f-3978-7f63-a60d-b8a8b415eef5.jsonl",
+          "cwd": "<CWD>",
+          "cliVersion": "0.162.1",
+          "originator": "agentarium-spike",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        }
+      },
+      "emittedAtMs": 1791628360206
+    },
+    {
+      "at_ms": -2445,
+      "dir": "reply",
+      "id": 3,
+      "result": {
+        "turn": {
+          "id": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+          "rootTurnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+          "items": [],
+          "itemsView": "notLoaded",
+          "status": "inProgress",
+          "error": null,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null
+        }
+      }
+    },
+    {
+      "at_ms": -2310,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "status": {
+          "type": "active",
+          "activeFlags": []
+        }
+      },
+      "emittedAtMs": 1791628360371
+    },
+    {
+      "at_ms": -2310,
+      "dir": "notify",
+      "method": "turn/started",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turn": {
+          "id": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+          "rootTurnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+          "items": [],
+          "itemsView": "notLoaded",
+          "status": "inProgress",
+          "error": null,
+          "startedAt": 1791628360,
+          "completedAt": null,
+          "durationMs": null
+        }
+      },
+      "emittedAtMs": 1791628360371
+    },
+    {
+      "at_ms": -213,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "run": {
+          "id": "session-start:5:<DIR1>\\hooks.json",
+          "eventName": "sessionStart",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "thread",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 5,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791628362,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791628362468
+    },
+    {
+      "at_ms": 25,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "run": {
+          "id": "session-start:5:<DIR1>\\hooks.json",
+          "eventName": "sessionStart",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "thread",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 5,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791628362,
+          "completedAt": 1791628362,
+          "durationMs": 444,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791628362706
+    },
+    {
+      "at_ms": 28,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "run": {
+          "id": "user-prompt-submit:7:<DIR1>\\hooks.json",
+          "eventName": "userPromptSubmit",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 7,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791628362,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791628362710
+    },
+    {
+      "at_ms": 295,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "run": {
+          "id": "user-prompt-submit:7:<DIR1>\\hooks.json",
+          "eventName": "userPromptSubmit",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 7,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791628362,
+          "completedAt": 1791628362,
+          "durationMs": 268,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791628362976
+    },
+    {
+      "at_ms": 332,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "userMessage",
+          "id": "01a1255f-44e0-7562-a978-bd927e86799b",
+          "clientId": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "Write hi into the file F:/codex-sandbox-probe/w.txt with one shell command (Set-Content -Path F:/codex-sandbox-probe/w.txt -Value hi). It is outside the writable workspace, so request escalated permissions for that command up front. Do not retry after a refusal. Then reply DONE.",
+              "text_elements": []
+            }
+          ]
+        },
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "startedAtMs": 1791628363013
+      },
+      "emittedAtMs": 1791628363013
+    },
+    {
+      "at_ms": 378,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "userMessage",
+          "id": "01a1255f-44e0-7562-a978-bd927e86799b",
+          "clientId": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "Write hi into the file F:/codex-sandbox-probe/w.txt with one shell command (Set-Content -Path F:/codex-sandbox-probe/w.txt -Value hi). It is outside the writable workspace, so request escalated permissions for that command up front. Do not retry after a refusal. Then reply DONE.",
+              "text_elements": []
+            }
+          ]
+        },
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "completedAtMs": 1791628363013
+      },
+      "emittedAtMs": 1791628363059
+    },
+    {
+      "at_ms": 2078,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0f26297ea0d4529e016aca144dc2e08191bf5a3613b523611c",
+          "text": "",
+          "phase": "commentary",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "startedAtMs": 1791628364759
+      },
+      "emittedAtMs": 1791628364759
+    },
+    {
+      "at_ms": 2701,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0f26297ea0d4529e016aca144dc2e08191bf5a3613b523611c",
+          "text": "I’ll request escalated permission for the specified command and won’t retry if it’s refused.\n",
+          "phase": "commentary",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "completedAtMs": 1791628365340
+      },
+      "emittedAtMs": 1791628365383
+    },
+    {
+      "at_ms": 4086,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "run": {
+          "id": "pre-tool-use:0:<DIR1>\\hooks.json:exec-268af39b-829e-4bf6-a7a3-f9ad6430bcb0",
+          "eventName": "preToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 0,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791628366,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791628366767
+    },
+    {
+      "at_ms": 4368,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "run": {
+          "id": "pre-tool-use:0:<DIR1>\\hooks.json:exec-268af39b-829e-4bf6-a7a3-f9ad6430bcb0",
+          "eventName": "preToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 0,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791628366,
+          "completedAt": 1791628367,
+          "durationMs": 241,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791628367049
+    },
+    {
+      "at_ms": 4372,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "run": {
+          "id": "permission-request:1:<DIR1>\\hooks.json:exec-268af39b-829e-4bf6-a7a3-f9ad6430bcb0",
+          "eventName": "permissionRequest",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 1,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791628367,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791628367053
+    },
+    {
+      "at_ms": 4614,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "run": {
+          "id": "permission-request:1:<DIR1>\\hooks.json:exec-268af39b-829e-4bf6-a7a3-f9ad6430bcb0",
+          "eventName": "permissionRequest",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 1,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791628367,
+          "completedAt": 1791628367,
+          "durationMs": 244,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791628367295
+    },
+    {
+      "at_ms": 4616,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "status": {
+          "type": "active",
+          "activeFlags": [
+            "waitingOnApproval"
+          ]
+        }
+      },
+      "emittedAtMs": 1791628367296
+    },
+    {
+      "at_ms": 4616,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "commandExecution",
+          "id": "exec-268af39b-829e-4bf6-a7a3-f9ad6430bcb0",
+          "pluginId": null,
+          "scriptPath": null,
+          "command": "\"C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'Set-Content -Path F:/codex-sandbox-probe/w.txt -Value hi'",
+          "cwd": "<CWD>",
+          "processId": null,
+          "source": "agent",
+          "status": "inProgress",
+          "commandActions": [
+            {
+              "type": "unknown",
+              "command": "Set-Content -Path F:/codex-sandbox-probe/w.txt -Value hi"
+            }
+          ],
+          "aggregatedOutput": null,
+          "exitCode": null,
+          "durationMs": null
+        },
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "startedAtMs": 1791628367297
+      },
+      "emittedAtMs": 1791628367297
+    },
+    {
+      "at_ms": 4617,
+      "dir": "request",
+      "method": "item/commandExecution/requestApproval",
+      "id": 0,
+      "params": {
+        "kind": "command",
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "itemId": "exec-268af39b-829e-4bf6-a7a3-f9ad6430bcb0",
+        "startedAtMs": 1791628367296,
+        "environmentId": "local",
+        "reason": "Allow writing hi to F:/codex-sandbox-probe/w.txt outside the writable workspace?",
+        "command": "\"C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'Set-Content -Path F:/codex-sandbox-probe/w.txt -Value hi'",
+        "cwd": "<CWD>",
+        "commandActions": [
+          {
+            "type": "unknown",
+            "command": "Set-Content -Path F:/codex-sandbox-probe/w.txt -Value hi"
+          }
+        ],
+        "proposedExecpolicyAmendment": [
+          "Set-Content",
+          "-Path",
+          "F:/codex-sandbox-probe/w.txt",
+          "-Value",
+          "hi"
+        ],
+        "availableDecisions": [
+          "accept",
+          {
+            "acceptWithExecpolicyAmendment": {
+              "execpolicy_amendment": [
+                "Set-Content",
+                "-Path",
+                "F:/codex-sandbox-probe/w.txt",
+                "-Value",
+                "hi"
+              ]
+            }
+          },
+          "cancel"
+        ]
+      }
+    },
+    {
+      "at_ms": 4617,
+      "dir": "notify",
+      "method": "serverRequest/resolved",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "requestId": 0
+      },
+      "emittedAtMs": 1791628367298
+    },
+    {
+      "at_ms": 4618,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "commandExecution",
+          "id": "exec-268af39b-829e-4bf6-a7a3-f9ad6430bcb0",
+          "pluginId": null,
+          "scriptPath": null,
+          "command": "\"C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -Command 'Set-Content -Path F:/codex-sandbox-probe/w.txt -Value hi'",
+          "cwd": "<CWD>",
+          "processId": null,
+          "source": "agent",
+          "status": "declined",
+          "commandActions": [
+            {
+              "type": "unknown",
+              "command": "Set-Content -Path F:/codex-sandbox-probe/w.txt -Value hi"
+            }
+          ],
+          "aggregatedOutput": null,
+          "exitCode": null,
+          "durationMs": null
+        },
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "completedAtMs": 1791628367299
+      },
+      "emittedAtMs": 1791628367299
+    },
+    {
+      "at_ms": 4618,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "status": {
+          "type": "active",
+          "activeFlags": []
+        }
+      },
+      "emittedAtMs": 1791628367299
+    },
+    {
+      "at_ms": 6179,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0f26297ea0d4529e016aca1451db888191a09deaba54ad4dc8",
+          "text": "",
+          "phase": "final_answer",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "startedAtMs": 1791628368860
+      },
+      "emittedAtMs": 1791628368860
+    },
+    {
+      "at_ms": 6243,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0f26297ea0d4529e016aca1451db888191a09deaba54ad4dc8",
+          "text": "DONE",
+          "phase": "final_answer",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "completedAtMs": 1791628368867
+      },
+      "emittedAtMs": 1791628368924
+    },
+    {
+      "at_ms": 6572,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "run": {
+          "id": "stop:10:<DIR1>\\hooks.json",
+          "eventName": "stop",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 10,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791628369,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791628369253
+    },
+    {
+      "at_ms": 6813,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+        "run": {
+          "id": "stop:10:<DIR1>\\hooks.json",
+          "eventName": "stop",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 10,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791628369,
+          "completedAt": 1791628369,
+          "durationMs": 244,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791628369494
+    },
+    {
+      "at_ms": 6824,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "status": {
+          "type": "idle"
+        }
+      },
+      "emittedAtMs": 1791628369505
+    },
+    {
+      "at_ms": 6824,
+      "dir": "notify",
+      "method": "turn/completed",
+      "params": {
+        "threadId": "01a1255f-3978-7f63-a60d-b8a8b415eef5",
+        "turn": {
+          "id": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+          "rootTurnId": "01a1255f-3a10-7ee1-8d73-1031c12eec77",
+          "items": [
+            {
+              "type": "agentMessage",
+              "id": "msg_0f26297ea0d4529e016aca1451db888191a09deaba54ad4dc8",
+              "text": "DONE",
+              "phase": "final_answer",
+              "memoryCitation": null,
+              "delivery": null,
+              "questions": null
+            }
+          ],
+          "itemsView": "summary",
+          "status": "completed",
+          "error": null,
+          "startedAt": 1791628360,
+          "completedAt": 1791628369,
+          "durationMs": 9276
+        }
+      },
+      "emittedAtMs": 1791628369505
+    }
+  ],
+  "turn_context": [
+    {
+      "approval_policy": "on-request",
+      "approvals_reviewer": "user",
+      "sandbox_policy": {
+        "type": "workspace-write",
+        "network_access": false,
+        "exclude_tmpdir_env_var": false,
+        "exclude_slash_tmp": false
+      }
+    }
+  ]
+}

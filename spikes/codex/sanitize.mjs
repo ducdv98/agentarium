@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Spike: turn raw captures in <raw-dir> into one sanitized fixture per scenario:
-// <out-dir>/<scenario>.json = { codex_cli_version, scenario, hooks: [...], app?, exec?, otel? }.
+// <out-dir>/<scenario>.json = { codex_cli_version, scenario, hooks: [...], app?, exec?, otel?, turn_context? }.
+// A <scenario>.rollout.jsonl (the session's rollout file) contributes only its turn_context permission fields.
 // Replaces local paths and the user name, truncates long strings, drops streaming deltas.
 // Usage: node sanitize.mjs <raw-dir> <out-dir> <cli-version> <path-to-redact>...
 import { mkdirSync, readdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
@@ -69,6 +70,11 @@ for (const s of [...scenarios].sort()) {
   }
   const sinkFile = join(rawDir, `${s}.sink.jsonl`);
   if (existsSync(sinkFile)) fixture.otel = lines(sinkFile).map((r) => clean(otlpAllowlisted(r.body)));
+  const rolloutFile = join(rawDir, `${s}.rollout.jsonl`);
+  if (existsSync(rolloutFile)) {
+    fixture.turn_context = lines(rolloutFile).filter((l) => l.type === "turn_context")
+      .map(({ payload: p }) => clean({ approval_policy: p.approval_policy, approvals_reviewer: p.approvals_reviewer, sandbox_policy: p.sandbox_policy }));
+  }
   const execFile = join(rawDir, `${s}.exec.jsonl`);
   if (existsSync(execFile)) fixture.exec = lines(execFile).map(clean);
   writeFileSync(join(outDir, `${s}.json`), `${JSON.stringify(fixture, null, 2)}\n`);

@@ -1,0 +1,234 @@
+{
+  "claude_code_version": "2.1.296",
+  "scenario": "subagent-deny",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "027addf7-cc1b-4e88-85e8-eb54dc313cab",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jhfZYa-repo\\027addf7-cc1b-4e88-85e8-eb54dc313cab.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "source": "startup"
+    },
+    {
+      "at_ms": 623,
+      "session_id": "027addf7-cc1b-4e88-85e8-eb54dc313cab",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jhfZYa-repo\\027addf7-cc1b-4e88-85e8-eb54dc313cab.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "532b1267-7513-4218-b8bd-854c5eb242f0",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "Use the Agent tool to spawn one general-purpose sub-agent with this task: run the exact shell command node -e \"require('fs').writeFileSync('b.txt','x')\" with the Bash tool once, do not retry if refused, and report back. Do not run it yourself. Then reply DONE."
+    },
+    {
+      "at_ms": 5186,
+      "session_id": "027addf7-cc1b-4e88-85e8-eb54dc313cab",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jhfZYa-repo\\027addf7-cc1b-4e88-85e8-eb54dc313cab.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "532b1267-7513-4218-b8bd-854c5eb242f0",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PreToolUse",
+      "tool_name": "Agent",
+      "tool_input": {
+        "description": "Run node write command",
+        "prompt": "Run this exact shell command once using the Bash tool: node -e \"require('fs').writeFileSync('b.txt','x')\"\nDo not retry if the call is refused or denied. Report back exactly what happened (success output, error, or refusal).",
+        "subagent_type": "general-purpose",
+        "run_in_background": false
+      },
+      "tool_use_id": "toolu_01HaVFAZ1UdiibsXvB3LoU2W"
+    },
+    {
+      "at_ms": 5342,
+      "session_id": "027addf7-cc1b-4e88-85e8-eb54dc313cab",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jhfZYa-repo\\027addf7-cc1b-4e88-85e8-eb54dc313cab.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "532b1267-7513-4218-b8bd-854c5eb242f0",
+      "agent_id": "a9aaaf895df0e6a6e",
+      "agent_type": "general-purpose",
+      "hook_event_name": "SubagentStart"
+    },
+    {
+      "at_ms": 8374,
+      "session_id": "027addf7-cc1b-4e88-85e8-eb54dc313cab",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jhfZYa-repo\\027addf7-cc1b-4e88-85e8-eb54dc313cab.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "532b1267-7513-4218-b8bd-854c5eb242f0",
+      "permission_mode": "default",
+      "agent_id": "a9aaaf895df0e6a6e",
+      "agent_type": "general-purpose",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PreToolUse",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write file b.txt containing x via Node"
+      },
+      "tool_use_id": "toolu_01JK1wjZXa35GtAuLUzKQgWG"
+    },
+    {
+      "at_ms": 8520,
+      "session_id": "027addf7-cc1b-4e88-85e8-eb54dc313cab",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jhfZYa-repo\\027addf7-cc1b-4e88-85e8-eb54dc313cab.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "532b1267-7513-4218-b8bd-854c5eb242f0",
+      "permission_mode": "default",
+      "agent_id": "a9aaaf895df0e6a6e",
+      "agent_type": "general-purpose",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PermissionRequest",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write file b.txt containing x via Node"
+      },
+      "permission_suggestions": [
+        {
+          "type": "addRules",
+          "rules": [
+            {
+              "toolName": "Bash",
+              "ruleContent": "node -e \"require('fs').writeFileSync('b.txt','x')\""
+            }
+          ],
+          "behavior": "allow",
+          "destination": "localSettings"
+        }
+      ]
+    },
+    {
+      "at_ms": 11025,
+      "session_id": "027addf7-cc1b-4e88-85e8-eb54dc313cab",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jhfZYa-repo\\027addf7-cc1b-4e88-85e8-eb54dc313cab.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "532b1267-7513-4218-b8bd-854c5eb242f0",
+      "permission_mode": "default",
+      "agent_id": "a9aaaf895df0e6a6e",
+      "agent_type": "general-purpose",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "SubagentStop",
+      "stop_hook_active": false,
+      "agent_transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jhfZYa-repo\\027addf7-cc1b-4e88-85e8-eb54dc313cab\\subagents\\agent-a9aaaf895df0e6a6e.jsonl",
+      "last_assistant_message": "I ran the command once and it was refused, so it did not run. The Bash tool returned this error:\n\n```\nDenied by the capture script.\n```\n\nThere was no output, and the command never executed, so `b.txt` was not created. As you asked, I didn't retry or try another way.",
+      "background_tasks": [],
+      "session_crons": []
+    },
+    {
+      "at_ms": 11169,
+      "session_id": "027addf7-cc1b-4e88-85e8-eb54dc313cab",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jhfZYa-repo\\027addf7-cc1b-4e88-85e8-eb54dc313cab.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "532b1267-7513-4218-b8bd-854c5eb242f0",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PostToolUse",
+      "tool_name": "Agent",
+      "tool_input": {
+        "description": "Run node write command",
+        "prompt": "Run this exact shell command once using the Bash tool: node -e \"require('fs').writeFileSync('b.txt','x')\"\nDo not retry if the call is refused or denied. Report back exactly what happened (success output, error, or refusal).",
+        "subagent_type": "general-purpose",
+        "run_in_background": false
+      },
+      "tool_response": {
+        "status": "completed",
+        "prompt": "Run this exact shell command once using the Bash tool: node -e \"require('fs').writeFileSync('b.txt','x')\"\nDo not retry if the call is refused or denied. Report back exactly what happened (success output, error, or refusal).",
+        "agentId": "a9aaaf895df0e6a6e",
+        "agentType": "general-purpose",
+        "harnessNoteCount": 0,
+        "harnessTailCount": 0,
+        "harnessSectionHash": "3a90f0be37b47829",
+        "content": [
+          {
+            "type": "text",
+            "text": "I ran the command once and it was refused, so it did not run. The Bash tool returned this error:\n\n```\nDenied by the capture script.\n```\n\nThere was no output, and the command never executed, so `b.txt` was not created. As you asked, I didn't retry or try another way."
+          }
+        ],
+        "resolvedModel": "claude-opus-5-5",
+        "totalDurationMs": 5855,
+        "totalTokens": 18812,
+        "totalToolUseCount": 1,
+        "usage": {
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "input_tokens": 2,
+          "cache_creation_input_tokens": 1652,
+          "cache_read_input_tokens": 17073,
+          "output_tokens": 85,
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 1652
+          },
+          "inference_geo": "global",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 85,
+              "cache_read_input_tokens": 17073,
+              "cache_creation_input_tokens": 1652,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 1652,
+                "ephemeral_1h_input_tokens": 0
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard",
+          "fallback_credit": null
+        },
+        "toolStats": {
+          "readCount": 0,
+          "searchCount": 0,
+          "bashCount": 1,
+          "editFileCount": 0,
+          "linesAdded": 0,
+          "linesRemoved": 0,
+          "otherToolCount": 0
+        },
+        "canContinueAgent": true
+      },
+      "tool_use_id": "toolu_01HaVFAZ1UdiibsXvB3LoU2W",
+      "duration_ms": 5857
+    },
+    {
+      "at_ms": 14047,
+      "session_id": "027addf7-cc1b-4e88-85e8-eb54dc313cab",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jhfZYa-repo\\027addf7-cc1b-4e88-85e8-eb54dc313cab.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "532b1267-7513-4218-b8bd-854c5eb242f0",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "Stop",
+      "stop_hook_active": false,
+      "last_assistant_message": "I started one general-purpose sub-agent to run the command. It made one attempt, and the Bash tool refused it with \"Denied by the capture script.\" The command never ran, so `b.txt` was not created. The sub-agent didn't retry, as instructed, and I didn't run the command myself.\n\nDONE",
+      "background_tasks": [],
+      "session_crons": []
+    },
+    {
+      "at_ms": 14200,
+      "session_id": "027addf7-cc1b-4e88-85e8-eb54dc313cab",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jhfZYa-repo\\027addf7-cc1b-4e88-85e8-eb54dc313cab.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "532b1267-7513-4218-b8bd-854c5eb242f0",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ]
+}

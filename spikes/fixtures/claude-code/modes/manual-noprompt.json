@@ -1,0 +1,97 @@
+{
+  "claude_code_version": "2.1.296",
+  "scenario": "manual-noprompt",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "9588c56f-91c2-470b-9e57-02106600855d",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-8lKiXm-repo\\9588c56f-91c2-470b-9e57-02106600855d.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "source": "startup"
+    },
+    {
+      "at_ms": 646,
+      "session_id": "9588c56f-91c2-470b-9e57-02106600855d",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-8lKiXm-repo\\9588c56f-91c2-470b-9e57-02106600855d.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "0d0bdeff-c232-4e5c-8eb8-3d59ed7d0363",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "Run this exact shell command with the Bash tool: node -e \"require('fs').writeFileSync('b.txt','x')\" . If it is refused, do not retry. Then reply DONE."
+    },
+    {
+      "at_ms": 2865,
+      "session_id": "9588c56f-91c2-470b-9e57-02106600855d",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-8lKiXm-repo\\9588c56f-91c2-470b-9e57-02106600855d.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "0d0bdeff-c232-4e5c-8eb8-3d59ed7d0363",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PreToolUse",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write b.txt using Node"
+      },
+      "tool_use_id": "toolu_012AsYeNiU4x4zAYEMscS2V3"
+    },
+    {
+      "at_ms": 3014,
+      "session_id": "9588c56f-91c2-470b-9e57-02106600855d",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-8lKiXm-repo\\9588c56f-91c2-470b-9e57-02106600855d.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "0d0bdeff-c232-4e5c-8eb8-3d59ed7d0363",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PermissionRequest",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write b.txt using Node"
+      },
+      "permission_suggestions": [
+        {
+          "type": "addRules",
+          "rules": [
+            {
+              "toolName": "Bash",
+              "ruleContent": "node -e \"require('fs').writeFileSync('b.txt','x')\""
+            }
+          ],
+          "behavior": "allow",
+          "destination": "localSettings"
+        }
+      ]
+    },
+    {
+      "at_ms": 5621,
+      "session_id": "9588c56f-91c2-470b-9e57-02106600855d",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-8lKiXm-repo\\9588c56f-91c2-470b-9e57-02106600855d.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "0d0bdeff-c232-4e5c-8eb8-3d59ed7d0363",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "Stop",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE. The command was blocked, so `b.txt` was not created. It needed permission, and this session has no way to approve it. As you asked, I didn't retry. To create the file, run the command yourself or allow it in your Claude Code permission settings.",
+      "background_tasks": [],
+      "session_crons": []
+    },
+    {
+      "at_ms": 5756,
+      "session_id": "9588c56f-91c2-470b-9e57-02106600855d",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-8lKiXm-repo\\9588c56f-91c2-470b-9e57-02106600855d.jsonl",
+      "cwd": "<CWD>",
+      "prompt_id": "0d0bdeff-c232-4e5c-8eb8-3d59ed7d0363",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ]
+}
