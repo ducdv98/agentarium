@@ -11,7 +11,7 @@
 **Status:** ready-for-agent
 
 - [ ] `.gitattributes` sends `.blend` files to Git LFS. Caches and temporary renders are ignored
-- [ ] The build refuses any Blender except the pinned version and checksum, and documents installing it on Ubuntu, Xvfb and Mesa included
+- [ ] The build refuses any Blender except the pinned version and checksum, and documents installing it on the Windows x64 render machine (spike 02 chose that host)
 - [ ] Every asset directory needs a licence manifest (source, author, URL, licence, changes). The build fails without one, and a combined `NOTICE` is generated
 - [ ] CC BY 4.0 licence file for the art, and a README note separating it from the MIT code
 - [ ] Generated atlases are committed. A CI check (no Blender) verifies each manifest's animations exist in its atlas

@@ -4,7 +4,7 @@ Goal: replace the dot-grid stand-in with the first illustrated scene, an isometr
 
 ## Scope
 
-- Two spikes before any production work: the Blender pipeline on the owner's Ubuntu VPS, then Pixi against Canvas 2D on that pipeline's atlas.
+- Two spikes before any production work: the Blender pipeline (run on the owner's Windows x64 machine, because the aarch64 VPS cannot run the pinned Blender), then Pixi against Canvas 2D on that pipeline's atlas.
 - A character look prototype the owner approves before any production art.
 - A maintained sprite pipeline: `.blend` sources in Git LFS, a pinned Blender build, render scripts, an atlas packer, one rebuild command and per-asset licence manifests.
 - The office Theme v1: a CC0 MPFB2/MakeHuman base on one Agentarium Rigify rig, animations we author ourselves, and a scripted room, Stations and props.
@@ -30,7 +30,7 @@ Out of scope for this phase:
 - **The needs-input marker belongs to the Renderer.** Themes may only style it (`palette.alert`). The waiting animation adds to the marker and never replaces it.
 - **Theme gaps:** at runtime, missing animations fall back and never crash. In CI, a theme we ship must be complete or the build fails.
 - **Animations are authored by us,** with AI-written keyframe scripts polished by hand in Blender. No redistributable animation library was found (`scene-art-pipeline.md`).
-- **Blender 5.2.2 LTS**, pinned by version and tarball checksum. The pipeline runs on Ubuntu without a GPU: Cycles on the CPU, or EEVEE through Mesa llvmpipe under Xvfb. The spike chooses between them.
+- **Blender 5.2.2 LTS**, pinned by version and download checksum. The pipeline renders with EEVEE on the owner's Windows x64 machine; the aarch64 VPS cannot run the pinned Blender (decided by spike 02, see `docs/research/scene-art-pipeline.md` section 5).
 - **Atlases** use `free-tex-packer-core` plus our own script that writes Pixi v8 `animations` arrays. Its licence and output are checked in the spike.
 - **Art is licensed CC BY 4.0** with a licence manifest per asset. Code stays MIT. Generated atlases are committed, so building the app never needs Blender.
 

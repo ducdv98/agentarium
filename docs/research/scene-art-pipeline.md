@@ -12,7 +12,8 @@ asset pack before publication.
 | Character source for office v1 | MakeHuman or MPFB2 CC0 output, with a small custom office mesh layer | Recommended |
 | Mixamo | Use only for local prototyping or rendered output. Do not commit Mixamo raw files | Rejected for public sources |
 | Blender pin | Blender 5.2.2 LTS, or the latest 5.2.x after a recorded validation render | Recommended |
-| Render engine | EEVEE Next through Xvfb and Mesa llvmpipe. Keep Workbench as a diagnostic fallback | Recommended; measure on the VPS |
+| Render engine | EEVEE, rendered on the owner's Windows x64 machine. Cycles is not used: it has no Shader to RGB, so it cannot give the toon look | Decided (phase-3-scene 02, see section 5) |
+| Render host | The owner's Windows x64 machine. The aarch64 VPS cannot run the pinned Blender: there is no Linux arm64 build | Decided (phase-3-scene 02) |
 | Atlas tool | `free-tex-packer-core` with the Pixi exporter and a checked-in animation metadata step | Recommended |
 | Public art licence | CC BY 4.0 for original and compatible derivatives, with per-source notices beside the assets | Recommended |
 
@@ -270,19 +271,65 @@ exact npm registry limit is **Not verified** here. Keep source `.blend` files
 out of the runtime package, compress PNGs, split themes into optional assets if
 needed, and measure the packed tarball with `npm pack --dry-run` in CI.
 
+## 5. Spike results (phase-3-scene 02)
+
+The spike is `spikes/blender-pipeline/`. The pinned run is in
+`spikes/blender-pipeline/results/windows-x64-desktop-hg8er1k/`: Blender 5.2.2 LTS
+`d13f752e3b9c` on Windows 11, AMD Ryzen 7 8745H (16 threads), 31 GB RAM,
+NVIDIA RTX 4050 Laptop GPU. It rendered the MPFB2 mannequin in walk (12 frames)
+and idle (16 frames), four directions, at 320×416, plus a shirt mask.
+
+| Run | Beauty s/frame (mean, max) | Mask s/frame | Wall s | Peak MB (process tree, sampled) |
+|---|---|---|---|---|
+| EEVEE, headless (`-b`, GPU) | 0.37, 2.15 | 0.34 | 99 | 779 |
+| EEVEE, desktop session | 0.45, 0.93 | 0.34 | 264 | 780 |
+| Cycles CPU 64 spp + OIDN, headless | 1.61, 2.06 | 1.17 | 333 | 636 |
+| Cycles CPU, desktop session | 1.60, 1.81 | 1.23 | 38 | 802 |
+
+The in-process peak was not reported on Windows. The desktop wall times cover
+only a few reference frames.
+
+- **Headless matches desktop.** Headless and desktop frames are identical
+  (mean and p99 diff 0 out of 255) for EEVEE and for Cycles, on the beauty and
+  mask layers.
+- **The pin guard works.** It refuses any build other than 5.2.2
+  `d13f752e3b9c`. It must compare `bpy.app.version`, because the official
+  build's `version_string` is "5.2.2 LTS".
+- **Pixi v8 plays the atlases.** `free-tex-packer-core` 0.3.9 is MIT; its
+  dependencies are MIT, plus `sharp` under Apache-2.0. It does not emit
+  animation arrays, so the spike's own step adds `animations`, a per-frame
+  feet `anchor` and `meta.scale: 2`. Pixi 8.21.0 in Chrome loads both atlases
+  at resolution 2, animates 16 of 16 `AnimatedSprite`s, and tints the shirt
+  layer built from the mask pass.
+- **EEVEE and Cycles differ by design.** Cycles has no Shader to RGB, so it
+  renders flat Principled materials, not the toon look from phase-3-scene 01.
+  EEVEE vs Cycles diffs (mean 74.8 /255) are expected, not a defect.
+
+**Choice: EEVEE, on the owner's Windows x64 machine.** Only EEVEE gives the
+toon look, and it is about 4 times faster than Cycles here. Blender 5.2.2 ships
+for Windows x64 and Linux x64 only, so the aarch64 VPS cannot run the pinned
+build; the owner chose not to build it from source or emulate it. Because the
+atlases are committed, nothing else needs Blender.
+
+**Not measured at the pin: the GPU-less Linux path** (EEVEE through Xvfb and
+Mesa llvmpipe, Cycles on the CPU). The only evidence is unpinned: apt Blender
+4.0.2 on the aarch64 VPS rendered 320×416 toon frames through Xvfb and
+llvmpipe (Mesa 25.2.8) in about 2.1 s each with a basic mannequin, and about
+5.4 s with the MPFB2 character. The spike still supports a Linux x64 run
+(`spikes/blender-pipeline/README.md`, step 5) if a CI or Linux render host is
+wanted later.
+
 ## Open questions
 
 - Does the chosen MPFB2 export include only CC0 core assets, or any third-party
   clothing or texture with a different licence?
 - Which canonical Rigify deformation skeleton and retargeting method gives the
   cleanest walk, sit and typing actions?
-- Does Blender 5.2.2 run EEVEE and Workbench reliably under the target Ubuntu,
-  Xvfb and Mesa llvmpipe image?
+- Does Blender 5.2.2 run EEVEE reliably under Ubuntu x64, Xvfb and Mesa
+  llvmpipe? Not measured at the pin; it only matters if a Linux render host is
+  added (section 5).
 - Is Vulkan with Mesa lavapipe materially faster or more deterministic than
   Xvfb/llvmpipe? Not verified.
-- What are measured Cycles CPU time and peak RSS for one 256x256 office frame?
-- Does the pinned `free-tex-packer-core` version emit Pixi v8 animation arrays,
-  or must the project always add them in its own script?
 - Should color masks be separate atlases, or should the first office pack use
   a small number of pre-colored variants?
 - What atlas size and theme split keep the npm package acceptably small?
@@ -295,7 +342,8 @@ needed, and measure the packed tarball with `npm pack --dry-run` in CI.
   redistribution right, and exact attribution must be recorded per asset.
 - “Runs headless on Linux without a GPU” is true for Cycles CPU and can be
   true for EEVEE/Workbench with software graphics, but `blender -b` alone is
-  not sufficient. Phase 3 needs an Ubuntu/Mesa/Xvfb smoke test.
+  not sufficient. The phase-3-scene 02 spike moved rendering to the owner's
+  Windows x64 machine instead (section 5).
 - Pinning “one exact Blender version” must include the exact patch build and
   binary checksum. Blender 5.2 LTS is the recommended starting pin.
 - The atlas ticket needs a Pixi v8 JSON animation-array check and an explicit

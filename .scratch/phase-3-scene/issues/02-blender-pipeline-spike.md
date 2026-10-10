@@ -4,14 +4,14 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-human. The spike is built (`spikes/blender-pipeline/`). The pinned 5.2.2 run happens on the owner's Windows x64 machine, because the VPS is aarch64 (see Comments). Follow `spikes/blender-pipeline/README.md`.
+**Status:** resolved. The VPS cannot run the pinned Blender, so the owner closed the spike on the native Windows run; the WSL2 run was dropped. EEVEE on the owner's Windows x64 machine is chosen (`docs/research/scene-art-pipeline.md`, section 5).
 
-- [ ] A `bpy` script renders walk and idle in 4 directions with a transparent background, from the agreed camera, with fixed lights and colour management, to deterministic file names
-- [ ] The script refuses any Blender build except the pinned version, and logs the build hash, engine, CPU and Mesa version
-- [ ] On the VPS: Cycles on the CPU, and EEVEE through Xvfb with Mesa llvmpipe, are both tried. Record seconds per frame, peak memory, and whether each output matches a desktop render
-- [ ] A colour-mask (ID) pass is rendered in the same frame layout, and tinting it in Pixi is tried
-- [ ] `free-tex-packer-core`: its licence is checked, it packs the frames, and a script adds `animations` arrays and `meta.scale` for 2×. Pixi v8 loads the result and plays an `AnimatedSprite`
-- [ ] Record which engine is chosen and why. The figures go into `docs/research/scene-art-pipeline.md`
+- [x] A `bpy` script renders walk and idle in 4 directions with a transparent background, from the agreed camera, with fixed lights and colour management, to deterministic file names
+- [x] The script refuses any Blender build except the pinned version, and logs the build hash, engine, CPU and Mesa version
+- [x] Cycles on the CPU and EEVEE are both tried, with seconds per frame, peak memory, and whether each output matches a desktop render. Done on the owner's Windows x64 machine, because the VPS cannot run 5.2.2. The GPU-less Linux path (EEVEE through Xvfb with Mesa llvmpipe) was tried only with the unpinned apt 4.0.2 on the VPS
+- [x] A colour-mask (ID) pass is rendered in the same frame layout, and tinting it in Pixi is tried
+- [x] `free-tex-packer-core`: its licence is checked, it packs the frames, and a script adds `animations` arrays and `meta.scale` for 2×. Pixi v8 loads the result and plays an `AnimatedSprite`
+- [x] Record which engine is chosen and why. The figures go into `docs/research/scene-art-pipeline.md`
 
 ## Comments
 
@@ -36,3 +36,5 @@
 - 2026-10-10: Pinned native Windows run done, in `spikes/blender-pipeline/results/windows-x64-desktop-hg8er1k/` (Ryzen 7 8745H, 16 threads, RTX 4050). All four runs used 5.2.2 LTS `d13f752e3b9c` and passed the pin check. Headless and desktop frames are identical (diff 0) for EEVEE and Cycles, on both the beauty and the mask layers. EEVEE (GPU) takes about 0.37 s per beauty frame and Cycles (CPU, 64 spp) about 1.6 s; the process tree peaks at about 640 to 800 MB. Pixi 8.21.0 in Chrome loads both atlases at resolution 2 and animates 16 of 16 sprites (`ok: true`), including Cycles at 2x zoom with the rose shirt tint; the screenshot is `pixi.jpg`. Two fixes were needed: the pin check reads `bpy.app.version`, because the official build's `version_string` is "5.2.2 LTS", and `pipeline.mjs` no longer calls `process.exit()` while a fetch socket is open, which tripped a libuv assertion on Windows. The Pixi page's "advanced" check runs once, 1.5 s after a build, so it reads 0 in a background tab; check it with the tab in front.
   
   Still to do, owner: the WSL2 run (README step 5). It is the only run that covers the GPU-less Linux path. After that: the engine choice and figures in `docs/research/scene-art-pipeline.md`, and the ADR 0007 wording.
+- 2026-10-10 (owner): The VPS cannot run Blender for this pipeline. Close 02 on the native Windows run, without the WSL2 run.
+- 2026-10-10: Closed. EEVEE on the owner's Windows x64 machine is chosen: only EEVEE gives the toon look, and it is about 4 times faster than Cycles. The figures are in `docs/research/scene-art-pipeline.md` section 5. ADR 0007, the spec and ticket 06 now name the Windows render host instead of a GPU-less Ubuntu one.
