@@ -49,6 +49,8 @@ Settings, read from the environment:
 - Hook events and the live view require a bearer token, created on first use in `~/.agentarium/token`.
 - `init` writes that token **in plain text** into the Claude Code settings file, since hooks send it with each request. The token protects against other local processes and web pages, not against anyone who can read your files: any process running as you could read it from wherever it was stored.
 - The URL printed by `start` contains the token. Do not share it.
+- On POSIX, settings keep their existing mode; new settings and temps start owner-only (`0600`). Backups are owner-only and no wider than settings. New config directories use `0700`.
+- On Windows, file modes do not apply. Settings, temps and backups inherit the Claude config directory's ACL (by default, only the user, SYSTEM and Administrators). Replacing settings by rename does not preserve a custom explicit ACL on `settings.json`; set it on the directory instead.
 
 ## Upgrading
 

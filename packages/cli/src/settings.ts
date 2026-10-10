@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import { closeSync, existsSync, mkdirSync, openSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, closeSync, existsSync, fchmodSync, mkdirSync, openSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 
@@ -111,6 +111,12 @@ function snapshot(path: string): Buffer | null {
   }
 }
 
+/** Permission bits, or null when absent. */
+const modeOf = (path: string): number | null => {
+  const stat = statSync(path, { throwIfNoEntry: false });
+  return stat ? stat.mode & 0o777 : null;
+};
+
 function readSettings(path: string, bytes: Buffer | null): Json {
   const raw = bytes?.toString("utf8") ?? "";
   if (!raw.trim()) return {};
@@ -138,6 +144,9 @@ type Plan<T> = { result: T; commit?: Commit };
 function compareAndSwap<T>(path: string, plan: (raw: Buffer | null) => Plan<T>, opts: WriteOptions): T {
   for (let attempt = 1; attempt <= SETTINGS_WRITE_ATTEMPTS; attempt++) {
     const raw = snapshot(path);
+    const mode = raw === null ? null : modeOf(path);
+    // Existing settings keep their mode; new ones are owner-only. A file removed since the read falls back to private, and the re-read retries.
+    const targetMode = mode ?? 0o600;
     const { result, commit } = plan(raw);
     if (!commit) return result;
     let tmp: string | undefined;
@@ -145,23 +154,32 @@ function compareAndSwap<T>(path: string, plan: (raw: Buffer | null) => Plan<T>, 
     let committed = false;
     try {
       if (commit.kind !== "delete") {
-        mkdirSync(dirname(path), { recursive: true });
+        mkdirSync(dirname(path), { recursive: true, mode: 0o700 });
         const candidate = `${path}.agentarium-${process.pid}-${randomBytes(16).toString("hex")}.tmp`;
-        const fd = openSync(candidate, "wx");
+        const fd = openSync(candidate, "wx", 0o600);
         tmp = candidate; // Only clean up a temp we successfully created ourselves.
         try {
           writeFileSync(fd, commit.content);
+          fchmodSync(fd, targetMode);
         } finally {
           closeSync(fd);
         }
       }
       if (commit.kind === "write" && commit.backup && raw !== null) {
-        writeFileSync(backupPath(path), raw, { flag: "wx" });
+        const fd = openSync(backupPath(path), "wx", 0o600);
         ownBackup = true;
+        try {
+          writeFileSync(fd, raw);
+          // Never wider than owner read/write or the settings file, regardless of umask.
+          fchmodSync(fd, targetMode & 0o600);
+        } finally {
+          closeSync(fd);
+        }
       }
       opts.onPrepared?.(attempt);
       const current = snapshot(path);
       if (raw === null ? current !== null : current === null || !raw.equals(current)) continue;
+      if (modeOf(path) !== mode) continue; // A concurrent chmod (e.g. tightening) must not be undone by our rename.
       if (commit.kind === "delete") rmSync(path);
       else {
         renameSync(tmp!, path);
@@ -182,8 +200,15 @@ export interface InstallResult {
   backedUp: boolean;
 }
 
+/** Narrows a backup left by an earlier version to owner read/write at most. */
+function protectBackup(settingsPath: string): void {
+  const mode = modeOf(backupPath(settingsPath));
+  if (mode !== null && mode & 0o177) chmodSync(backupPath(settingsPath), mode & 0o600);
+}
+
 /** Idempotent. Backs up pre-existing settings once, before our first change. */
 export function installHooks(settingsPath: string, opts: { port: number; token: string }, writeOpts: WriteOptions = {}): InstallResult {
+  protectBackup(settingsPath);
   return compareAndSwap<InstallResult>(settingsPath, (raw) => {
     const settings = readSettings(settingsPath, raw);
     const problem = hookShapeProblem(settings);

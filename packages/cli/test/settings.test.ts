@@ -1,8 +1,13 @@
-import { existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdtempSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { HOOK_EVENTS, HOOK_TIMEOUT_S, SETTINGS_WRITE_ATTEMPTS, backupPath, installHooks, uninstallHooks } from "../src/settings";
+
+vi.mock("node:fs", async (original) => {
+  const fs = await original<typeof import("node:fs")>();
+  return { ...fs, renameSync: vi.fn(fs.renameSync) };
+});
 
 const opts = { port: 47821, token: "tok" };
 let file: string;
@@ -14,6 +19,134 @@ const userSettings = {
   model: "opus",
   hooks: { PreToolUse: [{ matcher: "Bash", hooks: [{ type: "command", command: "echo hi" }] }] },
 };
+
+describe("permissions and cleanup", () => {
+  const mode = (path: string) => statSync(path).mode & 0o777;
+  const temps = () => readdirSync(dirname(file)).filter((name) => name.endsWith(".tmp"));
+
+  it.skipIf(process.platform === "win32").each([0o600, 0o640])("preserves mode %i through install, surgical rewrite and restore", (target) => {
+    const original = JSON.stringify(userSettings, null, 4);
+    writeFileSync(file, original);
+    chmodSync(file, target);
+    installHooks(file, opts);
+    expect(mode(file)).toBe(target);
+    expect(mode(backupPath(file))).toBe(target & 0o600);
+    const installed = read();
+    writeFileSync(file, JSON.stringify({ ...JSON.parse(installed), theme: "dark" }));
+    expect(uninstallHooks(file).restoredBackup).toBe(false);
+    expect(mode(file)).toBe(target);
+    writeFileSync(file, installed);
+    expect(uninstallHooks(file).restoredBackup).toBe(true);
+    expect(read()).toBe(original);
+    expect(mode(file)).toBe(target);
+  });
+
+  it.skipIf(process.platform === "win32").each([0o000, 0o077])("creates private settings, temps and parent under umask %i", (mask) => {
+    file = join(dirname(file), "claude", "settings.json");
+    const previous = process.umask(mask);
+    try {
+      installHooks(file, opts, { onPrepared: () => {
+        expect(temps()).toHaveLength(1);
+        expect(mode(join(dirname(file), temps()[0]!))).toBe(0o600);
+      } });
+      expect(mode(file)).toBe(0o600);
+      expect(mode(dirname(file))).toBe(0o700);
+      expect(temps()).toEqual([]);
+    } finally {
+      process.umask(previous);
+    }
+  });
+
+  it.skipIf(process.platform === "win32").each([0o000, 0o077])("preserves the exact existing mode under umask %i", (mask) => {
+    writeFileSync(file, JSON.stringify(userSettings));
+    chmodSync(file, 0o640);
+    const previous = process.umask(mask);
+    try {
+      installHooks(file, opts, { onPrepared: () => {
+        expect(mode(join(dirname(file), temps()[0]!))).toBe(0o640);
+        expect(mode(backupPath(file))).toBe(0o600);
+      } });
+      expect(mode(file)).toBe(0o640);
+    } finally {
+      process.umask(previous);
+    }
+  });
+
+  it.skipIf(process.platform === "win32")("restores using the current settings mode, not the backup's", () => {
+    writeFileSync(file, JSON.stringify(userSettings));
+    chmodSync(file, 0o600);
+    installHooks(file, opts);
+    chmodSync(file, 0o640);
+    expect(uninstallHooks(file).restoredBackup).toBe(true);
+    expect(mode(file)).toBe(0o640);
+  });
+
+  it.skipIf(process.platform === "win32")("re-reads the mode when a concurrent edit forces a retry", () => {
+    writeFileSync(file, JSON.stringify(userSettings));
+    chmodSync(file, 0o600);
+    installHooks(file, opts, { onPrepared: (attempt) => {
+      if (attempt === 1) {
+        writeFileSync(file, JSON.stringify({ ...userSettings, theme: "dark" }));
+        chmodSync(file, 0o640);
+      }
+    } });
+    expect(mode(file)).toBe(0o640);
+    expect(mode(backupPath(file))).toBe(0o600);
+    expect(temps()).toEqual([]);
+  });
+
+  it.skipIf(process.platform === "win32")("retries rather than undo a concurrent chmod that tightens settings", () => {
+    writeFileSync(file, JSON.stringify(userSettings));
+    chmodSync(file, 0o640);
+    const attempts: number[] = [];
+    installHooks(file, opts, { onPrepared: (attempt) => {
+      attempts.push(attempt);
+      if (attempt === 1) chmodSync(file, 0o600);
+    } });
+    expect(attempts).toEqual([1, 2]);
+    expect(mode(file)).toBe(0o600);
+  });
+
+  it.skipIf(process.platform === "win32")("narrows a readable backup left by an earlier version", () => {
+    writeFileSync(file, JSON.stringify(userSettings));
+    writeFileSync(backupPath(file), JSON.stringify(userSettings));
+    chmodSync(backupPath(file), 0o644);
+    installHooks(file, opts);
+    expect(mode(backupPath(file))).toBe(0o600);
+  });
+
+  it.each(["preparation", "rename"])("cleans up after a %s failure without changing the original bytes or mode", (failure) => {
+    writeFileSync(file, JSON.stringify(userSettings));
+    const original = read();
+    const originalMode = mode(file);
+    if (failure === "rename") vi.mocked(renameSync).mockImplementationOnce(() => { throw new Error("rename failure"); });
+    expect(() => installHooks(file, opts, { onPrepared: () => {
+      expect(temps()).toHaveLength(1);
+      if (failure === "preparation") throw new Error("preparation failure");
+    } })).toThrow(`${failure} failure`);
+    expect(read()).toBe(original);
+    if (process.platform !== "win32") expect(mode(file)).toBe(originalMode);
+    expect(temps()).toEqual([]);
+    expect(existsSync(backupPath(file))).toBe(false);
+  });
+
+  it.runIf(process.platform === "win32")("replaces settings by rename and restores writable backup bytes on Windows", () => {
+    const original = JSON.stringify(userSettings, null, 4);
+    writeFileSync(file, original);
+    const renames = vi.mocked(renameSync).mock.calls.length;
+    installHooks(file, opts);
+    expect(uninstallHooks(file).restoredBackup).toBe(true);
+    expect(vi.mocked(renameSync).mock.calls.slice(renames)).toEqual([
+      [expect.stringMatching(/\.tmp$/), file],
+      [expect.stringMatching(/\.tmp$/), file],
+    ]);
+    expect(read()).toBe(original);
+    expect(existsSync(backupPath(file))).toBe(false);
+    expect(temps()).toEqual([]);
+    writeFileSync(file, "{}\n");
+    expect(read()).toBe("{}\n");
+  });
+});
 
 describe("concurrent edits", () => {
   const temps = () => readdirSync(dirname(file)).filter((name) => name.endsWith(".tmp"));
