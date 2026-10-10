@@ -19,3 +19,4 @@
   - Cap at 30 fps while animating.
   - Cache static props only in depth bands (one `cacheAsTexture` container per depth row).
   - See `docs/research/rendering.md`, section "Spike results (2026-10-10)".
+- 2026-10-11 (from 05): The contract test is `describeRendererContract(name, create)` in `packages/renderer/test/renderer-contract.ts`. Call it with the isometric Renderer's factory. It checks `Renderer.markers()`, so build the markers from `needsInputMarkers(theme, world)` and draw them above the Theme art. The contract cannot check pixels across engines, so also add a Pixi-specific test that the marker draws above the agent sprites, as `test/dot-grid-renderer.test.ts` does for the canvas.

@@ -1,6 +1,6 @@
 import { applyPatch, emptyWorld, visibleAgents, type WorldState } from "@agentarium/core";
 import { layoutWorld, type Layout } from "./layout";
-import type { RenderUpdate, Renderer } from "./renderer";
+import { needsInputMarkers, type NeedsInputMarker, type RenderUpdate, type Renderer } from "./renderer";
 import type { Animation, Theme } from "./theme";
 import { dotGrid } from "./themes/dot-grid";
 
@@ -16,12 +16,14 @@ export function createDotGridRenderer(initial: Theme = dotGrid): Renderer {
   let canvas: HTMLCanvasElement | null = null;
   let host: HTMLElement | null = null;
   let layout: Layout = { lanes: [], dots: [], cols: 0, rows: 0 };
+  let markers: NeedsInputMarker[] = [];
   let frame = 0;
 
-  const animated = (a: Animation, needs: boolean): boolean => needs || a === "pulse" || a === "blink";
+  const animated = (a: Animation): boolean => a === "pulse" || a === "blink";
 
   function relayout(): void {
     layout = layoutWorld(theme, world, visibleAgents(world));
+    markers = needsInputMarkers(theme, world);
     schedule();
   }
 
@@ -63,33 +65,35 @@ export function createDotGridRenderer(initial: Theme = dotGrid): Renderer {
     }
     ctx.globalAlpha = 1;
 
-    let animating = false;
+    const t = now / 1000;
+    let animating = markers.length > 0;
     for (const d of layout.dots) {
-      const { style, needsInput } = d.resolved;
-      const t = now / 1000;
+      const { style } = d.resolved;
       let alpha = 1;
       if (style.animation === "blink") alpha = Math.sin(t * 6) > 0 ? 1 : 0.35;
       else if (style.animation === "fade") alpha = 0.5;
       else if (style.animation === "pulse") alpha = 0.7 + 0.3 * Math.sin(t * 4);
-      animating ||= animated(style.animation, needsInput);
+      animating ||= animated(style.animation);
 
       ctx.globalAlpha = alpha;
       ctx.fillStyle = style.color;
       ctx.beginPath();
       ctx.arc(px(d.col), py(d.row), RADIUS, 0, Math.PI * 2);
       ctx.fill();
-
-      if (needsInput) {
-        ctx.globalAlpha = 1;
-        ctx.strokeStyle = theme.palette.alert;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(px(d.col), py(d.row), RADIUS + 4 + 2 * Math.sin(t * 5), 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.lineWidth = 1;
-      }
     }
+
+    // Needs-input markers last and fully opaque, so no theme style can hide them.
     ctx.globalAlpha = 1;
+    ctx.lineWidth = 2;
+    for (const m of markers) {
+      const d = pos.get(m.key);
+      if (!d) continue;
+      ctx.strokeStyle = m.color;
+      ctx.beginPath();
+      ctx.arc(px(d.col), py(d.row), RADIUS + 4 + 2 * Math.sin(t * 5), 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.lineWidth = 1;
     if (animating) schedule();
   }
 
@@ -118,6 +122,9 @@ export function createDotGridRenderer(initial: Theme = dotGrid): Renderer {
       canvas.width = Math.max(1, Math.floor(host.clientWidth * dpr));
       canvas.height = Math.max(1, Math.floor(host.clientHeight * dpr));
       schedule();
+    },
+    markers() {
+      return markers;
     },
     dispose() {
       if (frame) cancelAnimationFrame(frame);

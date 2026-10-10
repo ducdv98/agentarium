@@ -51,6 +51,10 @@ describe("theme manifest", () => {
     expect(validateTheme(broken)).toHaveLength(3);
   });
 
+  it("needs an alert colour for the needs-input marker", () => {
+    expect(validateTheme({ ...dotGrid, palette: { ...dotGrid.palette, alert: "" } })).toEqual(["palette.alert: needs a color"]);
+  });
+
   it("every state x action category resolves in dot-grid", () => {
     for (const status of AGENT_STATES) {
       for (const category of [...ACTION_CATEGORIES, null]) {

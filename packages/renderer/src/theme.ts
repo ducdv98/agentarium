@@ -125,6 +125,7 @@ export function validateTheme(theme: Theme, options: { strict?: boolean } = {}):
   checkStation("rest", theme.rest);
   checkStation("fallback.station", theme.fallback?.station);
   if (!theme.fallback?.state?.color) problems.push("fallback.state: needs a color");
+  if (!theme.palette?.alert) problems.push("palette.alert: needs a color");
   for (const c of Object.keys(theme.stations ?? {})) {
     if (!(ACTION_CATEGORIES as readonly string[]).includes(c)) problems.push(`stations.${c}: not an action category`);
   }
