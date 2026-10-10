@@ -36,6 +36,7 @@ async function setup(): Promise<Context> {
     ...contextFromEnv({
       AGENTARIUM_HOME: join(dir, "home"),
       CLAUDE_CONFIG_DIR: join(dir, "claude"),
+      CODEX_HOME: join(dir, "codex-missing"),
       AGENTARIUM_PORT: String(port),
     }),
     // Bundled by the global setup.
@@ -62,7 +63,7 @@ describe("init/uninstall", () => {
     expect(await init(ctx)).toMatchObject({ changed: true, daemon: "running" });
     expect(await init(ctx)).toMatchObject({ changed: false, daemon: "running" });
     const { stdout, stderr } = await runInit(ctx);
-    expect(stdout.trim().split(/\r?\n/)).toEqual([`Hooks already up to date in ${ctx.settingsPath}.`]);
+    expect(stdout.trim().split(/\r?\n/)).toEqual([`Hooks already up to date in ${ctx.settingsPath}.`, `Codex hooks skipped (${ctx.codexHooksPath}: Codex home not found).`]);
     expect(stderr).toBe("");
   }, 30_000);
 
@@ -74,6 +75,7 @@ describe("init/uninstall", () => {
     const { stdout, stderr } = await runInit(ctx);
     expect(stdout.trim().split(/\r?\n/)).toEqual([
       `Hooks already up to date in ${ctx.settingsPath}.`,
+      `Codex hooks skipped (${ctx.codexHooksPath}: Codex home not found).`,
       "Hooks will do nothing until the daemon runs. Start it with: agentarium start",
     ]);
     expect(stderr).toBe("");
@@ -102,6 +104,7 @@ describe("init/uninstall", () => {
       const { stdout, stderr } = await runInit(ctx);
       expect(stdout.trim().split(/\r?\n/)).toEqual([
         `Hooks already up to date in ${ctx.settingsPath}.`,
+        `Codex hooks skipped (${ctx.codexHooksPath}: Codex home not found).`,
         hint,
       ]);
       expect(stderr).toBe("");

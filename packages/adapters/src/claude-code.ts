@@ -1,3 +1,4 @@
+import { basename, categoryForMcpTool, clip, isObj, text } from "./shared";
 import {
   ROOT_AGENT,
   SCHEMA_VERSION,
@@ -18,7 +19,6 @@ export interface ClaudeCodeAdapter {
 }
 
 const PROVIDER = "claude-code";
-const MAX_SUMMARY = 80;
 const MAX_PENDING_AGENT_CALLS = 100;
 
 const CATEGORY_BY_TOOL: Record<string, ActionCategory> = {
@@ -40,20 +40,6 @@ const CATEGORY_BY_TOOL: Record<string, ActionCategory> = {
 
 const MCP_PREFIX = "mcp__";
 
-/** MCP tools act on the outside world, so an unrecognised verb defaults to `exec`, not `think`. */
-const categoryForMcpTool = (tool: string): ActionCategory => {
-  const name = tool.split("__").at(-1) ?? tool;
-  const verb = name.toLowerCase().split(/[_-]/)[0] ?? "";
-  if (["read", "get", "list", "view", "show"].includes(verb)) return "read";
-  if (["search", "find", "query", "grep", "lookup"].includes(verb)) return "search";
-  const writeVerbs = [
-    "write", "create", "update", "edit", "delete", "remove", "set", "add", "save", "post", "put", "send", "move", "rename",
-  ];
-  if (writeVerbs.includes(verb)) return "write";
-  if (["navigate", "fetch", "browse", "request", "http", "download", "upload"].includes(verb)) return "network";
-  return "exec";
-};
-
 /**
  * Maps a tool name to an action category. Built-in tools use a fixed table; MCP tools are classified
  * by the verb in their name. Other unknown tools default to `think`; the real name stays in `tool`.
@@ -63,17 +49,6 @@ export const categoryForTool = (tool: string): ActionCategory => {
   if (known) return known;
   return tool.startsWith(MCP_PREFIX) ? categoryForMcpTool(tool) : "think";
 };
-
-type Obj = Record<string, unknown>;
-const isObj = (v: unknown): v is Obj => typeof v === "object" && v !== null && !Array.isArray(v);
-const text = (v: unknown): string | undefined => (typeof v === "string" && v.length > 0 ? v : undefined);
-
-const clip = (s: string): string => {
-  const line = (s.split(/\r?\n/, 1)[0] ?? "").trim();
-  return line.length > MAX_SUMMARY ? `${line.slice(0, MAX_SUMMARY - 1)}…` : line;
-};
-
-const basename = (p: string): string => p.split(/[\\/]/).filter(Boolean).at(-1) ?? p;
 
 /** Reduces a tool call to a short label. Never includes file contents or full commands. */
 function summarize(tool: string, input: unknown): string | undefined {

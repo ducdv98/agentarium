@@ -2,7 +2,7 @@
 
 Agentarium is a live view of your AI agents. Every agent it observes appears as a character in a shared scene, and what the agent is doing shows up as behaviour. Its main job is triage: seeing at a glance which agent is waiting on you.
 
-It currently observes Claude Code, including sub-agents. Each repository gets its own room, and the view switches to a room where an agent is waiting on you, unless you have picked a room yourself. Everything runs locally on one machine.
+It observes Claude Code and Codex CLI, including sub-agents. Each repository gets its own room, and the view switches to a room where an agent is waiting on you, unless you have picked a room yourself. Everything runs locally on one machine.
 
 ## Install
 
@@ -21,16 +21,16 @@ agentarium init
 agentarium start
 ```
 
-`start` prints a URL with your token in it. Open it in a browser and keep the tab open. Claude Code sessions started after `init` are picked up automatically.
+`start` prints a URL with your token in it. Open it in a browser and keep the tab open. Claude Code sessions started after `init` are picked up automatically. Codex sessions are picked up after you review and trust the new hooks in Codex. Hooks only work while the daemon runs.
 
 ## Commands
 
 | Command | What it does |
 | --- | --- |
-| `agentarium init` | Adds Agentarium's hooks to your user-level Claude Code settings file (`~/.claude/settings.json`, or `$CLAUDE_CONFIG_DIR/settings.json`). Backs up the existing file once, to `settings.json.agentarium-backup`, before its first change. Safe to run again. |
+| `agentarium init` | Adds Agentarium's hooks to your user-level Claude Code settings file (`~/.claude/settings.json`, or `$CLAUDE_CONFIG_DIR/settings.json`). If the Codex home exists, it also adds command hooks to `~/.codex/hooks.json` (or `$CODEX_HOME/hooks.json`). Backs up each existing file once with an `.agentarium-backup` suffix. Safe to run again. Codex shows “Hooks need review” before its new hooks run. |
 | `agentarium start` | Starts the daemon in the background on `127.0.0.1:47821` and prints the URL to open. If it is already running, prints the URL again. |
 | `agentarium stop` | Stops the daemon. |
-| `agentarium uninstall` | Removes Agentarium's hooks from the Claude Code settings file and leaves your other settings alone. If removing the hooks leaves exactly what the backup holds, the backup file is restored as it was; otherwise the backup is left in place. |
+| `agentarium uninstall` | Removes Agentarium's hooks from the Claude Code settings file and Codex `hooks.json`, leaving your other settings alone. If removing the hooks leaves exactly what the backup holds, the backup file is restored as it was; otherwise the backup is left in place. |
 
 `init` and `uninstall` re-read settings before committing and retry if another writer changed them. This guard only narrows the race: Claude Code and editors do not cooperate through locking, so a change between the final re-read and rename (or delete) can still be replaced. The remaining window is a single re-read plus rename (or delete).
 
@@ -41,6 +41,7 @@ Settings, read from the environment:
 - `AGENTARIUM_PORT`: port for the daemon (default `47821`). Run `init` again after changing it, so the hooks point at the new port.
 - `AGENTARIUM_HOME`: where Agentarium keeps its token, event log and daemon log (default `~/.agentarium`).
 - `CLAUDE_CONFIG_DIR`: the Claude Code configuration directory, if it is not `~/.claude`.
+- `CODEX_HOME`: the Codex configuration directory, if it is not `~/.codex`.
 
 ## Security notes
 
@@ -71,7 +72,7 @@ agentarium uninstall
 npm uninstall -g @agentarium/cli
 ```
 
-If you remove the package first, its hooks stay in your Claude Code settings file. They are harmless, as they fail quickly and silently when the daemon is gone, but they stay there until you remove them by hand or run `npx @agentarium/cli uninstall`. Delete `~/.agentarium` to remove the token and the event log.
+If you remove the package first, its hooks stay in your Claude Code settings file and Codex `hooks.json`. They are harmless, as they fail quickly and silently when the daemon is gone, but they stay there until you remove them by hand or run `npx @agentarium/cli uninstall`. Delete `~/.agentarium` to remove the token and the event log.
 
 ## Licence
 

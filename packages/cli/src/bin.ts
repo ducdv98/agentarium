@@ -1,8 +1,9 @@
 #!/usr/bin/env node
+import { forwardCodexHook } from "./codex-hook";
 import { readOrCreateToken } from "./paths";
 import { contextFromEnv, differentVersionMessage, init, start, stop, uninstall } from "./commands";
 
-const USAGE = "usage: agentarium <init|uninstall|start|stop>";
+const USAGE = "usage: agentarium <init|uninstall|start|stop|hook codex --port <n> [--home <dir>]>";
 
 async function main(argv: string[]): Promise<number> {
   const ctx = contextFromEnv();
@@ -13,6 +14,13 @@ async function main(argv: string[]): Promise<number> {
         r.changed
           ? `Hooks written to ${r.settingsPath} (port ${r.port})${r.backedUp ? "; original backed up" : ""}.`
           : `Hooks already up to date in ${r.settingsPath}.`,
+      );
+      console.log(
+        r.codex === "skipped"
+          ? `Codex hooks skipped (${r.codexHooksPath}: Codex home not found).`
+          : r.codex.changed
+            ? `Codex hooks written to ${r.codexHooksPath}. Hooks need review in Codex before they run.`
+            : `Codex hooks already up to date in ${r.codexHooksPath}.`,
       );
       if (r.daemon === "not-running") {
         console.log("Hooks will do nothing until the daemon runs. Start it with: agentarium start");
@@ -28,6 +36,20 @@ async function main(argv: string[]): Promise<number> {
           ? `Hooks removed from ${r.settingsPath}${r.restoredBackup ? " (backup restored)" : ""}.`
           : "Nothing to remove.",
       );
+      console.log(
+        r.codex === "skipped"
+          ? "Codex hooks not installed."
+          : r.codex.changed
+            ? `Codex hooks removed from ${r.codexHooksPath}${r.codex.restoredBackup ? " (backup restored)" : ""}.`
+            : "No Codex hooks to remove.",
+      );
+      return 0;
+    }
+    case "hook": {
+      const flag = (name: string) => argv[argv.indexOf(name) + 1];
+      if (argv[1] === "codex" && argv.includes("--port")) {
+        await forwardCodexHook({ home: argv.includes("--home") ? flag("--home") ?? ctx.home : ctx.home, port: Number(flag("--port")) });
+      }
       return 0;
     }
     case "start": {
@@ -53,7 +75,7 @@ main(process.argv.slice(2)).then(
     process.exitCode = code;
   },
   (err: unknown) => {
-    console.error(err instanceof Error ? err.message : String(err));
-    process.exitCode = 1;
+    if (process.argv[2] !== "hook") console.error(err instanceof Error ? err.message : String(err));
+    process.exitCode = process.argv[2] === "hook" ? 0 : 1;
   },
 );

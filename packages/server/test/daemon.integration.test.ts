@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, realpathSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, realpathSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import http from "node:http";
@@ -261,5 +261,21 @@ describe("rooms announcements and join", () => {
     const last = client.messages.filter((m) => m.type === "snapshot").at(-1);
     expect(last).toMatchObject({ room: roomB });
     client.ws.close();
+  });
+});
+
+
+describe("Codex hooks", () => {
+  it("ingests fixture payloads into a codex agent", async () => {
+    const d = await start();
+    const fx = JSON.parse(readFileSync(join(__dirname, "../../../spikes/fixtures/codex/exec-fail.json"), "utf8")) as { hooks: Record<string, unknown>[] };
+    for (const payload of fx.hooks.slice(0, 3)) {
+      const res = await fetch(`http://127.0.0.1:${d.port}/hooks/codex`, {
+        method: "POST", headers: { authorization: `Bearer ${d.token}` }, body: JSON.stringify(payload),
+      });
+      expect(res.status).toBe(204);
+    }
+    const room = d.world("unassigned");
+    expect(Object.values(room.agents).some((a) => a.ref.provider === "codex" && a.category === "exec")).toBe(true);
   });
 });

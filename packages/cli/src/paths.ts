@@ -12,6 +12,9 @@ export const agentariumHome = (env: Env = process.env): string =>
 export const claudeSettingsPath = (env: Env = process.env): string =>
   join(env.CLAUDE_CONFIG_DIR || join(homedir(), ".claude"), "settings.json");
 
+export const codexHooksPath = (env: Env = process.env): string =>
+  join(env.CODEX_HOME || join(homedir(), ".codex"), "hooks.json");
+
 export const dataDir = (home: string): string => join(home, "data");
 export const daemonFile = (home: string): string => join(home, "daemon.json");
 export const logFile = (home: string): string => join(home, "daemon.log");

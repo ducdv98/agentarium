@@ -31,7 +31,29 @@ const OURS = /^http:\/\/127\.0\.0\.1:\d+\/hooks\/claude-code$/;
 
 type Json = Record<string, unknown>;
 const isObj = (v: unknown): v is Json => typeof v === "object" && v !== null && !Array.isArray(v);
-const isOurs = (h: unknown): boolean => isObj(h) && h.type === "http" && typeof h.url === "string" && OURS.test(h.url);
+export interface HookTarget {
+  events: readonly string[];
+  isOurs(handler: unknown): boolean;
+  handler: Record<string, unknown>;
+}
+
+const claudeTarget = (opts: { port: number; token: string }): HookTarget => ({
+  events: HOOK_EVENTS,
+  isOurs: (h) => isObj(h) && h.type === "http" && typeof h.url === "string" && OURS.test(h.url),
+  handler: {
+    type: "http", url: `http://127.0.0.1:${opts.port}/hooks/claude-code`,
+    timeout: HOOK_TIMEOUT_S, headers: { Authorization: `Bearer ${opts.token}` },
+  },
+});
+
+const shellQuote = (value: string): string => `"${value.replace(/[\\"$`]/g, (c) => `\\${c}`)}"`;
+
+/** The hook runs in Codex's environment, not ours, so the port and Agentarium home travel in the command. */
+export const codexTarget = (port: number, script: string, home: string): HookTarget => ({
+  events: ["SessionStart", "UserPromptSubmit", "PreToolUse", "PermissionRequest", "PostToolUse", "SubagentStart", "SubagentStop", "Stop", "Interrupt", "SessionEnd"],
+  isOurs: (h) => isObj(h) && h.type === "command" && typeof h.command === "string" && /\shook codex(\s|$)/.test(h.command),
+  handler: { type: "command", command: `${shellQuote(process.execPath)} ${shellQuote(script)} hook codex --port ${port} --home ${shellQuote(home)}`, timeout: HOOK_TIMEOUT_S },
+});
 
 export const backupPath = (settingsPath: string): string => `${settingsPath}.agentarium-backup`;
 
@@ -40,7 +62,7 @@ export const backupPath = (settingsPath: string): string => `${settingsPath}.age
  * those removals emptied. Containers the user left empty stay; with nothing of ours, returns the input.
  * `before` is the pre-install snapshot: an emptied container that existed there is kept, not pruned.
  */
-export function withoutHooks(settings: Json, before: Json = {}): Json {
+export function withoutHooks(settings: Json, before: Json = {}, target: HookTarget = claudeTarget({ port: 0, token: "" })): Json {
   if (!isObj(settings.hooks)) return settings;
   const hadHooks = isObj(before.hooks);
   const hadEvent = (event: string) => hadHooks && Array.isArray((before.hooks as Json)[event]);
@@ -55,7 +77,7 @@ export function withoutHooks(settings: Json, before: Json = {}): Json {
     let prunedGroup = false;
     const kept = groups.flatMap((g: unknown) => {
       if (!isObj(g) || !Array.isArray(g.hooks)) return [g];
-      const rest = g.hooks.filter((h: unknown) => !isOurs(h));
+      const rest = g.hooks.filter((h: unknown) => !target.isOurs(h));
       if (rest.length === g.hooks.length) return [g];
       changed = true;
       if (!rest.length) prunedGroup = true;
@@ -73,10 +95,10 @@ export function withoutHooks(settings: Json, before: Json = {}): Json {
  * Returns the JSON path and reason when `hooks` holds a shape we must replace to install,
  * or null when installing can proceed. Unrelated events are never inspected.
  */
-function hookShapeProblem(settings: Json): string | null {
+function hookShapeProblem(settings: Json, events: readonly string[] = HOOK_EVENTS): string | null {
   if (settings.hooks === undefined) return null;
   if (!isObj(settings.hooks)) return "hooks must be an object";
-  for (const event of HOOK_EVENTS) {
+  for (const event of events) {
     const groups = settings.hooks[event];
     if (groups !== undefined && !Array.isArray(groups)) return `hooks.${event} must be an array of hook groups`;
   }
@@ -84,22 +106,20 @@ function hookShapeProblem(settings: Json): string | null {
 }
 
 /** Pure: our handlers replace any previous ones of ours. Applying twice equals applying once. */
-export function withHooks(settings: Json, opts: { port: number; token: string }): Json {
-  const problem = hookShapeProblem(settings);
+export function withTargetHooks(settings: Json, target: HookTarget): Json {
+  const problem = hookShapeProblem(settings, target.events);
   if (problem) throw new Error(problem);
-  const clean = withoutHooks(settings);
+  const clean = withoutHooks(settings, {}, target);
   const hooks: Json = isObj(clean.hooks) ? { ...clean.hooks } : {};
-  const handler = {
-    type: "http",
-    url: `http://127.0.0.1:${opts.port}/hooks/claude-code`,
-    timeout: HOOK_TIMEOUT_S,
-    headers: { Authorization: `Bearer ${opts.token}` },
-  };
-  for (const event of HOOK_EVENTS) {
+  for (const event of target.events) {
     const existing = Array.isArray(hooks[event]) ? (hooks[event] as unknown[]) : [];
-    hooks[event] = [...existing, { hooks: [handler] }];
+    hooks[event] = [...existing, { hooks: [target.handler] }];
   }
   return { ...clean, hooks };
+}
+
+export function withHooks(settings: Json, opts: { port: number; token: string }): Json {
+  return withTargetHooks(settings, claudeTarget(opts));
 }
 
 function snapshot(path: string): Buffer | null {
@@ -207,13 +227,13 @@ function protectBackup(settingsPath: string): void {
 }
 
 /** Idempotent. Backs up pre-existing settings once, before our first change. */
-export function installHooks(settingsPath: string, opts: { port: number; token: string }, writeOpts: WriteOptions = {}): InstallResult {
+export function installHooks(settingsPath: string, opts: { port: number; token: string }, writeOpts: WriteOptions = {}, target: HookTarget = claudeTarget(opts)): InstallResult {
   protectBackup(settingsPath);
   return compareAndSwap<InstallResult>(settingsPath, (raw) => {
     const settings = readSettings(settingsPath, raw);
-    const problem = hookShapeProblem(settings);
+    const problem = hookShapeProblem(settings, target.events);
     if (problem) throw new Error(`${settingsPath}: ${problem}; refusing to modify it`);
-    const next = Buffer.from(serialize(withHooks(settings, opts)));
+    const next = Buffer.from(serialize(withTargetHooks(settings, target)));
     if (raw?.equals(next)) return { result: { changed: false, backedUp: false } };
     const backedUp = raw !== null && !existsSync(backupPath(settingsPath));
     return { result: { changed: true, backedUp }, commit: { kind: "write", content: next, backup: backedUp } };
@@ -241,7 +261,7 @@ export interface UninstallResult {
  * Removes only our handlers. If that leaves exactly what the backup holds, the backup is
  * restored verbatim; otherwise the user's later edits are kept and the backup is left in place.
  */
-export function uninstallHooks(settingsPath: string, writeOpts: WriteOptions = {}): UninstallResult {
+export function uninstallHooks(settingsPath: string, writeOpts: WriteOptions = {}, target: HookTarget = claudeTarget({ port: 0, token: "" })): UninstallResult {
   return compareAndSwap<UninstallResult>(settingsPath, (raw) => {
     const settings = readSettings(settingsPath, raw);
     const unchanged = { changed: false, restoredBackup: false };
@@ -249,7 +269,7 @@ export function uninstallHooks(settingsPath: string, writeOpts: WriteOptions = {
     const backup = backupPath(settingsPath);
     const hasBackup = existsSync(backup);
     const before = hasBackup ? readBackup(backup) : null;
-    const cleaned = withoutHooks(settings, before?.settings ?? {});
+    const cleaned = withoutHooks(settings, before?.settings ?? {}, target);
     if (isDeepStrictEqual(cleaned, settings)) return { result: unchanged };
     if (before && isDeepStrictEqual(before.settings, cleaned)) {
       return { result: { changed: true, restoredBackup: true }, commit: { kind: "restore", content: before.raw } };

@@ -1,21 +1,25 @@
 import { spawn } from "node:child_process";
 import { existsSync, openSync, readFileSync, rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { dirname } from "node:path";
 import { DAEMON_VERSION, resolvePort } from "@agentarium/server";
 import {
   agentariumHome,
   claudeSettingsPath,
+  codexHooksPath,
   daemonFile,
   logFile,
   readOrCreateToken,
   type Env,
 } from "./paths";
-import { installHooks, uninstallHooks, type InstallResult, type UninstallResult } from "./settings";
+import { codexTarget, installHooks, uninstallHooks, type InstallResult, type UninstallResult } from "./settings";
 
 export interface Context {
   env: Env;
   home: string;
   settingsPath: string;
+  codexHooksPath: string;
+  cliScript: string;
   port: number;
   /** The built daemon script `start` runs; the default only exists in the bundle, not from src/. */
   daemonEntry: string;
@@ -26,13 +30,15 @@ export function contextFromEnv(env: Env = process.env): Context {
     env,
     home: agentariumHome(env),
     settingsPath: claudeSettingsPath(env),
+    codexHooksPath: codexHooksPath(env),
+    cliScript: fileURLToPath(new URL("./bin.js", import.meta.url)),
     port: resolvePort(env),
     // Next to the bundled CLI: dist/bin.js runs dist/daemon.js.
     daemonEntry: fileURLToPath(new URL("./daemon.js", import.meta.url)),
   };
 }
 
-export type InitResult = InstallResult & { settingsPath: string; port: number } & (
+export type InitResult = InstallResult & { settingsPath: string; port: number; codex: InstallResult | "skipped"; codexHooksPath: string } & (
   | { daemon: "not-running" }
   | { daemon: "running" | "other-version"; version: string }
 );
@@ -40,9 +46,14 @@ export type InitResult = InstallResult & { settingsPath: string; port: number } 
 export async function init(ctx: Context): Promise<InitResult> {
   const token = readOrCreateToken(ctx.home);
   const installed = installHooks(ctx.settingsPath, { port: ctx.port, token });
+  const codex = existsSync(dirname(ctx.codexHooksPath))
+    ? installHooks(ctx.codexHooksPath, { port: ctx.port, token }, {}, codexTarget(ctx.port, ctx.cliScript, ctx.home))
+    : "skipped" as const;
   const running = await probeHealth(ctx.port);
   return {
     ...installed,
+    codex,
+    codexHooksPath: ctx.codexHooksPath,
     settingsPath: ctx.settingsPath,
     port: ctx.port,
     ...(running
@@ -54,8 +65,12 @@ export async function init(ctx: Context): Promise<InitResult> {
   };
 }
 
-export function uninstall(ctx: Context): UninstallResult & { settingsPath: string } {
-  return { ...uninstallHooks(ctx.settingsPath), settingsPath: ctx.settingsPath };
+export function uninstall(ctx: Context): UninstallResult & { settingsPath: string; codex: UninstallResult | "skipped"; codexHooksPath: string } {
+  const claude = uninstallHooks(ctx.settingsPath);
+  const codex = existsSync(ctx.codexHooksPath)
+    ? uninstallHooks(ctx.codexHooksPath, {}, codexTarget(ctx.port, ctx.cliScript, ctx.home))
+    : "skipped" as const;
+  return { ...claude, settingsPath: ctx.settingsPath, codex, codexHooksPath: ctx.codexHooksPath };
 }
 
 interface Health {

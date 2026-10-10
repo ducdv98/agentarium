@@ -4,7 +4,7 @@ import { hostname } from "node:os";
 import { extname, join, normalize, sep } from "node:path";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import type { Duplex } from "node:stream";
-import { createClaudeCodeAdapter } from "@agentarium/adapters";
+import { createClaudeCodeAdapter, createCodexAdapter, type AdapterOutput } from "@agentarium/adapters";
 import {
   DEFAULT_TIMEOUTS,
   SCHEMA_VERSION,
@@ -108,6 +108,7 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
   const maxBuffered = opts.maxBufferedBytes ?? 1_000_000;
 
   const claudeCode = createClaudeCodeAdapter({ machine: opts.machine ?? hostname() });
+  const codex = createCodexAdapter({ machine: opts.machine ?? hostname() });
 
   const rooms = new Map<string, Room>();
   const getRoom = (id: string): Room => {
@@ -281,7 +282,7 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
       const room = await ingest(parsed.cwd, parsed.event);
       return reply(res, 202, { room: room.id });
     }
-    if (req.method === "POST" && url.pathname === "/hooks/claude-code") {
+    if (req.method === "POST" && (url.pathname === "/hooks/claude-code" || url.pathname === "/hooks/codex")) {
       if (!tokenOk(headerToken(req))) return reply(res, 401, { error: "unauthorized" });
       const raw = await readBody(req);
       // Hooks must never disturb the agent: answer 204 whatever the payload turns out to be.
@@ -291,7 +292,8 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
       } catch {
         payload = null;
       }
-      const { cwd, events } = claudeCode.map(payload);
+      const adapter: { map(payload: unknown): AdapterOutput } = url.pathname === "/hooks/codex" ? codex : claudeCode;
+      const { cwd, events } = adapter.map(payload);
       for (const event of events) await ingest(cwd, event);
       res.writeHead(204).end();
       return;
