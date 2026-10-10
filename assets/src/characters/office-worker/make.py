@@ -44,16 +44,6 @@ PACK = Path(ARGS.makehuman)
 
 MACROS = dict(gender=1.0, age=0.5, muscle=0.5, weight=0.5, height=0.5)
 HEAD_SCALE = 1.2
-# Which clothing a body vertex belongs to, by the Rigify deform bone that weighs most on it. The rest is skin.
-CLOTHING = {
-    "shirt": ("spine.001", "spine.002", "spine.003", "breast", "shoulder", "shoulder-helper", "upper_arm",
-              "elbow-helper", "forearm.L", "forearm.R"),
-    "trousers": ("spine", "pelvis", "pelvis-helper", "thigh", "knee-helper", "shin"),
-    "shoes": ("foot", "toe", "heel"),
-}
-PUSH = {"shirt": 0.006, "trousers": 0.005, "shoes": 0.008, "hair": 0.012}
-
-
 class AssetError(Exception):
     pass
 
@@ -220,60 +210,156 @@ def remove_helpers(body):
 
 
 # ---------------------------------------------------------------- clothing and hair (ours)
-def bone_part(name):
-    """Maps a deform bone to a clothing name, or None for skin.
+# Body regions, by the Rigify deform bone that weighs most on a vertex. Hands and the head are skin.
+REGIONS = {
+    "torso": ("spine", "spine.001", "spine.002", "spine.003", "spine.004", "spine.005", "breast", "shoulder",
+              "shoulder-helper", "pelvis", "pelvis-helper"),
+    "arm": ("upper_arm", "forearm", "elbow-helper"),
+    "leg": ("thigh", "shin", "knee-helper"),
+    "foot": ("foot", "toe", "heel"),
+    "head": ("spine.006", "forehead", "temple", "ear", "brow", "lid", "cheek", "nose", "jaw", "chin", "lip", "eye",
+             "teeth", "tongue", "jaw_master"),
+}
 
-    "upper_arm" covers upper_arm.L, upper_arm.L.001 and so on; a spine bone must match exactly, because each
-    spine.00N is a different bone (spine.004 and up are the neck and head)."""
+
+def bone_region(name):
+    """The region of a deform bone. "upper_arm" covers upper_arm.L, upper_arm.L.001 and so on; a spine bone must
+    match exactly, because each spine.00N is a different bone."""
     bare = name.removeprefix("DEF-")
-    for part, bones in CLOTHING.items():
+    for region, bones in REGIONS.items():
         if any(bare == b or (not b.startswith("spine") and bare.startswith(b + ".")) for b in bones):
-            return part
+            return region
     return None
 
 
-def classify(body, collar):
-    """Each vertex's clothing (or None), and whether it is on the head. The neck below collar height is shirt."""
+class Plane:
+    """A cut: points with (co - point) . normal < 0 are inside."""
+
+    def __init__(self, point, normal):
+        self.point, self.normal = Vector(point), Vector(normal).normalized()
+
+    def distance(self, co):
+        return (co - self.point).dot(self.normal)
+
+    def project(self, co):
+        return co - self.normal * self.distance(co)
+
+
+class Collar:
+    """A crew neck: points within radius of the neck's axis, above its base, are outside."""
+
+    def __init__(self, base, top, radius):
+        self.base, self.axis, self.radius = Vector(base), (Vector(top) - Vector(base)).normalized(), radius
+
+    def _radial(self, co):
+        along = (co - self.base).dot(self.axis)
+        return along, co - self.base - self.axis * along
+
+    def distance(self, co):
+        along, radial = self._radial(co)
+        return self.radius - radial.length if along > 0 else -1.0
+
+    def project(self, co):
+        along, radial = self._radial(co)
+        return self.base + self.axis * along + radial.normalized() * self.radius
+
+
+def cuts(controls):
+    """The cuts that bound each piece, placed from the rig's rest pose: a crew-neck shirt with long sleeves,
+    trousers from the waist to just above the shoes."""
+    bone = lambda name: controls.data.bones[name]
+    at = lambda name, t: bone(name).head_local.lerp(bone(name).tail_local, t)
+    # Pieces meet on one cut, never overlap: an outline shell under another piece would show through it.
+    waist = bone("DEF-spine.001").head_local.z
+    ankle = bone("DEF-foot.L").head_local.z + 0.04
+    planes = dict(
+        collar=Collar(at("DEF-spine.004", 0.8), bone("DEF-spine.005").tail_local, 0.068),
+        hem=Plane((0, 0, waist), (0, 0, -1)),
+        waistband=Plane((0, 0, waist), (0, 0, 1)),
+        trouser_hem=Plane((0, 0, ankle), (0, 0, -1)),
+        shoe_top=Plane((0, 0, ankle), (0, 0, 1)),
+    )
+    for side in ("L", "R"):  # long sleeves, cuffed just above the wrist
+        forearm = bone(f"DEF-forearm.{side}.001")
+        planes[f"sleeve.{side}"] = Plane(at(f"DEF-forearm.{side}.001", 0.75), forearm.tail_local - forearm.head_local)
+    return planes
+
+
+def regions(body):
     names = {g.index: g.name for g in body.vertex_groups}
-    part, head_bone = {}, {}
+    region = {}
     for v in body.data.vertices:
         best = max(v.groups, key=lambda g: g.weight, default=None)
-        bone = names[best.group] if best else ""
-        part[v.index] = bone_part(bone)
-        if bone == "DEF-spine.004" and v.co.z < collar:
-            part[v.index] = "shirt"
-        head_bone[v.index] = bone == "DEF-spine.006" or (part[v.index] is None and bone.split(".")[0] in HEAD_BONES)
-    return part, head_bone
+        region[v.index] = bone_region(names[best.group]) if best else None
+    return region
 
 
-# Face bones count as head for the hair cap; the cap itself is chosen by position.
-HEAD_BONES = {"DEF-forehead", "DEF-temple", "DEF-ear", "DEF-brow", "DEF-lid", "DEF-cheek", "DEF-nose",
-              "DEF-jaw", "DEF-chin", "DEF-lip", "DEF-eye", "DEF-teeth", "DEF-tongue", "DEF-jaw_master"}
+def head_box(body, region):
+    head = [body.data.vertices[i].co for i, r in region.items() if r == "head"]
+    lo = Vector((min(c.x for c in head), min(c.y for c in head), min(c.z for c in head)))
+    hi = Vector((max(c.x for c in head), max(c.y for c in head), max(c.z for c in head)))
+    return lo, hi
 
 
-def hair_faces(body, head_bone):
-    """A short cap: the top of the head, and the back of the head down to the ears."""
-    head = [body.data.vertices[i].co for i, is_head in head_bone.items() if is_head]
-    zmin, zmax = min(c.z for c in head), max(c.z for c in head)
-    ymin, ymax = min(c.y for c in head), max(c.y for c in head)
-
-    def is_hair(co):
-        z, y = (co.z - zmin) / (zmax - zmin), (co.y - ymin) / (ymax - ymin)
-        return z > 0.8 or (z > 0.45 and y > 0.6) or (z > 0.62 and y > 0.35)
-
-    return [p.index for p in body.data.polygons
-            if all(head_bone[i] and is_hair(body.data.vertices[i].co) for i in p.vertices)]
+def hair_planes(lo, hi):
+    """A short cut: the top of the head, and the back down to the ears. A union of the crown and the back."""
+    size = hi - lo
+    return dict(crown=[Plane((0, 0, lo.z + 0.70 * size.z), (0, 0, -1))],
+                back=[Plane((0, 0, lo.z + 0.42 * size.z), (0, 0, -1)), Plane((0, lo.y + 0.55 * size.y, 0), (0, -1, 0))])
 
 
-def shell(body, name, faces, push):
-    """A new mesh from some of the body's faces, pushed out along the vertex normals, with the body's weights."""
+def pieces_of(body, controls):
+    """Body faces for each piece, by the region most of a face's corners are in and where its centre lies."""
+    region = regions(body)
+    planes = cuts(controls)
+    lo, hi = head_box(body, region)
+    hair = hair_planes(lo, hi)
+    inside = lambda co, *names: all(planes[n].distance(co) < 0 for n in names)
+    faces = {name: [] for name in ("shirt", "trousers", "shoes", "hair")}
+    for p in body.data.polygons:
+        votes = [region[i] for i in p.vertices]
+        where = max(set(votes), key=votes.count)
+        c = p.center
+        side = "L" if c.x > 0 else "R"
+        if (where == "torso" and inside(c, "collar", "hem")) or (where == "arm" and inside(c, f"sleeve.{side}")):
+            faces["shirt"].append(p.index)
+        if (where == "torso" and inside(c, "waistband")) or (where == "leg" and inside(c, "trouser_hem")):
+            faces["trousers"].append(p.index)
+        if where == "foot" or (where == "leg" and inside(c, "shoe_top")):
+            faces["shoes"].append(p.index)
+        if where == "head" and any(all(q.distance(c) < 0 for q in group) for group in hair.values()):
+            faces["hair"].append(p.index)
+    edges = dict(shirt=[planes["collar"], planes["hem"], planes["sleeve.L"], planes["sleeve.R"]],
+                 trousers=[planes["waistband"], planes["trouser_hem"]], shoes=[planes["shoe_top"]],
+                 hair=[q for group in hair.values() for q in group])
+    # More volume on the crown than at the hairline.
+    crown = lambda co: min(1.0, max(0.0, ((co.z - lo.z) / (hi.z - lo.z) - 0.45) / 0.55))
+    push = dict(shirt=lambda co: 0.006, trousers=lambda co: 0.005, shoes=lambda co: 0.008,
+                hair=lambda co: 0.005 + 0.012 * crown(co))
+    return faces, edges, push
+
+
+def shell(body, name, faces, push, edges):
+    """A new mesh from some of the body's faces, pushed out along the vertex normals, with the body's weights.
+
+    Each vertex on the open edge is moved onto the nearest cut, so hems, cuffs and the collar are clean lines
+    instead of following the body's edge loops."""
     used = sorted({i for f in faces for i in body.data.polygons[f].vertices})
     index = {old: new for new, old in enumerate(used)}
-    verts = [body.data.vertices[i].co + body.data.vertices[i].normal * push for i in used]
+    verts = [body.data.vertices[i].co + body.data.vertices[i].normal * push(body.data.vertices[i].co) for i in used]
     polys = [[index[i] for i in body.data.polygons[f].vertices] for f in faces]
     mesh = bpy.data.meshes.new(name)
     mesh.from_pydata(verts, [], polys)
     mesh.update()
+    bm = bmesh.new()
+    bm.from_mesh(mesh)
+    for v in bm.verts:
+        if any(e.is_boundary for e in v.link_edges):
+            cut = min(edges, key=lambda q: abs(q.distance(v.co)))
+            if abs(cut.distance(v.co)) < 0.03:
+                v.co = cut.project(v.co)
+    bm.to_mesh(mesh)
+    bm.free()
     obj = bpy.data.objects.new(name, mesh)
     groups = {g.index: obj.vertex_groups.new(name=g.name) for g in body.vertex_groups}
     for new, old in enumerate(used):
@@ -285,20 +371,9 @@ def shell(body, name, faces, push):
 
 
 def make_clothing(body, controls):
-    neck = controls.data.bones["DEF-spine.004"]
-    collar = (controls.matrix_world @ neck.head_local).z + 0.6 * neck.length
-    part, head_bone = classify(body, collar)
-    by_part = {name: [] for name in CLOTHING}
-    for p in body.data.polygons:
-        # A face goes to the clothing most of its corners belong to, so the edges of a piece stay smooth. Where
-        # two pieces meet (all corners clothing), a tie goes to the piece listed first, so no skin shows between.
-        votes = [part[i] for i in p.vertices]
-        winner = max(CLOTHING, key=votes.count)
-        if votes.count(winner) * 2 > len(votes) or (None not in votes and votes.count(winner)):
-            by_part[winner].append(p.index)
-    by_part["hair"] = hair_faces(body, head_bone)
+    faces, edges, push = pieces_of(body, controls)
     # The body stays under the clothes: through the open collar and waist it hides the inside of the outline hull.
-    return {name: shell(body, name, faces, PUSH[name]) for name, faces in by_part.items()}
+    return {name: shell(body, name, faces[name], push[name], edges[name]) for name in faces}
 
 
 # ---------------------------------------------------------------- materials
