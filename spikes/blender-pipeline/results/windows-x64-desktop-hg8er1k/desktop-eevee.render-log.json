@@ -1,0 +1,175 @@
+{
+ "args": {
+  "engine": "eevee",
+  "out": "F:\\Opensource\\agentarium\\spikes\\blender-pipeline\\out\\desktop-eevee",
+  "quick": false,
+  "desktop": true,
+  "mannequin": "mpfb",
+  "assets": "F:\\Opensource\\agentarium\\spikes\\blender-pipeline\\.cache\\makehuman"
+ },
+ "errors": [],
+ "blender": {
+  "version": "5.2.2 LTS",
+  "build_hash": "d13f752e3b9c",
+  "build_date": "2026-09-15",
+  "python": "3.13.13"
+ },
+ "host": {
+  "os": "Windows-11-10.0.26200-SP0",
+  "machine": "AMD64",
+  "cpu": "AMD Ryzen 7 8745H with Radeon 780M Graphics",
+  "cpu_count": 16,
+  "background": false
+ },
+ "pinned": true,
+ "build_seconds": 10.44,
+ "frames": [
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 0,
+   "seconds": 0.928
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 4,
+   "seconds": 0.409
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 8,
+   "seconds": 0.42
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 0,
+   "seconds": 0.378
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 4,
+   "seconds": 0.335
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 8,
+   "seconds": 0.327
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 12,
+   "seconds": 0.322
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 0,
+   "seconds": 0.308
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 4,
+   "seconds": 0.322
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 8,
+   "seconds": 0.353
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 0,
+   "seconds": 0.379
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 4,
+   "seconds": 0.384
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 8,
+   "seconds": 0.313
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 12,
+   "seconds": 0.331
+  }
+ ],
+ "gl": {
+  "backend": "OPENGL",
+  "vendor": "NVIDIA Corporation",
+  "renderer": "NVIDIA GeForce RTX 4050 Laptop GPU/PCIe/SSE2",
+  "version": "4.6.0 NVIDIA 617.14"
+ },
+ "engine": {
+  "id": "BLENDER_EEVEE",
+  "samples": 32,
+  "resolution": [
+   320,
+   416
+  ]
+ },
+ "meta": {
+  "frame_1x": [
+   160,
+   208
+  ],
+  "anchor_1x": [
+   80,
+   184
+  ],
+  "scale": 2,
+  "neutral_shirt": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "anims": {
+   "walk": {
+    "frames": 12,
+    "fps": 12
+   },
+   "idle": {
+    "frames": 16,
+    "fps": 8
+   }
+  },
+  "dirs": [
+   "sw",
+   "se",
+   "ne",
+   "nw"
+  ]
+ },
+ "peak_memory_mb": 0,
+ "wall_seconds": 264.029,
+ "peak_rss_tree_mb": 780
+}

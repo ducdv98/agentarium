@@ -1,0 +1,87 @@
+{
+ "engine": "cycles",
+ "anims": [
+  "walk",
+  "idle"
+ ],
+ "dirs": [
+  "sw",
+  "se",
+  "ne",
+  "nw"
+ ],
+ "sheets": {
+  "walk/sw": {
+   "json": "walk-sw.json",
+   "fps": 12,
+   "frames": 24,
+   "size": {
+    "w": 857,
+    "h": 878
+   }
+  },
+  "walk/se": {
+   "json": "walk-se.json",
+   "fps": 12,
+   "frames": 24,
+   "size": {
+    "w": 818,
+    "h": 874
+   }
+  },
+  "walk/ne": {
+   "json": "walk-ne.json",
+   "fps": 12,
+   "frames": 24,
+   "size": {
+    "w": 799,
+    "h": 922
+   }
+  },
+  "walk/nw": {
+   "json": "walk-nw.json",
+   "fps": 12,
+   "frames": 24,
+   "size": {
+    "w": 818,
+    "h": 925
+   }
+  },
+  "idle/sw": {
+   "json": "idle-sw.json",
+   "fps": 8,
+   "frames": 32,
+   "size": {
+    "w": 737,
+    "h": 941
+   }
+  },
+  "idle/se": {
+   "json": "idle-se.json",
+   "fps": 8,
+   "frames": 32,
+   "size": {
+    "w": 722,
+    "h": 939
+   }
+  },
+  "idle/ne": {
+   "json": "idle-ne.json",
+   "fps": 8,
+   "frames": 32,
+   "size": {
+    "w": 721,
+    "h": 926
+   }
+  },
+  "idle/nw": {
+   "json": "idle-nw.json",
+   "fps": 8,
+   "frames": 32,
+   "size": {
+    "w": 724,
+    "h": 932
+   }
+  }
+ }
+}

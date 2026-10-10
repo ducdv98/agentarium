@@ -1,0 +1,257 @@
+{
+ "label": "windows-x64-desktop-hg8er1k",
+ "date": "2026-10-10T15:55:28.535Z",
+ "commit": "19cf200",
+ "node": "v24.18.0",
+ "platform": "win32-x64",
+ "cpus": "16 x AMD Ryzen 7 8745H with Radeon 780M Graphics",
+ "ram_gb": 31,
+ "runs": {
+  "cycles": {
+   "blender": {
+    "version": "5.2.2 LTS",
+    "build_hash": "d13f752e3b9c",
+    "build_date": "2026-09-15",
+    "python": "3.13.13"
+   },
+   "pinned": true,
+   "host": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "cpu": "AMD Ryzen 7 8745H with Radeon 780M Graphics",
+    "cpu_count": 16,
+    "background": true
+   },
+   "gl": {
+    "error": "GPU functions for drawing requires the gpu module to be initialized. See gpu.init."
+   },
+   "engine": {
+    "id": "CYCLES",
+    "samples": 64,
+    "resolution": [
+     320,
+     416
+    ]
+   },
+   "errors": [],
+   "build_seconds": 10.07,
+   "wall_seconds": 332.723,
+   "peak_memory_mb": 0,
+   "peak_rss_tree_mb": 636,
+   "seconds_per_frame": {
+    "beauty": {
+     "n": 112,
+     "mean": 1.61,
+     "median": 1.58,
+     "max": 2.058
+    },
+    "mask": {
+     "n": 112,
+     "mean": 1.169,
+     "median": 1.167,
+     "max": 1.391
+    }
+   }
+  },
+  "desktop-cycles": {
+   "blender": {
+    "version": "5.2.2 LTS",
+    "build_hash": "d13f752e3b9c",
+    "build_date": "2026-09-15",
+    "python": "3.13.13"
+   },
+   "pinned": true,
+   "host": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "cpu": "AMD Ryzen 7 8745H with Radeon 780M Graphics",
+    "cpu_count": 16,
+    "background": false
+   },
+   "gl": {
+    "backend": "OPENGL",
+    "vendor": "NVIDIA Corporation",
+    "renderer": "NVIDIA GeForce RTX 4050 Laptop GPU/PCIe/SSE2",
+    "version": "4.6.0 NVIDIA 617.14"
+   },
+   "engine": {
+    "id": "CYCLES",
+    "samples": 64,
+    "resolution": [
+     320,
+     416
+    ]
+   },
+   "errors": [],
+   "build_seconds": 10.29,
+   "wall_seconds": 37.647,
+   "peak_memory_mb": 0,
+   "peak_rss_tree_mb": 802,
+   "seconds_per_frame": {
+    "beauty": {
+     "n": 7,
+     "mean": 1.603,
+     "median": 1.625,
+     "max": 1.808
+    },
+    "mask": {
+     "n": 7,
+     "mean": 1.228,
+     "median": 1.249,
+     "max": 1.299
+    }
+   }
+  },
+  "desktop-eevee": {
+   "blender": {
+    "version": "5.2.2 LTS",
+    "build_hash": "d13f752e3b9c",
+    "build_date": "2026-09-15",
+    "python": "3.13.13"
+   },
+   "pinned": true,
+   "host": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "cpu": "AMD Ryzen 7 8745H with Radeon 780M Graphics",
+    "cpu_count": 16,
+    "background": false
+   },
+   "gl": {
+    "backend": "OPENGL",
+    "vendor": "NVIDIA Corporation",
+    "renderer": "NVIDIA GeForce RTX 4050 Laptop GPU/PCIe/SSE2",
+    "version": "4.6.0 NVIDIA 617.14"
+   },
+   "engine": {
+    "id": "BLENDER_EEVEE",
+    "samples": 32,
+    "resolution": [
+     320,
+     416
+    ]
+   },
+   "errors": [],
+   "build_seconds": 10.44,
+   "wall_seconds": 264.029,
+   "peak_memory_mb": 0,
+   "peak_rss_tree_mb": 780,
+   "seconds_per_frame": {
+    "beauty": {
+     "n": 7,
+     "mean": 0.446,
+     "median": 0.378,
+     "max": 0.928
+    },
+    "mask": {
+     "n": 7,
+     "mean": 0.341,
+     "median": 0.331,
+     "max": 0.384
+    }
+   }
+  },
+  "eevee": {
+   "blender": {
+    "version": "5.2.2 LTS",
+    "build_hash": "d13f752e3b9c",
+    "build_date": "2026-09-15",
+    "python": "3.13.13"
+   },
+   "pinned": true,
+   "host": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "cpu": "AMD Ryzen 7 8745H with Radeon 780M Graphics",
+    "cpu_count": 16,
+    "background": true
+   },
+   "gl": {
+    "backend": "OPENGL",
+    "vendor": "NVIDIA Corporation",
+    "renderer": "NVIDIA GeForce RTX 4050 Laptop GPU/PCIe/SSE2",
+    "version": "4.6.0 NVIDIA 617.14"
+   },
+   "engine": {
+    "id": "BLENDER_EEVEE",
+    "samples": 32,
+    "resolution": [
+     320,
+     416
+    ]
+   },
+   "errors": [],
+   "build_seconds": 10.24,
+   "wall_seconds": 99.226,
+   "peak_memory_mb": 0,
+   "peak_rss_tree_mb": 779,
+   "seconds_per_frame": {
+    "beauty": {
+     "n": 112,
+     "mean": 0.368,
+     "median": 0.343,
+     "max": 2.153
+    },
+    "mask": {
+     "n": 112,
+     "mean": 0.343,
+     "median": 0.328,
+     "max": 0.496
+    }
+   }
+  }
+ },
+ "compare": [
+  {
+   "a": "out\\eevee",
+   "b": "out\\desktop-eevee",
+   "beauty": {
+    "frames": 7,
+    "mean": 0,
+    "worst_p99": 0,
+    "match": true
+   },
+   "mask": {
+    "frames": 7,
+    "mean": 0,
+    "worst_p99": 0,
+    "match": true
+   },
+   "problems": []
+  },
+  {
+   "a": "out\\cycles",
+   "b": "out\\desktop-cycles",
+   "beauty": {
+    "frames": 7,
+    "mean": 0,
+    "worst_p99": 0,
+    "match": true
+   },
+   "mask": {
+    "frames": 7,
+    "mean": 0,
+    "worst_p99": 0,
+    "match": true
+   },
+   "problems": []
+  },
+  {
+   "a": "out\\eevee",
+   "b": "out\\cycles",
+   "beauty": {
+    "frames": 112,
+    "mean": 74.77,
+    "worst_p99": 175,
+    "match": false
+   },
+   "mask": {
+    "frames": 112,
+    "mean": 0.75,
+    "worst_p99": 13,
+    "match": false
+   },
+   "problems": []
+  }
+ ]
+}

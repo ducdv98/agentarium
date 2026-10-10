@@ -1,0 +1,1642 @@
+{
+ "args": {
+  "engine": "cycles",
+  "out": "F:\\Opensource\\agentarium\\spikes\\blender-pipeline\\out\\cycles",
+  "quick": false,
+  "desktop": false,
+  "mannequin": "mpfb",
+  "assets": "F:\\Opensource\\agentarium\\spikes\\blender-pipeline\\.cache\\makehuman"
+ },
+ "errors": [],
+ "blender": {
+  "version": "5.2.2 LTS",
+  "build_hash": "d13f752e3b9c",
+  "build_date": "2026-09-15",
+  "python": "3.13.13"
+ },
+ "host": {
+  "os": "Windows-11-10.0.26200-SP0",
+  "machine": "AMD64",
+  "cpu": "AMD Ryzen 7 8745H with Radeon 780M Graphics",
+  "cpu_count": 16,
+  "background": true
+ },
+ "pinned": true,
+ "build_seconds": 10.07,
+ "frames": [
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 0,
+   "seconds": 1.875
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 1,
+   "seconds": 1.469
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 2,
+   "seconds": 1.571
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 3,
+   "seconds": 1.616
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 4,
+   "seconds": 1.44
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 5,
+   "seconds": 1.46
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 6,
+   "seconds": 1.893
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 7,
+   "seconds": 1.603
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 8,
+   "seconds": 1.536
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 9,
+   "seconds": 1.589
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 10,
+   "seconds": 1.555
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 11,
+   "seconds": 1.667
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 0,
+   "seconds": 1.547
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 1,
+   "seconds": 1.456
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 2,
+   "seconds": 1.619
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 3,
+   "seconds": 1.758
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 4,
+   "seconds": 1.677
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 5,
+   "seconds": 1.757
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 6,
+   "seconds": 1.594
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 7,
+   "seconds": 1.974
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 8,
+   "seconds": 1.69
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 9,
+   "seconds": 1.809
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 10,
+   "seconds": 1.813
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 11,
+   "seconds": 1.501
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 0,
+   "seconds": 1.914
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 1,
+   "seconds": 1.499
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 2,
+   "seconds": 1.588
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 3,
+   "seconds": 1.796
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 4,
+   "seconds": 1.626
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 5,
+   "seconds": 1.645
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 6,
+   "seconds": 1.686
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 7,
+   "seconds": 1.825
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 8,
+   "seconds": 1.702
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 9,
+   "seconds": 2.058
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 10,
+   "seconds": 1.778
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 11,
+   "seconds": 1.675
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 0,
+   "seconds": 1.745
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 1,
+   "seconds": 1.692
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 2,
+   "seconds": 1.534
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 3,
+   "seconds": 1.571
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 4,
+   "seconds": 1.522
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 5,
+   "seconds": 1.515
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 6,
+   "seconds": 1.601
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 7,
+   "seconds": 1.492
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 8,
+   "seconds": 1.514
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 9,
+   "seconds": 1.682
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 10,
+   "seconds": 1.6
+  },
+  {
+   "layer": "beauty",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 11,
+   "seconds": 1.533
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 0,
+   "seconds": 1.738
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 1,
+   "seconds": 1.574
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 2,
+   "seconds": 1.563
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 3,
+   "seconds": 1.713
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 4,
+   "seconds": 1.58
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 5,
+   "seconds": 1.65
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 6,
+   "seconds": 1.581
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 7,
+   "seconds": 1.566
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 8,
+   "seconds": 1.579
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 9,
+   "seconds": 1.518
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 10,
+   "seconds": 1.54
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 11,
+   "seconds": 1.484
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 12,
+   "seconds": 1.49
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 13,
+   "seconds": 1.638
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 14,
+   "seconds": 1.767
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 15,
+   "seconds": 1.693
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 0,
+   "seconds": 1.864
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 1,
+   "seconds": 1.921
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 2,
+   "seconds": 1.678
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 3,
+   "seconds": 1.651
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 4,
+   "seconds": 1.437
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 5,
+   "seconds": 1.521
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 6,
+   "seconds": 1.538
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 7,
+   "seconds": 1.516
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 8,
+   "seconds": 1.58
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 9,
+   "seconds": 1.643
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 10,
+   "seconds": 1.6
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 11,
+   "seconds": 1.464
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 12,
+   "seconds": 1.417
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 13,
+   "seconds": 1.536
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 14,
+   "seconds": 1.658
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 15,
+   "seconds": 1.509
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 0,
+   "seconds": 1.484
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 1,
+   "seconds": 1.556
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 2,
+   "seconds": 1.545
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 3,
+   "seconds": 1.569
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 4,
+   "seconds": 1.662
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 5,
+   "seconds": 1.615
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 6,
+   "seconds": 1.79
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 7,
+   "seconds": 1.461
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 8,
+   "seconds": 1.55
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 9,
+   "seconds": 1.438
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 10,
+   "seconds": 1.589
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 11,
+   "seconds": 1.472
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 12,
+   "seconds": 1.564
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 13,
+   "seconds": 1.524
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 14,
+   "seconds": 1.609
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 15,
+   "seconds": 1.564
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 0,
+   "seconds": 1.474
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 1,
+   "seconds": 1.738
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 2,
+   "seconds": 1.463
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 3,
+   "seconds": 1.623
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 4,
+   "seconds": 1.528
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 5,
+   "seconds": 1.5
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 6,
+   "seconds": 1.506
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 7,
+   "seconds": 1.482
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 8,
+   "seconds": 1.456
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 9,
+   "seconds": 1.631
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 10,
+   "seconds": 1.562
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 11,
+   "seconds": 1.727
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 12,
+   "seconds": 1.565
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 13,
+   "seconds": 1.602
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 14,
+   "seconds": 1.478
+  },
+  {
+   "layer": "beauty",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 15,
+   "seconds": 1.477
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 0,
+   "seconds": 1.16
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 1,
+   "seconds": 1.179
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 2,
+   "seconds": 1.207
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 3,
+   "seconds": 1.184
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 4,
+   "seconds": 1.185
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 5,
+   "seconds": 1.09
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 6,
+   "seconds": 1.152
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 7,
+   "seconds": 1.212
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 8,
+   "seconds": 1.191
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 9,
+   "seconds": 1.076
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 10,
+   "seconds": 1.102
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "sw",
+   "frame": 11,
+   "seconds": 1.164
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 0,
+   "seconds": 1.137
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 1,
+   "seconds": 1.135
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 2,
+   "seconds": 1.272
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 3,
+   "seconds": 1.224
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 4,
+   "seconds": 1.138
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 5,
+   "seconds": 1.339
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 6,
+   "seconds": 1.143
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 7,
+   "seconds": 1.19
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 8,
+   "seconds": 1.091
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 9,
+   "seconds": 1.115
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 10,
+   "seconds": 1.391
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "se",
+   "frame": 11,
+   "seconds": 1.127
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 0,
+   "seconds": 1.225
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 1,
+   "seconds": 1.205
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 2,
+   "seconds": 1.213
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 3,
+   "seconds": 1.14
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 4,
+   "seconds": 0.989
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 5,
+   "seconds": 1.056
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 6,
+   "seconds": 1.055
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 7,
+   "seconds": 1.19
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 8,
+   "seconds": 1.237
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 9,
+   "seconds": 1.218
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 10,
+   "seconds": 1.203
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "ne",
+   "frame": 11,
+   "seconds": 1.22
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 0,
+   "seconds": 1.166
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 1,
+   "seconds": 1.139
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 2,
+   "seconds": 1.143
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 3,
+   "seconds": 1.174
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 4,
+   "seconds": 1.145
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 5,
+   "seconds": 1.268
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 6,
+   "seconds": 1.214
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 7,
+   "seconds": 1.187
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 8,
+   "seconds": 1.238
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 9,
+   "seconds": 1.153
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 10,
+   "seconds": 1.102
+  },
+  {
+   "layer": "mask",
+   "anim": "walk",
+   "dir": "nw",
+   "frame": 11,
+   "seconds": 1.173
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 0,
+   "seconds": 1.134
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 1,
+   "seconds": 1.155
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 2,
+   "seconds": 1.225
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 3,
+   "seconds": 1.247
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 4,
+   "seconds": 1.136
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 5,
+   "seconds": 1.068
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 6,
+   "seconds": 1.313
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 7,
+   "seconds": 1.048
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 8,
+   "seconds": 1.34
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 9,
+   "seconds": 1.144
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 10,
+   "seconds": 1.131
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 11,
+   "seconds": 1.125
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 12,
+   "seconds": 1.101
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 13,
+   "seconds": 1.22
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 14,
+   "seconds": 1.143
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "sw",
+   "frame": 15,
+   "seconds": 1.183
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 0,
+   "seconds": 1.226
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 1,
+   "seconds": 1.167
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 2,
+   "seconds": 1.068
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 3,
+   "seconds": 1.11
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 4,
+   "seconds": 1.106
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 5,
+   "seconds": 1.164
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 6,
+   "seconds": 1.101
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 7,
+   "seconds": 1.233
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 8,
+   "seconds": 1.23
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 9,
+   "seconds": 1.136
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 10,
+   "seconds": 1.15
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 11,
+   "seconds": 1.11
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 12,
+   "seconds": 1.095
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 13,
+   "seconds": 1.166
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 14,
+   "seconds": 1.122
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "se",
+   "frame": 15,
+   "seconds": 1.209
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 0,
+   "seconds": 1.229
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 1,
+   "seconds": 1.167
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 2,
+   "seconds": 1.26
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 3,
+   "seconds": 1.195
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 4,
+   "seconds": 1.209
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 5,
+   "seconds": 1.243
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 6,
+   "seconds": 1.256
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 7,
+   "seconds": 1.25
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 8,
+   "seconds": 1.188
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 9,
+   "seconds": 1.189
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 10,
+   "seconds": 1.205
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 11,
+   "seconds": 1.192
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 12,
+   "seconds": 1.104
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 13,
+   "seconds": 1.158
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 14,
+   "seconds": 1.239
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "ne",
+   "frame": 15,
+   "seconds": 1.205
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 0,
+   "seconds": 1.105
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 1,
+   "seconds": 1.079
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 2,
+   "seconds": 1.186
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 3,
+   "seconds": 1.106
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 4,
+   "seconds": 1.054
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 5,
+   "seconds": 1.095
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 6,
+   "seconds": 1.261
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 7,
+   "seconds": 1.204
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 8,
+   "seconds": 1.217
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 9,
+   "seconds": 1.148
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 10,
+   "seconds": 1.081
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 11,
+   "seconds": 1.225
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 12,
+   "seconds": 1.168
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 13,
+   "seconds": 1.131
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 14,
+   "seconds": 1.065
+  },
+  {
+   "layer": "mask",
+   "anim": "idle",
+   "dir": "nw",
+   "frame": 15,
+   "seconds": 1.182
+  }
+ ],
+ "gl": {
+  "error": "GPU functions for drawing requires the gpu module to be initialized. See gpu.init."
+ },
+ "engine": {
+  "id": "CYCLES",
+  "samples": 64,
+  "resolution": [
+   320,
+   416
+  ]
+ },
+ "meta": {
+  "frame_1x": [
+   160,
+   208
+  ],
+  "anchor_1x": [
+   80,
+   184
+  ],
+  "scale": 2,
+  "neutral_shirt": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "anims": {
+   "walk": {
+    "frames": 12,
+    "fps": 12
+   },
+   "idle": {
+    "frames": 16,
+    "fps": 8
+   }
+  },
+  "dirs": [
+   "sw",
+   "se",
+   "ne",
+   "nw"
+  ]
+ },
+ "peak_memory_mb": 0,
+ "wall_seconds": 332.723,
+ "peak_rss_tree_mb": 636
+}

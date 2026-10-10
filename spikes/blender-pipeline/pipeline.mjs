@@ -61,7 +61,10 @@ for (let i = 0; i < rest.length; i++) {
 const IS_WIN = process.platform === "win32";
 const LABEL = flags.label ?? `${IS_WIN ? "windows" : "linux"}-${process.arch}-${hostname().toLowerCase()}`;
 const log = (...a) => console.log("[pipeline]", ...a);
-const die = (msg) => { console.error(`[pipeline] ERROR: ${msg}`); process.exit(1); };
+// Throws rather than calling process.exit(): exiting while a fetch socket is still open trips a libuv
+// assertion on Windows (UV_HANDLE_CLOSING in src\win\async.c). main() reports it and sets the exit code.
+class PipelineError extends Error {}
+const die = (msg) => { throw new PipelineError(msg); };
 
 // ---------------------------------------------------------------- setup
 async function sha256(path) {
@@ -74,7 +77,12 @@ async function download(pin, dest) {
   if (existsSync(dest) && (await sha256(dest)) === pin.sha256) return log(`ok ${relative(HERE, dest)}`);
   log(`downloading ${pin.url}`);
   const res = await fetch(pin.url);
-  if (!res.ok) die(`download failed ${res.status} ${pin.url}`);
+  if (!res.ok) {
+    await res.body?.cancel();
+    // blender.org sits behind a Cloudflare challenge that blocks scripted downloads from some networks
+    die(`download failed ${res.status} ${pin.url}\n  Download it in a browser and save it as ${dest}; ` +
+      "setup checks its sha256 and skips the download");
+  }
   mkdirSync(dirname(dest), { recursive: true });
   await streamPipeline(Readable.fromWeb(res.body), createWriteStream(dest));
   const got = await sha256(dest);
@@ -134,7 +142,7 @@ async function setup() {
 // ---------------------------------------------------------------- render
 function blenderVersion(blender) {
   const r = spawnSync(blender, ["-b", "--factory-startup", "--version"], { encoding: "utf8", env: blenderEnv() });
-  return (r.stdout ?? "").split("\n").slice(0, 3).join(" | ").trim();
+  return (r.stdout ?? "").split(/\r?\n/).slice(0, 3).join(" | ").trim();
 }
 
 function renderArgs(engine, out, extra = []) {
@@ -423,4 +431,7 @@ async function main() {
       console.log(readFileSync(fileURLToPath(import.meta.url), "utf8").split("\n").slice(1, 10).map((l) => l.replace(/^\/\/ ?/, "")).join("\n"));
   }
 }
-main().catch((e) => die(e.stack ?? e));
+main().catch((e) => {
+  console.error(`[pipeline] ERROR: ${e instanceof PipelineError ? e.message : (e.stack ?? e)}`);
+  process.exitCode = 1;
+});

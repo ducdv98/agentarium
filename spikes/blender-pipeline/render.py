@@ -69,7 +69,8 @@ def check_pin():
                           build_date=bpy.app.build_date.decode() if isinstance(bpy.app.build_date, bytes) else str(bpy.app.build_date), python=sys.version.split()[0])
     LOG["host"] = dict(os=platform.platform(), machine=platform.machine(), cpu=cpu_name(),
                        cpu_count=os.cpu_count(), background=bpy.app.background)
-    pinned = bpy.app.version_string == PIN["version"] and build_hash.startswith(PIN["build_hash"])
+    # bpy.app.version, not version_string: the official build's version_string is "5.2.2 LTS"
+    pinned = ".".join(map(str, bpy.app.version)) == PIN["version"] and build_hash.startswith(PIN["build_hash"])
     LOG["pinned"] = pinned
     print("BUILD", json.dumps(LOG["blender"]), json.dumps(LOG["host"]), flush=True)
     if not pinned:
