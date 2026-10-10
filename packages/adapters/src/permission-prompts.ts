@@ -33,11 +33,22 @@ export function createPermissionPrompts() {
       const i = calls?.findIndex((c) => c.id === id) ?? -1;
       if (i >= 0) calls!.splice(i, 1);
     },
-    /** Marks the latest open call the prompt matches, preferring one whose input matches too. */
-    prompted(session: string, agent: string, tool: string | undefined, input: unknown): void {
+    /** Marks the latest open call the prompt matches, preferring one whose input matches too; returns its id. */
+    prompted(session: string, agent: string, tool: string | undefined, input: unknown): string | undefined {
       const calls = (open.get(key(session, agent)) ?? []).filter((c) => !c.prompted && c.tool === tool);
       const call = calls.filter((c) => sameInput(c.input, input)).at(-1) ?? calls.at(-1);
       if (call) call.prompted = true;
+      return call?.id;
+    },
+    isPrompted(session: string, agent: string, id: string): boolean {
+      return open.get(key(session, agent))?.some((c) => c.id === id && c.prompted) ?? false;
+    },
+    /** The user rejected the prompt outside any hook: forgets the call; false when it was not open. */
+    reject(session: string, agent: string, id: string): boolean {
+      const calls = open.get(key(session, agent));
+      const i = calls?.findIndex((c) => c.id === id && c.prompted) ?? -1;
+      if (i >= 0) calls!.splice(i, 1);
+      return i >= 0;
     },
     /** The agent's turn is over: forgets its open calls and returns the prompted ones that never finished. */
     close(session: string, agent: string): string[] {

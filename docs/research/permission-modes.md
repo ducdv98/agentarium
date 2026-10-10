@@ -124,7 +124,7 @@ No mode fired `PermissionDenied`, and no denial (by the user, a rule, `dontAsk` 
 Captured 2026-10-10 by a person with `spikes/claude/capture-interactive.mjs` (`tui-*` in `spikes/fixtures/claude-code/modes/`).
 
 - **Denying with No or Esc in the TUI fires no hook at all.** There is no `Stop`, `PostToolUse`, `PostToolUseFailure` or `PermissionDenied` (`tui-deny`, `tui-esc`). The turn ends silently and the next hook is the user's next `UserPromptSubmit`, which can be minutes later or never. Headless denial does fire `Stop`, so this differs from headless.
-- The transcript does record it: a user entry with a `tool_result` for the same `tool_use_id`, `toolUseResult: "User rejected tool use"`, then `[Request interrupted by user for tool use]`. The transcript path is on every hook payload.
+- The transcript does record it: a user entry with a `tool_result` for the same `tool_use_id`, `toolUseResult: "User rejected tool use"`, then `[Request interrupted by user for tool use]`. The transcript path is on every hook payload. The daemon polls this while a root agent has an open prompt, and ends the wait as a failed outcome (ticket 08). Excerpts are in `spikes/fixtures/claude-code/transcripts/`.
 - `Notification(permission_prompt)` fires once, about 6 s after an unanswered `PermissionRequest`. `idle_prompt` fires about 60 s after `Stop`, never after a TUI denial.
 - `AskUserQuestion`: `PermissionRequest`, then `PostToolUse` when answered.
 - In `auto` mode the `rm -rf` safety check is routed to the person as a `PermissionRequest` (`tui-auto`), whereas headless denied it silently.

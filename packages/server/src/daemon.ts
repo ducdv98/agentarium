@@ -31,6 +31,7 @@ import { DAEMON_VERSION, DEFAULT_PORT } from "./version";
 import { startCodexLive } from "./codex-live";
 import { readCodexSessionMeta, findCodexRollout, readCodexApprovalsReviewer } from "./codex-rollouts";
 import { codexOtelOutcomes } from "./codex-otel";
+import { readClaudeRejections } from "./claude-transcripts";
 
 export interface DaemonOptions {
   port?: number;
@@ -55,6 +56,8 @@ export interface DaemonOptions {
   maxBufferedBytes?: number;
   codexControlSocket?: string;
   codexHome?: string;
+  /** How often transcripts of Claude agents waiting on a prompt are checked for a TUI rejection; 0 disables. */
+  transcriptPollMs?: number;
   log?: (message: string) => void;
 }
 
@@ -293,6 +296,26 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
     return room;
   }
 
+  // A No or Esc in the Claude TUI fires no hook; the session transcript records it.
+  let poll: Promise<void> | null = null;
+  const transcriptPollMs = opts.transcriptPollMs ?? 1_000;
+  const transcriptTimer = transcriptPollMs > 0 ? setInterval(() => {
+    const waiting = claudeCode.waitingPrompts();
+    if (poll || waiting.length === 0) return;
+    poll = (async () => {
+      const byPath = new Map<string, typeof waiting>();
+      for (const w of waiting) byPath.set(w.transcriptPath, [...(byPath.get(w.transcriptPath) ?? []), w]);
+      for (const [path, prompts] of byPath) {
+        const rejected = new Set(readClaudeRejections(path, prompts.map((w) => w.toolUseId)));
+        for (const w of prompts) {
+          if (!rejected.has(w.toolUseId)) continue;
+          const { cwd, events } = claudeCode.reject(w.session, w.agent, w.toolUseId);
+          for (const event of events) await ingest(cwd, event);
+        }
+      }
+    })().catch(() => { /* A transcript problem never disturbs the daemon. */ }).finally(() => { poll = null; });
+  }, transcriptPollMs) : null;
+
   const codexLive = opts.codexControlSocket ? startCodexLive({
     socketPath: opts.codexControlSocket,
     mapper: createCodexLiveMapper({ machine: opts.machine ?? hostname(),
@@ -431,6 +454,8 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
     async close() {
       await codexLive?.close();
       if (tickTimer) clearInterval(tickTimer);
+      if (transcriptTimer) clearInterval(transcriptTimer);
+      await poll;
       if (flushTimer) clearTimeout(flushTimer);
       for (const ws of wss.clients) ws.terminate();
       wss.close();

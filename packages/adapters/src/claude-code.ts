@@ -14,9 +14,21 @@ export interface AdapterOutput {
   events: NewEvent[];
 }
 
+export interface WaitingPrompt {
+  session: string;
+  agent: string;
+  toolUseId: string;
+  transcriptPath: string;
+  cwd?: string;
+}
+
 export interface ClaudeCodeAdapter {
   /** Maps one hook payload to zero or more events. Never throws. */
   map(payload: unknown): AdapterOutput;
+  /** Root-agent permission prompts still open, with the transcript that records their answer. */
+  waitingPrompts(): WaitingPrompt[];
+  /** The transcript shows the user rejected this prompt (TUI No or Esc fire no hook): a failed outcome, then idle. */
+  reject(session: string, agent: string, toolUseId: string): AdapterOutput;
 }
 
 const PROVIDER = "claude-code";
@@ -93,6 +105,8 @@ export function createClaudeCodeAdapter(opts: { machine: string }): ClaudeCodeAd
   /** Per session: callers of `Agent` whose SubagentStart has not been seen yet, oldest first. */
   const pendingAgentCalls = new Map<string, string[]>();
   const prompts = createPermissionPrompts();
+  /** Keyed by tool_use_id; stale entries are pruned when listed. */
+  const transcripts = new Map<string, WaitingPrompt>();
 
   const ref = (session: string, agent: string): AgentRef => ({
     machine: opts.machine,
@@ -102,6 +116,18 @@ export function createClaudeCodeAdapter(opts: { machine: string }): ClaudeCodeAd
   });
 
   return {
+    waitingPrompts() {
+      for (const [id, w] of transcripts) if (!prompts.isPrompted(w.session, w.agent, id)) transcripts.delete(id);
+      return [...transcripts.values()];
+    },
+    reject(session, agent, toolUseId) {
+      const waiting = transcripts.get(toolUseId);
+      transcripts.delete(toolUseId);
+      if (!prompts.reject(session, agent, toolUseId)) return { events: [] };
+      const base = { schema_version: SCHEMA_VERSION, agent: ref(session, agent) } as const;
+      const events: NewEvent[] = [{ ...base, kind: "tool_end", tool_use_id: toolUseId, ok: false }, { ...base, kind: "stop" }];
+      return waiting?.cwd ? { cwd: waiting.cwd, events } : { events };
+    },
     map(payload) {
       if (!isObj(payload)) return { events: [] };
       const session = text(payload.session_id);
@@ -115,8 +141,11 @@ export function createClaudeCodeAdapter(opts: { machine: string }): ClaudeCodeAd
       const cwd = text(payload.cwd);
       const out = (...events: NewEvent[]): AdapterOutput => (cwd ? { cwd, events } : { events });
       /** The turn is over: a prompted call that never finished was denied or aborted. */
-      const closing = (...events: NewEvent[]): AdapterOutput =>
-        out(...prompts.close(session, agentId).map((id): NewEvent => ({ ...base, kind: "tool_end", tool_use_id: id, ok: false })), ...events);
+      const closing = (...events: NewEvent[]): AdapterOutput => {
+        const unfinished = prompts.close(session, agentId);
+        for (const id of unfinished) transcripts.delete(id);
+        return out(...unfinished.map((id): NewEvent => ({ ...base, kind: "tool_end", tool_use_id: id, ok: false })), ...events);
+      };
       const toolName = text(payload.tool_name);
       const toolUseId = text(payload.tool_use_id);
 
@@ -148,6 +177,7 @@ export function createClaudeCodeAdapter(opts: { machine: string }): ClaudeCodeAd
         case "PostToolUseFailure": {
           if (!toolUseId) return out();
           prompts.ended(session, agentId, toolUseId);
+          transcripts.delete(toolUseId);
           const events: NewEvent[] = [
             { ...base, kind: "tool_end", tool_use_id: toolUseId, ok: hook === "PostToolUse" },
           ];
@@ -159,9 +189,15 @@ export function createClaudeCodeAdapter(opts: { machine: string }): ClaudeCodeAd
           }
           return out(...events);
         }
-        case "PermissionRequest":
-          prompts.prompted(session, agentId, toolName, payload.tool_input);
+        case "PermissionRequest": {
+          const prompted = prompts.prompted(session, agentId, toolName, payload.tool_input);
+          const transcriptPath = text(payload.transcript_path);
+          // A sub-agent's prompt closes at its SubagentStop; its payload names only the parent's transcript.
+          if (prompted && transcriptPath && agentId === ROOT_AGENT) {
+            transcripts.set(prompted, { session, agent: agentId, toolUseId: prompted, transcriptPath, ...(cwd ? { cwd } : {}) });
+          }
           return out({ ...base, kind: "needs_input", ...(toolName ? { summary: clip(toolName) } : {}) });
+        }
         case "Notification": {
           const type = text(payload.notification_type);
           if (type === "permission_prompt" || type === "elicitation_dialog") {
@@ -183,6 +219,7 @@ export function createClaudeCodeAdapter(opts: { machine: string }): ClaudeCodeAd
           pendingAgentCalls.delete(session);
           const result = closing({ ...base, agent: ref(session, ROOT_AGENT), kind: "end" });
           prompts.forgetSession(session);
+          for (const [id, w] of transcripts) if (w.session === session) transcripts.delete(id);
           return result;
         }
         default:

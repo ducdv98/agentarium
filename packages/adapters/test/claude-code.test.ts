@@ -236,12 +236,38 @@ describe("claude code permission modes (2.1.296 fixtures)", () => {
       expect(Object.values(world.agents)[0]?.status).toBe("waiting");
     });
 
-    it("records a TUI denial as failed only when the next prompt arrives, since no hook closes it", () => {
+    it("from hooks alone, records a TUI denial as failed only at the next prompt (the daemon's transcript check closes it sooner)", () => {
       const hooks = mapAll("tui-deny");
       const next = hooks.findIndex((h, i) => h.hook === "UserPromptSubmit" && i > hooks.findIndex((x) => x.hook === "PermissionRequest"));
       expect(hooks.slice(hooks.findIndex((h) => h.hook === "PermissionRequest") + 1, next).every((h) => h.events.every((e) => e.kind === "needs_input"))).toBe(true);
       expect(kinds(hooks[next]!.events)).toEqual(["tool_end", "prompt"]);
       expect(hooks[next]!.events[0]).toMatchObject({ ok: false });
+    });
+
+    it("lists a root prompt with its transcript until it is answered, and rejects it once", () => {
+      const a = adapter();
+      const hooks = seq("tui-deny");
+      const upTo = hooks.findIndex((h) => h.hook_event_name === "PermissionRequest");
+      for (const payload of hooks.slice(0, upTo + 1)) a.map(payload);
+      const pre = hooks.slice(0, upTo).filter((h) => h.hook_event_name === "PreToolUse").at(-1)!;
+      expect(a.waitingPrompts()).toEqual([{ session: pre.session_id, agent: ROOT_AGENT, toolUseId: pre.tool_use_id, transcriptPath: pre.transcript_path, cwd: pre.cwd }]);
+      const rejected = a.reject(String(pre.session_id), ROOT_AGENT, String(pre.tool_use_id));
+      expect(kinds(rejected.events)).toEqual(["tool_end", "stop"]);
+      expect(rejected).toMatchObject({ cwd: pre.cwd, events: [{ ok: false, tool_use_id: pre.tool_use_id }, {}] });
+      expect(a.waitingPrompts()).toEqual([]);
+      expect(a.reject(String(pre.session_id), ROOT_AGENT, String(pre.tool_use_id)).events).toEqual([]);
+      const next = a.map(hooks[upTo + 2]!).events;
+      expect(failures(next)).toEqual([]);
+    });
+
+    it("drops a prompt from the list once its call finishes, and never lists sub-agent prompts", () => {
+      const a = adapter();
+      for (const payload of seq("manual-allow")) a.map(payload);
+      expect(a.waitingPrompts()).toEqual([]);
+      const b = adapter();
+      const hooks = seq("tui-subagent");
+      for (const payload of hooks.slice(0, hooks.findIndex((h) => h.hook_event_name === "PermissionRequest") + 1)) b.map(payload);
+      expect(b.waitingPrompts()).toEqual([]);
     });
 
     it("closes a sub-agent's denied TUI prompt at SubagentStop", () => {

@@ -1,5 +1,6 @@
-import { openSync, readSync, closeSync, readdirSync, statSync } from "node:fs";
+import { openSync, readSync, closeSync, readdirSync } from "node:fs";
 import { join, basename } from "node:path";
+import { readTailLines } from "./tail";
 
 export interface CodexSessionMeta {
   threadId: string;
@@ -12,31 +13,17 @@ export interface CodexSessionMeta {
 /** The path arrives in a hook payload: only a rollout file is read, and only a bounded tail of it. */
 export function readCodexApprovalsReviewer(path: string): string | null {
   if (!/^rollout-[\w.-]+\.jsonl$/.test(basename(path))) return null;
-  let fd: number | undefined;
-  try {
-    fd = openSync(path, "r");
-    const size = statSync(path).size;
-    const length = Math.min(size, 256 * 1024);
-    const buffer = Buffer.alloc(length);
-    const count = readSync(fd, buffer, 0, length, Math.max(0, size - length));
-    let text = buffer.toString("utf8", 0, count);
-    if (size > length) {
-      const first = text.indexOf("\n");
-      text = first < 0 ? "" : text.slice(first + 1);
-    }
-    let reviewer: string | null = null;
-    for (const line of text.split("\n")) {
-      try {
-        const value = JSON.parse(line) as Record<string, unknown>;
-        if (value.type === "turn_context" && value.payload && typeof value.payload === "object") {
-          const candidate = (value.payload as Record<string, unknown>).approvals_reviewer;
-          reviewer = typeof candidate === "string" ? candidate : null;
-        }
-      } catch { /* Ignore malformed or partial rollout lines. */ }
-    }
-    return reviewer;
-  } catch { return null; }
-  finally { if (fd !== undefined) try { closeSync(fd); } catch { /* Reader never throws. */ } }
+  let reviewer: string | null = null;
+  for (const line of readTailLines(path)) {
+    try {
+      const value = JSON.parse(line) as Record<string, unknown>;
+      if (value.type === "turn_context" && value.payload && typeof value.payload === "object") {
+        const candidate = (value.payload as Record<string, unknown>).approvals_reviewer;
+        reviewer = typeof candidate === "string" ? candidate : null;
+      }
+    } catch { /* Ignore malformed or partial rollout lines. */ }
+  }
+  return reviewer;
 }
 
 /** Rollouts may contain prompts; only the bounded first line is read. */

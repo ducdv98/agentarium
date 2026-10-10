@@ -1,0 +1,6 @@
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"tool_use","id":"toolu_017AH4utxYTzhoBKo1LgnvXJ","name":"Bash"}]}}
+{"type":"user","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_017AH4utxYTzhoBKo1LgnvXJ","is_error":true}]},"toolUseResult":"User rejected tool use"}
+{"type":"user","message":{"role":"user","content":[{"type":"text","text":"[Request interrupted by user for tool use]"}]}}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"tool_use","id":"toolu_019uW6qD1EZkKLpttd423UXK","name":"Bash"}]}}
+{"type":"user","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_019uW6qD1EZkKLpttd423UXK","is_error":true}]},"toolUseResult":"User rejected tool use"}
+{"type":"user","message":{"role":"user","content":[{"type":"text","text":"[Request interrupted by user for tool use]"}]}}

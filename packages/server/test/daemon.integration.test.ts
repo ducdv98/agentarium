@@ -241,6 +241,34 @@ describe("claude code hook endpoint", () => {
   });
 });
 
+describe("claude code TUI denial", () => {
+  it("ends the wait when the transcript shows the user rejected the prompt, with no further hook", async () => {
+    const d = await start(undefined, { transcriptPollMs: 20 });
+    const fx = JSON.parse(readFileSync(join(__dirname, "../../../spikes/fixtures/claude-code/modes/tui-deny.json"), "utf8")) as { hooks: Record<string, unknown>[] };
+    const cwd = tmp("agentarium-tui-");
+    const projects = join(tmp("agentarium-claude-config-"), "projects", "C--repo");
+    mkdirSync(projects, { recursive: true });
+    const transcript = join(projects, `${String(fx.hooks[0]!.session_id)}.jsonl`);
+    writeFileSync(transcript, "");
+    const upTo = fx.hooks.findIndex((h) => h.hook_event_name === "PermissionRequest");
+    for (const payload of fx.hooks.slice(0, upTo + 1)) {
+      await fetch(`http://127.0.0.1:${d.port}/hooks/claude-code`, {
+        method: "POST", headers: { authorization: `Bearer ${d.token}` }, body: JSON.stringify({ ...payload, cwd, transcript_path: transcript }),
+      });
+    }
+    const root = () => Object.values(d.world("unassigned").agents)[0];
+    expect(root()?.status).toBe("waiting");
+    await sleep(100);
+    expect(root()?.status).toBe("waiting");
+    const id = String(fx.hooks.slice(0, upTo).filter((h) => h.hook_event_name === "PreToolUse").at(-1)!.tool_use_id);
+    writeFileSync(transcript, `${JSON.stringify({ type: "user", message: { role: "user", content: [{ type: "tool_result", tool_use_id: id, is_error: true }] }, toolUseResult: "User rejected tool use" })}
+`);
+    const deadline = Date.now() + 2000;
+    while (root()?.status !== "idle" && Date.now() < deadline) await sleep(20);
+    expect(root()).toMatchObject({ status: "idle", pending: {} });
+  });
+});
+
 describe("static UI hosting", () => {
   it("serves files and index fallback, refuses traversal, honours extra origins", async () => {
     const ui = tmp("agentarium-ui-");

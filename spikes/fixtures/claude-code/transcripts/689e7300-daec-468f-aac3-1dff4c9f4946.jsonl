@@ -1,0 +1,3 @@
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"tool_use","id":"toolu_012uMb4JxZobf73wFNRsjNNd","name":"Bash"}]}}
+{"type":"user","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_012uMb4JxZobf73wFNRsjNNd","is_error":true}]},"toolUseResult":"User rejected tool use"}
+{"type":"user","message":{"role":"user","content":[{"type":"text","text":"[Request interrupted by user for tool use]"}]}}
