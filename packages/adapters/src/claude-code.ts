@@ -38,8 +38,31 @@ const CATEGORY_BY_TOOL: Record<string, ActionCategory> = {
   Agent: "delegate",
 };
 
-/** Unknown tools (MCP, future tools) default to `think`; the real name stays in `tool`. */
-export const categoryForTool = (tool: string): ActionCategory => CATEGORY_BY_TOOL[tool] ?? "think";
+const MCP_PREFIX = "mcp__";
+
+/** MCP tools act on the outside world, so an unrecognised verb defaults to `exec`, not `think`. */
+const categoryForMcpTool = (tool: string): ActionCategory => {
+  const name = tool.split("__").at(-1) ?? tool;
+  const verb = name.toLowerCase().split(/[_-]/)[0] ?? "";
+  if (["read", "get", "list", "view", "show"].includes(verb)) return "read";
+  if (["search", "find", "query", "grep", "lookup"].includes(verb)) return "search";
+  const writeVerbs = [
+    "write", "create", "update", "edit", "delete", "remove", "set", "add", "save", "post", "put", "send", "move", "rename",
+  ];
+  if (writeVerbs.includes(verb)) return "write";
+  if (["navigate", "fetch", "browse", "request", "http", "download", "upload"].includes(verb)) return "network";
+  return "exec";
+};
+
+/**
+ * Maps a tool name to an action category. Built-in tools use a fixed table; MCP tools are classified
+ * by the verb in their name. Other unknown tools default to `think`; the real name stays in `tool`.
+ */
+export const categoryForTool = (tool: string): ActionCategory => {
+  const known = CATEGORY_BY_TOOL[tool];
+  if (known) return known;
+  return tool.startsWith(MCP_PREFIX) ? categoryForMcpTool(tool) : "think";
+};
 
 type Obj = Record<string, unknown>;
 const isObj = (v: unknown): v is Obj => typeof v === "object" && v !== null && !Array.isArray(v);

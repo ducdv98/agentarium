@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { ROOT_AGENT, replay, type AgentEvent, type NewEvent } from "@agentarium/core";
-import { createClaudeCodeAdapter } from "../src";
+import { categoryForTool, createClaudeCodeAdapter } from "../src";
 
 const fx = (name: string): Record<string, unknown> =>
   JSON.parse(readFileSync(join(__dirname, "../../../spikes/fixtures/claude-code", `${name}.json`), "utf8"));
@@ -23,7 +23,27 @@ describe("claude code adapter", () => {
     expect(cat("Glob")).toBe("search");
     expect(cat("WebSearch")).toBe("network");
     expect(cat("Agent")).toBe("delegate");
-    expect(cat("mcp__x__y")).toBe("think");
+    expect(cat("mcp__x__y")).toBe("exec");
+  });
+
+  it("maps MCP tools by the verb in their name, never to think", () => {
+    const cat = (name: string) => categoryForTool(name);
+    expect(cat("mcp__claude-in-chrome__navigate")).toBe("network");
+    expect(cat("mcp__claude-in-chrome__read_page")).toBe("read");
+    expect(cat("mcp__claude-in-chrome__get_page_text")).toBe("read");
+    expect(cat("mcp__claude-in-chrome__find")).toBe("search");
+    expect(cat("mcp__claude_ai_Gmail__search_threads")).toBe("search");
+    expect(cat("mcp__claude_ai_Claude_Docs__create")).toBe("write");
+    expect(cat("mcp__stitch__edit_screens")).toBe("write");
+    expect(cat("mcp__stitch__delete_project")).toBe("write");
+    expect(cat("mcp__stitch__fetch-page")).toBe("network");
+    expect(cat("mcp__claude-in-chrome__computer")).toBe("exec");
+    expect(cat("mcp__stitch__generate_screen_from_text")).toBe("exec");
+    expect(cat("mcp__ide__executeCode")).toBe("exec");
+  });
+
+  it("keeps non-MCP unknown tools as think", () => {
+    expect(categoryForTool("SomeFutureTool")).toBe("think");
   });
 
   it("maps PreToolUse for the root agent with cwd, ids and a short summary", () => {
