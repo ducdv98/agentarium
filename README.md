@@ -23,6 +23,8 @@ agentarium start
 
 `start` prints a URL with your token in it. Open it in a browser and keep the tab open. Claude Code sessions started after `init` are picked up automatically. Codex sessions are picked up after you review and trust the new hooks in Codex. Hooks only work while the daemon runs.
 
+For Codex TUI sessions on the shared app-server daemon, Agentarium also connects automatically to show pending approvals and tool outcomes. This connection is read-only: Agentarium never answers approval requests. Set `AGENTARIUM_CODEX_LIVE=0` to disable it. `codex exec` sessions remain hook-only.
+
 ## Commands
 
 | Command | What it does |

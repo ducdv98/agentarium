@@ -4,7 +4,7 @@ import { hostname } from "node:os";
 import { extname, join, normalize, sep } from "node:path";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import type { Duplex } from "node:stream";
-import { createClaudeCodeAdapter, createCodexAdapter, type AdapterOutput } from "@agentarium/adapters";
+import { createClaudeCodeAdapter, createCodexAdapter, createCodexLiveMapper, createOutcomeGate, type AdapterOutput } from "@agentarium/adapters";
 import {
   DEFAULT_TIMEOUTS,
   SCHEMA_VERSION,
@@ -26,6 +26,7 @@ import { parseIngest } from "./ingest";
 import { UNASSIGNED_ROOM, resolveRoom } from "./rooms";
 import { jsonlLog, type EventLog } from "./storage";
 import { DAEMON_VERSION, DEFAULT_PORT } from "./version";
+import { startCodexLive } from "./codex-live";
 
 export interface DaemonOptions {
   port?: number;
@@ -48,6 +49,8 @@ export interface DaemonOptions {
   clock?: () => number;
   /** Client socket buffer size above which patches are skipped in favour of a later snapshot. */
   maxBufferedBytes?: number;
+  codexControlSocket?: string;
+  log?: (message: string) => void;
 }
 
 export interface Daemon {
@@ -109,6 +112,7 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
 
   const claudeCode = createClaudeCodeAdapter({ machine: opts.machine ?? hostname() });
   const codex = createCodexAdapter({ machine: opts.machine ?? hostname() });
+  const outcomeGate = createOutcomeGate();
 
   const rooms = new Map<string, Room>();
   const getRoom = (id: string): Room => {
@@ -261,11 +265,21 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
     return room;
   }
 
+  const codexLive = opts.codexControlSocket ? startCodexLive({
+    socketPath: opts.codexControlSocket,
+    mapper: createCodexLiveMapper({ machine: opts.machine ?? hostname(),
+      onUnknownOutcome: (id, status) => (opts.log ?? console.log)(`codex live: unknown outcome ${id}: ${String(status)}`) }),
+    onEvents: async ({ cwd, events }) => {
+      for (const event of events) if (outcomeGate("live", event)) await ingest(cwd, event);
+    },
+    log: opts.log ?? console.log,
+  }) : undefined;
+
   async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
     if (!hostOk(req)) return reply(res, 403, { error: "forbidden host or origin" });
     const url = new URL(req.url ?? "/", "http://localhost");
     if (req.method === "GET" && url.pathname === "/health") {
-      return reply(res, 200, { app: "agentarium", version, pid: process.pid });
+      return reply(res, 200, { app: "agentarium", version, pid: process.pid, codexLive: codexLive?.connected() ?? false });
     }
     if (req.method === "POST" && url.pathname === "/events") {
       if (!tokenOk(headerToken(req))) return reply(res, 401, { error: "unauthorized" });
@@ -294,7 +308,7 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
       }
       const adapter: { map(payload: unknown): AdapterOutput } = url.pathname === "/hooks/codex" ? codex : claudeCode;
       const { cwd, events } = adapter.map(payload);
-      for (const event of events) await ingest(cwd, event);
+      for (const event of events) if (url.pathname !== "/hooks/codex" || outcomeGate("hook", event)) await ingest(cwd, event);
       res.writeHead(204).end();
       return;
     }
@@ -360,6 +374,7 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
     token,
     world: (room) => getRoom(room).world,
     async close() {
+      await codexLive?.close();
       if (tickTimer) clearInterval(tickTimer);
       if (flushTimer) clearTimeout(flushTimer);
       for (const ws of wss.clients) ws.terminate();
