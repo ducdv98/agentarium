@@ -1,0 +1,1325 @@
+{
+ "label": "desktop-hg8er1k-swiftshader-cpu4x",
+ "date": "2026-10-10T16:37:47.761Z",
+ "gpuFlag": "swiftshader",
+ "cpuThrottle": 4,
+ "quick": false,
+ "host": {
+  "platform": "win32-x64",
+  "cpu": "AMD Ryzen 7 8745H with Radeon 780M Graphics",
+  "cores": 16,
+  "ramGB": 31
+ },
+ "chrome": "155.0.8059.40",
+ "info": {
+  "renderer": "pixi",
+  "pixi": "8.21.0",
+  "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "maxBatchableTextures": 32,
+  "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+  "params": {
+   "renderer": "pixi",
+   "count": 200,
+   "seed": 1,
+   "mode": "plain",
+   "cache": "bands",
+   "props": false,
+   "fps": 60,
+   "width": 1280,
+   "height": 720,
+   "view": "fit",
+   "paused": false,
+   "t": 0
+  }
+ },
+ "cases": [
+  {
+   "name": "pixi plain 200 no-desks",
+   "params": {
+    "renderer": "pixi",
+    "mode": "plain",
+    "count": 200,
+    "props": 0
+   },
+   "kind": "run",
+   "wallSeconds": 10.007,
+   "stats": {
+    "frames": 377,
+    "fps": 37.6,
+    "intervalMs": {
+     "mean": 26.595,
+     "p50": 27.8,
+     "p95": 27.9,
+     "max": 34.8
+    },
+    "frameMs": {
+     "mean": 5.761,
+     "p50": 3.1,
+     "p95": 17,
+     "max": 18
+    },
+    "drawCalls": {
+     "mean": 1,
+     "p50": 1,
+     "p95": 1,
+     "max": 1
+    },
+    "gpuMs": {
+     "mean": 22.762,
+     "p50": 22.612,
+     "p95": 24.881,
+     "max": 28.434
+    }
+   },
+   "mainThreadBusyPct": 29.6,
+   "scriptPct": 24.2,
+   "processCpuPct": {
+    "browser": 0.4,
+    "renderer": 103.3,
+    "GPU": 1049.3,
+    "network.mojom.NetworkService": 0.3,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 8.2,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "maxBatchableTextures": 32,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "plain",
+     "cache": "bands",
+     "props": false,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi tint 200 no-desks",
+   "params": {
+    "renderer": "pixi",
+    "mode": "tint",
+    "count": 200,
+    "props": 0
+   },
+   "kind": "run",
+   "wallSeconds": 10.007,
+   "stats": {
+    "frames": 382,
+    "fps": 38.2,
+    "intervalMs": {
+     "mean": 26.204,
+     "p50": 27.8,
+     "p95": 27.9,
+     "max": 34.8
+    },
+    "frameMs": {
+     "mean": 7.427,
+     "p50": 4,
+     "p95": 17.5,
+     "max": 19.7
+    },
+    "drawCalls": {
+     "mean": 1,
+     "p50": 1,
+     "p95": 1,
+     "max": 1
+    },
+    "gpuMs": {
+     "mean": 22.403,
+     "p50": 22.427,
+     "p95": 23.842,
+     "max": 25.753
+    }
+   },
+   "mainThreadBusyPct": 36.5,
+   "scriptPct": 31,
+   "processCpuPct": {
+    "browser": 0.5,
+    "renderer": 103,
+    "GPU": 1085.1,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 7.9,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "maxBatchableTextures": 32,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "tint",
+     "cache": "bands",
+     "props": false,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi mask 200 no-desks",
+   "params": {
+    "renderer": "pixi",
+    "mode": "mask",
+    "count": 200,
+    "props": 0
+   },
+   "kind": "run",
+   "wallSeconds": 10.018,
+   "stats": {
+    "frames": 366,
+    "fps": 36.4,
+    "intervalMs": {
+     "mean": 27.435,
+     "p50": 27.8,
+     "p95": 27.9,
+     "max": 34.8
+    },
+    "frameMs": {
+     "mean": 9.008,
+     "p50": 4.9,
+     "p95": 20.1,
+     "max": 21.7
+    },
+    "drawCalls": {
+     "mean": 1,
+     "p50": 1,
+     "p95": 1,
+     "max": 1
+    },
+    "gpuMs": {
+     "mean": 23.643,
+     "p50": 23.649,
+     "p95": 24.884,
+     "max": 26.564
+    }
+   },
+   "mainThreadBusyPct": 41.8,
+   "scriptPct": 36.2,
+   "processCpuPct": {
+    "browser": 0.2,
+    "renderer": 102.8,
+    "GPU": 1149.1,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 7.9,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "maxBatchableTextures": 32,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": false,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi filter 200 no-desks",
+   "params": {
+    "renderer": "pixi",
+    "mode": "filter",
+    "count": 200,
+    "props": 0
+   },
+   "kind": "run",
+   "wallSeconds": 10.015,
+   "stats": {
+    "frames": 277,
+    "fps": 27.6,
+    "intervalMs": {
+     "mean": 36.282,
+     "p50": 34.7,
+     "p95": 41.7,
+     "max": 41.8
+    },
+    "frameMs": {
+     "mean": 7.113,
+     "p50": 4.7,
+     "p95": 13.4,
+     "max": 14.6
+    },
+    "drawCalls": {
+     "mean": 3,
+     "p50": 3,
+     "p95": 3,
+     "max": 3
+    },
+    "gpuMs": {
+     "mean": 32.34,
+     "p50": 32.213,
+     "p95": 35.149,
+     "max": 37.317
+    }
+   },
+   "mainThreadBusyPct": 25.9,
+   "scriptPct": 21.7,
+   "processCpuPct": {
+    "browser": 11.4,
+    "renderer": 102.3,
+    "GPU": 1052,
+    "network.mojom.NetworkService": 0.6,
+    "storage.mojom.StorageService": 0,
+    "quarantine.mojom.Quarantine": 0.4
+   },
+   "jsHeapMB": 8.3,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "maxBatchableTextures": 32,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "filter",
+     "cache": "bands",
+     "props": false,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi mask 200",
+   "params": {
+    "renderer": "pixi",
+    "mode": "mask",
+    "count": 200
+   },
+   "kind": "run",
+   "wallSeconds": 10.005,
+   "stats": {
+    "frames": 333,
+    "fps": 33.3,
+    "intervalMs": {
+     "mean": 30.071,
+     "p50": 27.8,
+     "p95": 34.8,
+     "max": 35.2
+    },
+    "frameMs": {
+     "mean": 9.237,
+     "p50": 5,
+     "p95": 22.9,
+     "max": 25.6
+    },
+    "drawCalls": {
+     "mean": 1,
+     "p50": 1,
+     "p95": 1,
+     "max": 1
+    },
+    "gpuMs": {
+     "mean": 26.421,
+     "p50": 26.348,
+     "p95": 28.407,
+     "max": 31.808
+    }
+   },
+   "mainThreadBusyPct": 38.2,
+   "scriptPct": 33.2,
+   "processCpuPct": {
+    "browser": 6,
+    "renderer": 98.9,
+    "GPU": 1162.8,
+    "network.mojom.NetworkService": 7.8,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 8.5,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "maxBatchableTextures": 32,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi mask 5",
+   "params": {
+    "renderer": "pixi",
+    "mode": "mask",
+    "count": 5
+   },
+   "kind": "run",
+   "wallSeconds": 10.016,
+   "stats": {
+    "frames": 425,
+    "fps": 42.4,
+    "intervalMs": {
+     "mean": 23.563,
+     "p50": 20.9,
+     "p95": 27.8,
+     "max": 29.6
+    },
+    "frameMs": {
+     "mean": 5.421,
+     "p50": 2,
+     "p95": 13.5,
+     "max": 15.2
+    },
+    "drawCalls": {
+     "mean": 1,
+     "p50": 1,
+     "p95": 1,
+     "max": 1
+    },
+    "gpuMs": {
+     "mean": 19.727,
+     "p50": 19.666,
+     "p95": 21.731,
+     "max": 23.54
+    }
+   },
+   "mainThreadBusyPct": 31,
+   "scriptPct": 25.1,
+   "processCpuPct": {
+    "browser": 0.3,
+    "renderer": 102.2,
+    "GPU": 999,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 7.5,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "maxBatchableTextures": 32,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 5,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi mask 200 30fps",
+   "params": {
+    "renderer": "pixi",
+    "mode": "mask",
+    "count": 200,
+    "fps": 30
+   },
+   "kind": "run",
+   "wallSeconds": 10.01,
+   "stats": {
+    "frames": 300,
+    "fps": 29.9,
+    "intervalMs": {
+     "mean": 33.398,
+     "p50": 34.7,
+     "p95": 55.5,
+     "max": 69.4
+    },
+    "frameMs": {
+     "mean": 4.048,
+     "p50": 3.3,
+     "p95": 9.5,
+     "max": 24.2
+    },
+    "drawCalls": {
+     "mean": 1,
+     "p50": 1,
+     "p95": 1,
+     "max": 1
+    },
+    "gpuMs": {
+     "mean": 26.416,
+     "p50": 26.269,
+     "p95": 28.704,
+     "max": 31.202
+    }
+   },
+   "mainThreadBusyPct": 34.3,
+   "scriptPct": 16.9,
+   "processCpuPct": {
+    "browser": 3.6,
+    "renderer": 101.5,
+    "GPU": 1074,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 8.3,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "maxBatchableTextures": 32,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 30,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi mask 200 idle",
+   "params": {
+    "renderer": "pixi",
+    "mode": "mask",
+    "count": 200
+   },
+   "kind": "idle",
+   "wallSeconds": 10.005,
+   "stats": {
+    "frames": 0,
+    "fps": 0,
+    "intervalMs": null,
+    "frameMs": null,
+    "drawCalls": null,
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 6.4,
+   "scriptPct": 1.2,
+   "processCpuPct": {
+    "browser": 0.2,
+    "renderer": 101.6,
+    "GPU": 1.7,
+    "network.mojom.NetworkService": 0,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 9.1,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "maxBatchableTextures": 32,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi mask 200 idle + Ticker.system stopped",
+   "params": {
+    "renderer": "pixi",
+    "mode": "mask",
+    "count": 200
+   },
+   "kind": "idle-all",
+   "wallSeconds": 10.009,
+   "stats": {
+    "frames": 0,
+    "fps": 0,
+    "intervalMs": null,
+    "frameMs": null,
+    "drawCalls": null,
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 0,
+   "scriptPct": 0,
+   "processCpuPct": {
+    "browser": 1.5,
+    "renderer": 96.2,
+    "GPU": 0,
+    "network.mojom.NetworkService": 0,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 9.3,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "maxBatchableTextures": 32,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "canvas plain 200 no-desks",
+   "params": {
+    "renderer": "canvas",
+    "mode": "plain",
+    "count": 200,
+    "props": 0
+   },
+   "kind": "run",
+   "wallSeconds": 10.015,
+   "stats": {
+    "frames": 600,
+    "fps": 59.9,
+    "intervalMs": {
+     "mean": 16.694,
+     "p50": 13.9,
+     "p95": 20.9,
+     "max": 34.7
+    },
+    "frameMs": {
+     "mean": 3.296,
+     "p50": 2.7,
+     "p95": 7.6,
+     "max": 16.6
+    },
+    "drawCalls": {
+     "mean": 202,
+     "p50": 202,
+     "p95": 202,
+     "max": 202
+    },
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 57.8,
+   "scriptPct": 21.4,
+   "processCpuPct": {
+    "browser": 1.4,
+    "renderer": 102.3,
+    "GPU": 1016.5,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 2.8,
+   "info": {
+    "renderer": "canvas",
+    "tintCopies": {
+     "copies": 0,
+     "bytes": 0,
+     "ms": 0
+    },
+    "gpuTimer": "unavailable",
+    "params": {
+     "renderer": "canvas",
+     "count": 200,
+     "seed": 1,
+     "mode": "plain",
+     "cache": "bands",
+     "props": false,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "canvas tint 200 no-desks",
+   "params": {
+    "renderer": "canvas",
+    "mode": "tint",
+    "count": 200,
+    "props": 0
+   },
+   "kind": "run",
+   "wallSeconds": 10.019,
+   "stats": {
+    "frames": 562,
+    "fps": 56.1,
+    "intervalMs": {
+     "mean": 17.825,
+     "p50": 20.8,
+     "p95": 27.8,
+     "max": 34.8
+    },
+    "frameMs": {
+     "mean": 4.626,
+     "p50": 3.9,
+     "p95": 9.5,
+     "max": 20.9
+    },
+    "drawCalls": {
+     "mean": 202,
+     "p50": 202,
+     "p95": 202,
+     "max": 202
+    },
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 68.6,
+   "scriptPct": 27,
+   "processCpuPct": {
+    "browser": 1,
+    "renderer": 96.3,
+    "GPU": 974.2,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 2.2,
+   "info": {
+    "renderer": "canvas",
+    "tintCopies": {
+     "copies": 672,
+     "bytes": 95185368,
+     "ms": 548.4999992847443
+    },
+    "gpuTimer": "unavailable",
+    "params": {
+     "renderer": "canvas",
+     "count": 200,
+     "seed": 1,
+     "mode": "tint",
+     "cache": "bands",
+     "props": false,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "canvas mask 200 no-desks",
+   "params": {
+    "renderer": "canvas",
+    "mode": "mask",
+    "count": 200,
+    "props": 0
+   },
+   "kind": "run",
+   "wallSeconds": 10.004,
+   "stats": {
+    "frames": 462,
+    "fps": 46.1,
+    "intervalMs": {
+     "mean": 21.692,
+     "p50": 20.8,
+     "p95": 34.7,
+     "max": 42.1
+    },
+    "frameMs": {
+     "mean": 6.547,
+     "p50": 5.5,
+     "p95": 14.5,
+     "max": 25.2
+    },
+    "drawCalls": {
+     "mean": 402,
+     "p50": 402,
+     "p95": 402,
+     "max": 402
+    },
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 86.6,
+   "scriptPct": 31.1,
+   "processCpuPct": {
+    "browser": 0.8,
+    "renderer": 105.4,
+    "GPU": 935.8,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 2.1,
+   "info": {
+    "renderer": "canvas",
+    "tintCopies": {
+     "copies": 672,
+     "bytes": 29793264,
+     "ms": 458.4999997615814
+    },
+    "gpuTimer": "unavailable",
+    "params": {
+     "renderer": "canvas",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": false,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "canvas mask 200",
+   "params": {
+    "renderer": "canvas",
+    "mode": "mask",
+    "count": 200
+   },
+   "kind": "run",
+   "wallSeconds": 10.021,
+   "stats": {
+    "frames": 452,
+    "fps": 45.1,
+    "intervalMs": {
+     "mean": 22.173,
+     "p50": 20.8,
+     "p95": 34.7,
+     "max": 48.7
+    },
+    "frameMs": {
+     "mean": 16.094,
+     "p50": 15.2,
+     "p95": 27.2,
+     "max": 39.2
+    },
+    "drawCalls": {
+     "mean": 415,
+     "p50": 415,
+     "p95": 415,
+     "max": 415
+    },
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 81.4,
+   "scriptPct": 73.4,
+   "processCpuPct": {
+    "browser": 0.6,
+    "renderer": 105.6,
+    "GPU": 988.3,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 1.7,
+   "info": {
+    "renderer": "canvas",
+    "tintCopies": {
+     "copies": 672,
+     "bytes": 29793264,
+     "ms": 645.1000007987022
+    },
+    "gpuTimer": "unavailable",
+    "params": {
+     "renderer": "canvas",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "canvas mask 5",
+   "params": {
+    "renderer": "canvas",
+    "mode": "mask",
+    "count": 5
+   },
+   "kind": "run",
+   "wallSeconds": 10.018,
+   "stats": {
+    "frames": 602,
+    "fps": 60,
+    "intervalMs": {
+     "mean": 16.662,
+     "p50": 13.9,
+     "p95": 20.9,
+     "max": 21
+    },
+    "frameMs": {
+     "mean": 0.902,
+     "p50": 0.8,
+     "p95": 2,
+     "max": 3.1
+    },
+    "drawCalls": {
+     "mean": 25,
+     "p50": 25,
+     "p95": 25,
+     "max": 25
+    },
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 25.8,
+   "scriptPct": 7.4,
+   "processCpuPct": {
+    "browser": 0.6,
+    "renderer": 104.9,
+    "GPU": 874.6,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 1.5,
+   "info": {
+    "renderer": "canvas",
+    "tintCopies": {
+     "copies": 176,
+     "bytes": 7906728,
+     "ms": 152.70000004768372
+    },
+    "gpuTimer": "unavailable",
+    "params": {
+     "renderer": "canvas",
+     "count": 5,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "canvas mask 200 30fps",
+   "params": {
+    "renderer": "canvas",
+    "mode": "mask",
+    "count": 200,
+    "fps": 30
+   },
+   "kind": "run",
+   "wallSeconds": 10.017,
+   "stats": {
+    "frames": 286,
+    "fps": 28.4,
+    "intervalMs": {
+     "mean": 35.169,
+     "p50": 34.7,
+     "p95": 48.6,
+     "max": 90.4
+    },
+    "frameMs": {
+     "mean": 22.69,
+     "p50": 18.3,
+     "p95": 43.5,
+     "max": 80.3
+    },
+    "drawCalls": {
+     "mean": 415,
+     "p50": 415,
+     "p95": 415,
+     "max": 415
+    },
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 72.8,
+   "scriptPct": 65.3,
+   "processCpuPct": {
+    "browser": 0.6,
+    "renderer": 85.9,
+    "GPU": 585.7,
+    "network.mojom.NetworkService": 0.2,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 2.3,
+   "info": {
+    "renderer": "canvas",
+    "tintCopies": {
+     "copies": 672,
+     "bytes": 29793264,
+     "ms": 571.5999999046326
+    },
+    "gpuTimer": "unavailable",
+    "params": {
+     "renderer": "canvas",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 30,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "canvas mask 200 idle",
+   "params": {
+    "renderer": "canvas",
+    "mode": "mask",
+    "count": 200
+   },
+   "kind": "idle",
+   "wallSeconds": 10.007,
+   "stats": {
+    "frames": 0,
+    "fps": 0,
+    "intervalMs": null,
+    "frameMs": null,
+    "drawCalls": null,
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 0,
+   "scriptPct": 0,
+   "processCpuPct": {
+    "browser": 0.4,
+    "renderer": 98.5,
+    "GPU": 0,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 1.8,
+   "info": {
+    "renderer": "canvas",
+    "tintCopies": {
+     "copies": 672,
+     "bytes": 29793264,
+     "ms": 662.6000006198883
+    },
+    "gpuTimer": "unavailable",
+    "params": {
+     "renderer": "canvas",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi mask 200 desks as Graphics",
+   "params": {
+    "renderer": "pixi",
+    "mode": "mask",
+    "count": 200,
+    "cache": "none"
+   },
+   "kind": "run",
+   "wallSeconds": 10.007,
+   "stats": {
+    "frames": 343,
+    "fps": 34.2,
+    "intervalMs": {
+     "mean": 29.22,
+     "p50": 27.8,
+     "p95": 34.8,
+     "max": 41.7
+    },
+    "frameMs": {
+     "mean": 6.495,
+     "p50": 3.7,
+     "p95": 22.3,
+     "max": 26
+    },
+    "drawCalls": {
+     "mean": 1,
+     "p50": 1,
+     "p95": 1,
+     "max": 1
+    },
+    "gpuMs": {
+     "mean": 25.36,
+     "p50": 25.452,
+     "p95": 27.343,
+     "max": 32.072
+    }
+   },
+   "mainThreadBusyPct": 28.7,
+   "scriptPct": 24.1,
+   "processCpuPct": {
+    "browser": 0.7,
+    "renderer": 94.8,
+    "GPU": 1124.3,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 8.1,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "maxBatchableTextures": 32,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "none",
+     "props": true,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  }
+ ],
+ "cacheCheck": [
+  {
+   "t": 4.2,
+   "renderer": "pixi",
+   "cache": "single",
+   "against": "none",
+   "meanAbs": 0.341,
+   "differingPct": 0.43,
+   "orderErrorPct": 0.12,
+   "orderErrorPx": 1109
+  },
+  {
+   "t": 4.2,
+   "renderer": "pixi",
+   "cache": "bands",
+   "against": "none",
+   "meanAbs": 0.072,
+   "differingPct": 0.21,
+   "orderErrorPct": 0,
+   "orderErrorPx": 0
+  },
+  {
+   "t": 4.2,
+   "renderer": "canvas",
+   "cache": "single",
+   "against": "none",
+   "meanAbs": 0.386,
+   "differingPct": 0.69,
+   "orderErrorPct": 0.13,
+   "orderErrorPx": 1234
+  },
+  {
+   "t": 4.2,
+   "renderer": "canvas",
+   "cache": "bands",
+   "against": "none",
+   "meanAbs": 0.178,
+   "differingPct": 0.62,
+   "orderErrorPct": 0,
+   "orderErrorPx": 15
+  },
+  {
+   "t": 4.2,
+   "renderer": "pixi vs canvas",
+   "cache": "none",
+   "against": "canvas none",
+   "meanAbs": 0.578,
+   "differingPct": 2.16,
+   "orderErrorPct": 0,
+   "orderErrorPx": 1
+  },
+  {
+   "t": 9.7,
+   "renderer": "pixi",
+   "cache": "single",
+   "against": "none",
+   "meanAbs": 0.392,
+   "differingPct": 0.47,
+   "orderErrorPct": 0.15,
+   "orderErrorPx": 1385
+  },
+  {
+   "t": 9.7,
+   "renderer": "pixi",
+   "cache": "bands",
+   "against": "none",
+   "meanAbs": 0.069,
+   "differingPct": 0.21,
+   "orderErrorPct": 0,
+   "orderErrorPx": 0
+  },
+  {
+   "t": 9.7,
+   "renderer": "canvas",
+   "cache": "single",
+   "against": "none",
+   "meanAbs": 0.44,
+   "differingPct": 0.74,
+   "orderErrorPct": 0.17,
+   "orderErrorPx": 1526
+  },
+  {
+   "t": 9.7,
+   "renderer": "canvas",
+   "cache": "bands",
+   "against": "none",
+   "meanAbs": 0.184,
+   "differingPct": 0.64,
+   "orderErrorPct": 0,
+   "orderErrorPx": 14
+  },
+  {
+   "t": 9.7,
+   "renderer": "pixi vs canvas",
+   "cache": "none",
+   "against": "canvas none",
+   "meanAbs": 0.568,
+   "differingPct": 2.13,
+   "orderErrorPct": 0,
+   "orderErrorPx": 1
+  },
+  {
+   "t": 15.1,
+   "renderer": "pixi",
+   "cache": "single",
+   "against": "none",
+   "meanAbs": 0.434,
+   "differingPct": 0.51,
+   "orderErrorPct": 0.17,
+   "orderErrorPx": 1610
+  },
+  {
+   "t": 15.1,
+   "renderer": "pixi",
+   "cache": "bands",
+   "against": "none",
+   "meanAbs": 0.072,
+   "differingPct": 0.22,
+   "orderErrorPct": 0,
+   "orderErrorPx": 0
+  },
+  {
+   "t": 15.1,
+   "renderer": "canvas",
+   "cache": "single",
+   "against": "none",
+   "meanAbs": 0.478,
+   "differingPct": 0.77,
+   "orderErrorPct": 0.19,
+   "orderErrorPx": 1785
+  },
+  {
+   "t": 15.1,
+   "renderer": "canvas",
+   "cache": "bands",
+   "against": "none",
+   "meanAbs": 0.182,
+   "differingPct": 0.64,
+   "orderErrorPct": 0,
+   "orderErrorPx": 17
+  },
+  {
+   "t": 15.1,
+   "renderer": "pixi vs canvas",
+   "cache": "none",
+   "against": "canvas none",
+   "meanAbs": 0.572,
+   "differingPct": 2.12,
+   "orderErrorPct": 0,
+   "orderErrorPx": 1
+  }
+ ]
+}

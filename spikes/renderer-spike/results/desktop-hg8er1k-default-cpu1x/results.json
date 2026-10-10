@@ -1,0 +1,1324 @@
+{
+ "label": "desktop-hg8er1k-default-cpu1x",
+ "date": "2026-10-10T16:27:44.591Z",
+ "gpuFlag": "default",
+ "cpuThrottle": 1,
+ "quick": false,
+ "host": {
+  "platform": "win32-x64",
+  "cpu": "AMD Ryzen 7 8745H with Radeon 780M Graphics",
+  "cores": 16,
+  "ramGB": 31
+ },
+ "chrome": "155.0.8059.40",
+ "info": {
+  "renderer": "pixi",
+  "pixi": "8.21.0",
+  "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4050 Laptop GPU (0x000028E1) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "maxBatchableTextures": 16,
+  "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+  "params": {
+   "renderer": "pixi",
+   "count": 200,
+   "seed": 1,
+   "mode": "plain",
+   "cache": "bands",
+   "props": false,
+   "fps": 60,
+   "width": 1280,
+   "height": 720,
+   "view": "fit",
+   "paused": false,
+   "t": 0
+  }
+ },
+ "cases": [
+  {
+   "name": "pixi plain 200 no-desks",
+   "params": {
+    "renderer": "pixi",
+    "mode": "plain",
+    "count": 200,
+    "props": 0
+   },
+   "kind": "run",
+   "wallSeconds": 10.014,
+   "stats": {
+    "frames": 601,
+    "fps": 60,
+    "intervalMs": {
+     "mean": 16.666,
+     "p50": 14,
+     "p95": 20.9,
+     "max": 21.6
+    },
+    "frameMs": {
+     "mean": 0.48,
+     "p50": 0.4,
+     "p95": 0.8,
+     "max": 2.5
+    },
+    "drawCalls": {
+     "mean": 1,
+     "p50": 1,
+     "p95": 1,
+     "max": 1
+    },
+    "gpuMs": {
+     "mean": 0.198,
+     "p50": 0.142,
+     "p95": 0.159,
+     "max": 4.844
+    }
+   },
+   "mainThreadBusyPct": 6.6,
+   "scriptPct": 3.5,
+   "processCpuPct": {
+    "browser": 14.8,
+    "renderer": 12.8,
+    "GPU": 17.3,
+    "network.mojom.NetworkService": 5.3,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 8.1,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4050 Laptop GPU (0x000028E1) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "maxBatchableTextures": 16,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "plain",
+     "cache": "bands",
+     "props": false,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi tint 200 no-desks",
+   "params": {
+    "renderer": "pixi",
+    "mode": "tint",
+    "count": 200,
+    "props": 0
+   },
+   "kind": "run",
+   "wallSeconds": 10.015,
+   "stats": {
+    "frames": 601,
+    "fps": 60,
+    "intervalMs": {
+     "mean": 16.678,
+     "p50": 14,
+     "p95": 20.9,
+     "max": 22
+    },
+    "frameMs": {
+     "mean": 0.48,
+     "p50": 0.5,
+     "p95": 0.8,
+     "max": 2.4
+    },
+    "drawCalls": {
+     "mean": 1,
+     "p50": 1,
+     "p95": 1,
+     "max": 1
+    },
+    "gpuMs": {
+     "mean": 0.216,
+     "p50": 0.158,
+     "p95": 0.174,
+     "max": 3.998
+    }
+   },
+   "mainThreadBusyPct": 6.9,
+   "scriptPct": 3.5,
+   "processCpuPct": {
+    "browser": 1,
+    "renderer": 13.3,
+    "GPU": 18,
+    "network.mojom.NetworkService": 0.2,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 8.6,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4050 Laptop GPU (0x000028E1) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "maxBatchableTextures": 16,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "tint",
+     "cache": "bands",
+     "props": false,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi mask 200 no-desks",
+   "params": {
+    "renderer": "pixi",
+    "mode": "mask",
+    "count": 200,
+    "props": 0
+   },
+   "kind": "run",
+   "wallSeconds": 10.013,
+   "stats": {
+    "frames": 601,
+    "fps": 60,
+    "intervalMs": {
+     "mean": 16.666,
+     "p50": 14,
+     "p95": 20.9,
+     "max": 21.4
+    },
+    "frameMs": {
+     "mean": 0.564,
+     "p50": 0.5,
+     "p95": 0.9,
+     "max": 1.8
+    },
+    "drawCalls": {
+     "mean": 1,
+     "p50": 1,
+     "p95": 1,
+     "max": 1
+    },
+    "gpuMs": {
+     "mean": 0.236,
+     "p50": 0.18,
+     "p95": 0.214,
+     "max": 4.081
+    }
+   },
+   "mainThreadBusyPct": 7.3,
+   "scriptPct": 4,
+   "processCpuPct": {
+    "browser": 0.6,
+    "renderer": 13.8,
+    "GPU": 17.9,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 9.1,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4050 Laptop GPU (0x000028E1) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "maxBatchableTextures": 16,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": false,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi filter 200 no-desks",
+   "params": {
+    "renderer": "pixi",
+    "mode": "filter",
+    "count": 200,
+    "props": 0
+   },
+   "kind": "run",
+   "wallSeconds": 10.008,
+   "stats": {
+    "frames": 600,
+    "fps": 60,
+    "intervalMs": {
+     "mean": 16.659,
+     "p50": 14,
+     "p95": 20.9,
+     "max": 21.4
+    },
+    "frameMs": {
+     "mean": 0.645,
+     "p50": 0.6,
+     "p95": 1,
+     "max": 2.5
+    },
+    "drawCalls": {
+     "mean": 3,
+     "p50": 3,
+     "p95": 3,
+     "max": 3
+    },
+    "gpuMs": {
+     "mean": 0.307,
+     "p50": 0.204,
+     "p95": 0.283,
+     "max": 8.018
+    }
+   },
+   "mainThreadBusyPct": 7.8,
+   "scriptPct": 4.6,
+   "processCpuPct": {
+    "browser": 0.4,
+    "renderer": 14.4,
+    "GPU": 18.3,
+    "network.mojom.NetworkService": 0.2,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 10.7,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4050 Laptop GPU (0x000028E1) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "maxBatchableTextures": 16,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "filter",
+     "cache": "bands",
+     "props": false,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi mask 200",
+   "params": {
+    "renderer": "pixi",
+    "mode": "mask",
+    "count": 200
+   },
+   "kind": "run",
+   "wallSeconds": 10.01,
+   "stats": {
+    "frames": 601,
+    "fps": 60,
+    "intervalMs": {
+     "mean": 16.666,
+     "p50": 14,
+     "p95": 20.9,
+     "max": 21.5
+    },
+    "frameMs": {
+     "mean": 0.693,
+     "p50": 0.7,
+     "p95": 1,
+     "max": 2
+    },
+    "drawCalls": {
+     "mean": 2,
+     "p50": 2,
+     "p95": 2,
+     "max": 2
+    },
+    "gpuMs": {
+     "mean": 0.298,
+     "p50": 0.194,
+     "p95": 0.22,
+     "max": 7.377
+    }
+   },
+   "mainThreadBusyPct": 8,
+   "scriptPct": 4.8,
+   "processCpuPct": {
+    "browser": 0.4,
+    "renderer": 14.7,
+    "GPU": 18.6,
+    "network.mojom.NetworkService": 0.3,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 11.2,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4050 Laptop GPU (0x000028E1) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "maxBatchableTextures": 16,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi mask 5",
+   "params": {
+    "renderer": "pixi",
+    "mode": "mask",
+    "count": 5
+   },
+   "kind": "run",
+   "wallSeconds": 10.015,
+   "stats": {
+    "frames": 601,
+    "fps": 60,
+    "intervalMs": {
+     "mean": 16.666,
+     "p50": 14,
+     "p95": 20.9,
+     "max": 21.5
+    },
+    "frameMs": {
+     "mean": 0.242,
+     "p50": 0.2,
+     "p95": 0.4,
+     "max": 1.2
+    },
+    "drawCalls": {
+     "mean": 2,
+     "p50": 2,
+     "p95": 2,
+     "max": 2
+    },
+    "gpuMs": {
+     "mean": 0.125,
+     "p50": 0.083,
+     "p95": 0.094,
+     "max": 5.172
+    }
+   },
+   "mainThreadBusyPct": 5.2,
+   "scriptPct": 2.1,
+   "processCpuPct": {
+    "browser": 0.3,
+    "renderer": 12,
+    "GPU": 18.1,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 7.6,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4050 Laptop GPU (0x000028E1) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "maxBatchableTextures": 16,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 5,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi mask 200 30fps",
+   "params": {
+    "renderer": "pixi",
+    "mode": "mask",
+    "count": 200,
+    "fps": 30
+   },
+   "kind": "run",
+   "wallSeconds": 10.008,
+   "stats": {
+    "frames": 300,
+    "fps": 30,
+    "intervalMs": {
+     "mean": 33.351,
+     "p50": 34.7,
+     "p95": 34.9,
+     "max": 35.4
+    },
+    "frameMs": {
+     "mean": 0.743,
+     "p50": 0.7,
+     "p95": 1.1,
+     "max": 2.3
+    },
+    "drawCalls": {
+     "mean": 2,
+     "p50": 2,
+     "p95": 2,
+     "max": 2
+    },
+    "gpuMs": {
+     "mean": 0.263,
+     "p50": 0.183,
+     "p95": 0.207,
+     "max": 4.93
+    }
+   },
+   "mainThreadBusyPct": 5.8,
+   "scriptPct": 2.9,
+   "processCpuPct": {
+    "browser": 0.3,
+    "renderer": 10.9,
+    "GPU": 11.5,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 8.2,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4050 Laptop GPU (0x000028E1) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "maxBatchableTextures": 16,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 30,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi mask 200 idle",
+   "params": {
+    "renderer": "pixi",
+    "mode": "mask",
+    "count": 200
+   },
+   "kind": "idle",
+   "wallSeconds": 10.006,
+   "stats": {
+    "frames": 0,
+    "fps": 0,
+    "intervalMs": null,
+    "frameMs": null,
+    "drawCalls": null,
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 3,
+   "scriptPct": 0.5,
+   "processCpuPct": {
+    "browser": 0.4,
+    "renderer": 6.7,
+    "GPU": 4,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 10.3,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4050 Laptop GPU (0x000028E1) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "maxBatchableTextures": 16,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi mask 200 idle + Ticker.system stopped",
+   "params": {
+    "renderer": "pixi",
+    "mode": "mask",
+    "count": 200
+   },
+   "kind": "idle-all",
+   "wallSeconds": 10.004,
+   "stats": {
+    "frames": 0,
+    "fps": 0,
+    "intervalMs": null,
+    "frameMs": null,
+    "drawCalls": null,
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 0.9,
+   "scriptPct": 0.4,
+   "processCpuPct": {
+    "browser": 3.4,
+    "renderer": 1.7,
+    "GPU": 1.3,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 10.2,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4050 Laptop GPU (0x000028E1) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "maxBatchableTextures": 16,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "canvas plain 200 no-desks",
+   "params": {
+    "renderer": "canvas",
+    "mode": "plain",
+    "count": 200,
+    "props": 0
+   },
+   "kind": "run",
+   "wallSeconds": 10.014,
+   "stats": {
+    "frames": 601,
+    "fps": 60,
+    "intervalMs": {
+     "mean": 16.667,
+     "p50": 14,
+     "p95": 20.9,
+     "max": 21.6
+    },
+    "frameMs": {
+     "mean": 0.333,
+     "p50": 0.3,
+     "p95": 0.5,
+     "max": 0.9
+    },
+    "drawCalls": {
+     "mean": 202,
+     "p50": 202,
+     "p95": 202,
+     "max": 202
+    },
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 7.7,
+   "scriptPct": 2.3,
+   "processCpuPct": {
+    "browser": 0.9,
+    "renderer": 12.2,
+    "GPU": 18.2,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 2.2,
+   "info": {
+    "renderer": "canvas",
+    "tintCopies": {
+     "copies": 0,
+     "bytes": 0,
+     "ms": 0
+    },
+    "gpuTimer": "unavailable",
+    "params": {
+     "renderer": "canvas",
+     "count": 200,
+     "seed": 1,
+     "mode": "plain",
+     "cache": "bands",
+     "props": false,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "canvas tint 200 no-desks",
+   "params": {
+    "renderer": "canvas",
+    "mode": "tint",
+    "count": 200,
+    "props": 0
+   },
+   "kind": "run",
+   "wallSeconds": 10.016,
+   "stats": {
+    "frames": 601,
+    "fps": 60,
+    "intervalMs": {
+     "mean": 16.666,
+     "p50": 14,
+     "p95": 20.9,
+     "max": 23.9
+    },
+    "frameMs": {
+     "mean": 0.683,
+     "p50": 0.7,
+     "p95": 1.1,
+     "max": 2.1
+    },
+    "drawCalls": {
+     "mean": 202,
+     "p50": 202,
+     "p95": 202,
+     "max": 202
+    },
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 12.6,
+   "scriptPct": 4.5,
+   "processCpuPct": {
+    "browser": 1.3,
+    "renderer": 17.2,
+    "GPU": 34.3,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 1.9,
+   "info": {
+    "renderer": "canvas",
+    "tintCopies": {
+     "copies": 672,
+     "bytes": 95185368,
+     "ms": 61.49999958276749
+    },
+    "gpuTimer": "unavailable",
+    "params": {
+     "renderer": "canvas",
+     "count": 200,
+     "seed": 1,
+     "mode": "tint",
+     "cache": "bands",
+     "props": false,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "canvas mask 200 no-desks",
+   "params": {
+    "renderer": "canvas",
+    "mode": "mask",
+    "count": 200,
+    "props": 0
+   },
+   "kind": "run",
+   "wallSeconds": 10.013,
+   "stats": {
+    "frames": 601,
+    "fps": 60,
+    "intervalMs": {
+     "mean": 16.667,
+     "p50": 14,
+     "p95": 20.9,
+     "max": 21.8
+    },
+    "frameMs": {
+     "mean": 0.867,
+     "p50": 0.8,
+     "p95": 1.3,
+     "max": 2.2
+    },
+    "drawCalls": {
+     "mean": 402,
+     "p50": 402,
+     "p95": 402,
+     "max": 402
+    },
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 15.1,
+   "scriptPct": 5.5,
+   "processCpuPct": {
+    "browser": 0.2,
+    "renderer": 18.8,
+    "GPU": 37.4,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 2,
+   "info": {
+    "renderer": "canvas",
+    "tintCopies": {
+     "copies": 672,
+     "bytes": 29793264,
+     "ms": 59.400000512599945
+    },
+    "gpuTimer": "unavailable",
+    "params": {
+     "renderer": "canvas",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": false,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "canvas mask 200",
+   "params": {
+    "renderer": "canvas",
+    "mode": "mask",
+    "count": 200
+   },
+   "kind": "run",
+   "wallSeconds": 10.009,
+   "stats": {
+    "frames": 601,
+    "fps": 60,
+    "intervalMs": {
+     "mean": 16.666,
+     "p50": 14,
+     "p95": 21,
+     "max": 21.7
+    },
+    "frameMs": {
+     "mean": 1.979,
+     "p50": 1.9,
+     "p95": 2.7,
+     "max": 4.6
+    },
+    "drawCalls": {
+     "mean": 415,
+     "p50": 415,
+     "p95": 415,
+     "max": 415
+    },
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 14.5,
+   "scriptPct": 12.1,
+   "processCpuPct": {
+    "browser": 0.2,
+    "renderer": 18.1,
+    "GPU": 38.3,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 2.3,
+   "info": {
+    "renderer": "canvas",
+    "tintCopies": {
+     "copies": 672,
+     "bytes": 29793264,
+     "ms": 62.5000005364418
+    },
+    "gpuTimer": "unavailable",
+    "params": {
+     "renderer": "canvas",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "canvas mask 5",
+   "params": {
+    "renderer": "canvas",
+    "mode": "mask",
+    "count": 5
+   },
+   "kind": "run",
+   "wallSeconds": 10.013,
+   "stats": {
+    "frames": 601,
+    "fps": 60,
+    "intervalMs": {
+     "mean": 16.666,
+     "p50": 14,
+     "p95": 21,
+     "max": 22.6
+    },
+    "frameMs": {
+     "mean": 0.144,
+     "p50": 0.1,
+     "p95": 0.3,
+     "max": 0.8
+    },
+    "drawCalls": {
+     "mean": 25,
+     "p50": 25,
+     "p95": 25,
+     "max": 25
+    },
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 4.2,
+   "scriptPct": 1.1,
+   "processCpuPct": {
+    "browser": 0.3,
+    "renderer": 8.1,
+    "GPU": 13.9,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 1.8,
+   "info": {
+    "renderer": "canvas",
+    "tintCopies": {
+     "copies": 174,
+     "bytes": 7814112,
+     "ms": 29.900000035762787
+    },
+    "gpuTimer": "unavailable",
+    "params": {
+     "renderer": "canvas",
+     "count": 5,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "canvas mask 200 30fps",
+   "params": {
+    "renderer": "canvas",
+    "mode": "mask",
+    "count": 200,
+    "fps": 30
+   },
+   "kind": "run",
+   "wallSeconds": 10.012,
+   "stats": {
+    "frames": 301,
+    "fps": 30,
+    "intervalMs": {
+     "mean": 33.333,
+     "p50": 34.7,
+     "p95": 35.3,
+     "max": 36
+    },
+    "frameMs": {
+     "mean": 2.175,
+     "p50": 2.1,
+     "p95": 2.8,
+     "max": 3.9
+    },
+    "drawCalls": {
+     "mean": 415,
+     "p50": 415,
+     "p95": 415,
+     "max": 415
+    },
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 8.9,
+   "scriptPct": 6.8,
+   "processCpuPct": {
+    "browser": 0.3,
+    "renderer": 12.1,
+    "GPU": 22.2,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 1.8,
+   "info": {
+    "renderer": "canvas",
+    "tintCopies": {
+     "copies": 672,
+     "bytes": 29793264,
+     "ms": 62.00000035762787
+    },
+    "gpuTimer": "unavailable",
+    "params": {
+     "renderer": "canvas",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 30,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "canvas mask 200 idle",
+   "params": {
+    "renderer": "canvas",
+    "mode": "mask",
+    "count": 200
+   },
+   "kind": "idle",
+   "wallSeconds": 10.013,
+   "stats": {
+    "frames": 0,
+    "fps": 0,
+    "intervalMs": null,
+    "frameMs": null,
+    "drawCalls": null,
+    "gpuMs": null
+   },
+   "mainThreadBusyPct": 0,
+   "scriptPct": 0,
+   "processCpuPct": {
+    "browser": 0.2,
+    "renderer": 0,
+    "GPU": 0,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 2,
+   "info": {
+    "renderer": "canvas",
+    "tintCopies": {
+     "copies": 672,
+     "bytes": 29793264,
+     "ms": 65.39999997615814
+    },
+    "gpuTimer": "unavailable",
+    "params": {
+     "renderer": "canvas",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "bands",
+     "props": true,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  },
+  {
+   "name": "pixi mask 200 desks as Graphics",
+   "params": {
+    "renderer": "pixi",
+    "mode": "mask",
+    "count": 200,
+    "cache": "none"
+   },
+   "kind": "run",
+   "wallSeconds": 10.016,
+   "stats": {
+    "frames": 601,
+    "fps": 60,
+    "intervalMs": {
+     "mean": 16.665,
+     "p50": 14,
+     "p95": 21.2,
+     "max": 22
+    },
+    "frameMs": {
+     "mean": 0.533,
+     "p50": 0.5,
+     "p95": 0.9,
+     "max": 1.4
+    },
+    "drawCalls": {
+     "mean": 1,
+     "p50": 1,
+     "p95": 1,
+     "max": 1
+    },
+    "gpuMs": {
+     "mean": 1.215,
+     "p50": 1.206,
+     "p95": 1.327,
+     "max": 2.313
+    }
+   },
+   "mainThreadBusyPct": 5.9,
+   "scriptPct": 3.7,
+   "processCpuPct": {
+    "browser": 0.2,
+    "renderer": 9.9,
+    "GPU": 13,
+    "network.mojom.NetworkService": 0.1,
+    "storage.mojom.StorageService": 0
+   },
+   "jsHeapMB": 10.4,
+   "info": {
+    "renderer": "pixi",
+    "pixi": "8.21.0",
+    "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4050 Laptop GPU (0x000028E1) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "maxBatchableTextures": 16,
+    "gpuTimer": "EXT_disjoint_timer_query_webgl2",
+    "params": {
+     "renderer": "pixi",
+     "count": 200,
+     "seed": 1,
+     "mode": "mask",
+     "cache": "none",
+     "props": true,
+     "fps": 60,
+     "width": 1280,
+     "height": 720,
+     "view": "fit",
+     "paused": false,
+     "t": 0
+    }
+   },
+   "errors": []
+  }
+ ],
+ "cacheCheck": [
+  {
+   "t": 4.2,
+   "renderer": "pixi",
+   "cache": "single",
+   "against": "none",
+   "meanAbs": 0.341,
+   "differingPct": 0.43,
+   "orderErrorPct": 0.12,
+   "orderErrorPx": 1109
+  },
+  {
+   "t": 4.2,
+   "renderer": "pixi",
+   "cache": "bands",
+   "against": "none",
+   "meanAbs": 0.073,
+   "differingPct": 0.21,
+   "orderErrorPct": 0,
+   "orderErrorPx": 0
+  },
+  {
+   "t": 4.2,
+   "renderer": "canvas",
+   "cache": "single",
+   "against": "none",
+   "meanAbs": 0.352,
+   "differingPct": 0.6,
+   "orderErrorPct": 0.14,
+   "orderErrorPx": 1261
+  },
+  {
+   "t": 4.2,
+   "renderer": "canvas",
+   "cache": "bands",
+   "against": "none",
+   "meanAbs": 0.161,
+   "differingPct": 0.61,
+   "orderErrorPct": 0,
+   "orderErrorPx": 12
+  },
+  {
+   "t": 4.2,
+   "renderer": "pixi vs canvas",
+   "cache": "none",
+   "against": "canvas none",
+   "meanAbs": 0.611,
+   "differingPct": 2.38,
+   "orderErrorPct": 0,
+   "orderErrorPx": 10
+  },
+  {
+   "t": 9.7,
+   "renderer": "pixi",
+   "cache": "single",
+   "against": "none",
+   "meanAbs": 0.392,
+   "differingPct": 0.46,
+   "orderErrorPct": 0.15,
+   "orderErrorPx": 1383
+  },
+  {
+   "t": 9.7,
+   "renderer": "pixi",
+   "cache": "bands",
+   "against": "none",
+   "meanAbs": 0.07,
+   "differingPct": 0.21,
+   "orderErrorPct": 0,
+   "orderErrorPx": 0
+  },
+  {
+   "t": 9.7,
+   "renderer": "canvas",
+   "cache": "single",
+   "against": "none",
+   "meanAbs": 0.404,
+   "differingPct": 0.63,
+   "orderErrorPct": 0.17,
+   "orderErrorPx": 1534
+  },
+  {
+   "t": 9.7,
+   "renderer": "canvas",
+   "cache": "bands",
+   "against": "none",
+   "meanAbs": 0.166,
+   "differingPct": 0.63,
+   "orderErrorPct": 0,
+   "orderErrorPx": 13
+  },
+  {
+   "t": 9.7,
+   "renderer": "pixi vs canvas",
+   "cache": "none",
+   "against": "canvas none",
+   "meanAbs": 0.599,
+   "differingPct": 2.34,
+   "orderErrorPct": 0,
+   "orderErrorPx": 11
+  },
+  {
+   "t": 15.1,
+   "renderer": "pixi",
+   "cache": "single",
+   "against": "none",
+   "meanAbs": 0.434,
+   "differingPct": 0.51,
+   "orderErrorPct": 0.17,
+   "orderErrorPx": 1606
+  },
+  {
+   "t": 15.1,
+   "renderer": "pixi",
+   "cache": "bands",
+   "against": "none",
+   "meanAbs": 0.072,
+   "differingPct": 0.22,
+   "orderErrorPct": 0,
+   "orderErrorPx": 0
+  },
+  {
+   "t": 15.1,
+   "renderer": "canvas",
+   "cache": "single",
+   "against": "none",
+   "meanAbs": 0.445,
+   "differingPct": 0.68,
+   "orderErrorPct": 0.19,
+   "orderErrorPx": 1796
+  },
+  {
+   "t": 15.1,
+   "renderer": "canvas",
+   "cache": "bands",
+   "against": "none",
+   "meanAbs": 0.166,
+   "differingPct": 0.62,
+   "orderErrorPct": 0,
+   "orderErrorPx": 16
+  },
+  {
+   "t": 15.1,
+   "renderer": "pixi vs canvas",
+   "cache": "none",
+   "against": "canvas none",
+   "meanAbs": 0.6,
+   "differingPct": 2.34,
+   "orderErrorPct": 0,
+   "orderErrorPx": 13
+  }
+ ]
+}

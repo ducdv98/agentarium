@@ -1,0 +1,7 @@
+{
+  "name": "agentarium-renderer-spike",
+  "private": true,
+  "type": "module",
+  "scripts": { "serve": "node serve.mjs", "bench": "node bench.mjs" },
+  "dependencies": { "pixi.js": "8.21.0", "playwright-core": "1.55.0", "pngjs": "7.0.0" }
+}
