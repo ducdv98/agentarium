@@ -4,35 +4,43 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { buildAsset } from "../pipeline/build.mjs";
 
+const blender = process.env.AGENTARIUM_BLENDER ?? "C:\\Program Files\\Blender Foundation\\Blender 5.2\\blender.exe";
+
+/** Saves the test mannequin and its manifest into a fresh asset directory. */
+async function mannequin(...flags: string[]) {
+  const root = mkdtempSync(join(tmpdir(), "agentarium-blender-"));
+  const asset = join(root, "src", "characters", "mannequin");
+  mkdirSync(asset, { recursive: true });
+  const blend = join(asset, "mannequin.blend");
+  const script = join(import.meta.dirname, "fixtures", "make-mannequin.py");
+  const { execFileSync } = await import("node:child_process");
+  execFileSync(blender, [
+    "-b", "--factory-startup", "-P", script, "--", blend, ...flags,
+  ]);
+  writeFileSync(join(asset, "asset.json"), JSON.stringify({
+    name: "Mannequin",
+    licence: "CC-BY-4.0",
+    sources: [{
+      source: "Test",
+      author: "Agentarium",
+      url: "https://example.com",
+      licence: "CC0-1.0",
+      changes: "Original",
+    }],
+    render: {
+      blend: "mannequin.blend",
+      collection: "asset",
+      atlas: "mannequin",
+      animations: { walk: { action: "walk", fps: 12 }, idle: { action: "idle", fps: 8 } },
+      masks: { shirt: ["shirt"] },
+    },
+  }));
+  return { root, asset };
+}
+
 describe.skipIf(process.env.AGENTARIUM_BLENDER_TESTS !== "1")("Blender pipeline", () => {
   it("renders and packs every animation, direction, and shirt mask", async () => {
-    const root = mkdtempSync(join(tmpdir(), "agentarium-blender-"));
-    const asset = join(root, "src", "characters", "mannequin");
-    mkdirSync(asset, { recursive: true });
-    const blend = join(asset, "mannequin.blend");
-    const script = join(import.meta.dirname, "fixtures", "make-mannequin.py");
-    const { execFileSync } = await import("node:child_process");
-    execFileSync(process.env.AGENTARIUM_BLENDER ?? "C:\\Program Files\\Blender Foundation\\Blender 5.2\\blender.exe", [
-      "-b", "--factory-startup", "-P", script, "--", blend,
-    ]);
-    writeFileSync(join(asset, "asset.json"), JSON.stringify({
-      name: "Mannequin",
-      licence: "CC-BY-4.0",
-      sources: [{
-        source: "Test",
-        author: "Agentarium",
-        url: "https://example.com",
-        licence: "CC0-1.0",
-        changes: "Original",
-      }],
-      render: {
-        blend: "mannequin.blend",
-        collection: "asset",
-        atlas: "mannequin",
-        animations: { walk: { action: "walk", fps: 12 }, idle: { action: "idle", fps: 8 } },
-        masks: { shirt: ["shirt"] },
-      },
-    }));
+    const { root, asset } = await mannequin();
     const buildDir = join(root, "build");
     const atlasDir = join(root, "atlases");
     await buildAsset(asset, { buildDir, atlasDir });
@@ -52,5 +60,23 @@ describe.skipIf(process.env.AGENTARIUM_BLENDER_TESTS !== "1")("Blender pipeline"
     const walkRects = new Set(atlas.animations["walk/sw"].map((name: string) => JSON.stringify(atlas.frames[name].frame)));
     expect(walkRects.size).toBeGreaterThan(1);
     expect(existsSync(join(atlasDir, "mannequin.png"))).toBe(true);
+  }, 120_000);
+
+  it.each(["--constrained", "--object-constrained"])("refuses an armature that still has constraints (%s)", async (flag) => {
+    const { root, asset } = await mannequin(flag);
+    await expect(buildAsset(asset, { buildDir: join(root, "build"), atlasDir: join(root, "atlases") }))
+      .rejects.toThrow(/Blender failed/);
+    const log = readFileSync(join(root, "build", "mannequin", "blender.log"), "utf8");
+    expect(log).toContain("bake controls before rendering");
+    expect(existsSync(join(root, "atlases", "mannequin.json"))).toBe(false);
+  }, 120_000);
+
+  it("bakes Rigify-style controls into a skeleton that reproduces their pose", async () => {
+    const { execFileSync } = await import("node:child_process");
+    const output = execFileSync(blender, [
+      "-b", "--factory-startup", "-P", join(import.meta.dirname, "fixtures", "bake-check.py"), "--",
+      join(import.meta.dirname, "..", "pipeline"),
+    ], { encoding: "utf8" });
+    expect(output).toContain("BAKE-OK");
   }, 120_000);
 });

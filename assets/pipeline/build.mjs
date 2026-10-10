@@ -34,7 +34,7 @@ export async function checkBlender(filePath, pin = settings, runtime = process) 
   return filePath;
 }
 
-function blenderPath() {
+export function blenderPath() {
   return process.env.AGENTARIUM_BLENDER || settings.blender.defaultExe;
 }
 

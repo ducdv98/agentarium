@@ -334,6 +334,13 @@ def append_asset():
     armatures = [o for o in objects if o.type == "ARMATURE"]
     if RENDER.get("animations") and len(armatures) != 1:
         raise AssetError(f"{blend}: an animated asset needs exactly one armature in {name}, found {len(armatures)}")
+    for armature in armatures:
+        # A linked control rig would move the skeleton through constraints or drivers, not through its action.
+        linked = (any(bone.constraints for bone in armature.pose.bones) or armature.constraints
+                  or any(owner.animation_data and owner.animation_data.drivers
+                         for owner in (armature, armature.data)))
+        if linked:
+            raise AssetError(f"{blend}: {armature.name} has constraints or drivers; bake controls before rendering")
     pivot = bpy.data.objects.new("pivot", None)
     bpy.context.scene.collection.objects.link(pivot)
     for o in objects:

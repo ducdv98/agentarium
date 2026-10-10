@@ -5,7 +5,9 @@
   "scripts": {
     "test": "vitest run",
     "assets:build": "node pipeline/build.mjs",
-    "assets:check": "node pipeline/check.mjs"
+    "assets:check": "node pipeline/check.mjs",
+    "assets:make": "node pipeline/make.mjs",
+    "assets:bake": "node pipeline/bake.mjs"
   },
   "devDependencies": {
     "maxrects-packer": "2.7.3",

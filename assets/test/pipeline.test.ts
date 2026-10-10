@@ -50,6 +50,39 @@ describe("Blender pin", () => {
 });
 
 describe("licence manifests", () => {
+  it("accepts a complete CC0 licence audit", () => {
+    const root = fixture();
+    writeFileSync(join(root, "src", "characters", "worker", "licence-audit.json"), JSON.stringify({
+      files: [{ path: "base.obj", licence: "CC0-1.0", evidence: "stated in the file" }],
+    }));
+    expect(validateTree(root).problems).toEqual([]);
+  });
+
+  it("rejects a licence audit entry that is not CC0", () => {
+    const root = fixture();
+    writeFileSync(join(root, "src", "characters", "worker", "licence-audit.json"), JSON.stringify({
+      files: [{ path: "base.obj", licence: "CC-BY-4.0", evidence: "stated in the file" }],
+    }));
+    expect(validateTree(root).problems).toEqual([
+      `${join(root, "src", "characters", "worker", "licence-audit.json")}: files[0] must state CC0-1.0`,
+    ]);
+  });
+
+  it("rejects a licence audit entry without known evidence", () => {
+    const root = fixture();
+    writeFileSync(join(root, "src", "characters", "worker", "licence-audit.json"), JSON.stringify({
+      files: [
+        { path: "base.obj", licence: "CC0-1.0" },
+        { path: "rig.json", licence: "CC0-1.0", evidence: "probably fine" },
+      ],
+    }));
+    const audit = join(root, "src", "characters", "worker", "licence-audit.json");
+    expect(validateTree(root).problems).toEqual([
+      `${audit}: files[0] needs a path and known CC0 evidence`,
+      `${audit}: files[1] needs a path and known CC0 evidence`,
+    ]);
+  });
+
   it("reports the exact complete problem list", () => {
     const root = fixture();
     writeFileSync(join(root, "src", "characters", "worker", "asset.json"), JSON.stringify({

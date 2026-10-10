@@ -34,6 +34,35 @@ function readManifest(assetPath) {
   }
 }
 
+// The evidence make.py can give that a file is CC0 (see "Making a character" in assets/README.md).
+const AUDIT_EVIDENCE = /^(stated in the file|CC0 statement in \S+|MPFB LICENSE\.md: .+)$/;
+
+/** A character made from MakeHuman/MPFB data records each file it uses and why it is CC0 (make.py writes it). */
+function validateLicenceAudit(assetPath) {
+  const path = join(assetPath, "licence-audit.json");
+  if (!existsSync(path)) {
+    return [];
+  }
+  const problems = [];
+  try {
+    const audit = JSON.parse(readFileSync(path, "utf8"));
+    if (!Array.isArray(audit.files) || audit.files.length === 0) {
+      return [problem(path, "files must be a non-empty array")];
+    }
+    audit.files.forEach((entry, index) => {
+      if (entry?.licence !== "CC0-1.0") {
+        problems.push(problem(path, `files[${index}] must state CC0-1.0`));
+      }
+      if (!entry?.path || !AUDIT_EVIDENCE.test(entry?.evidence ?? "")) {
+        problems.push(problem(path, `files[${index}] needs a path and known CC0 evidence`));
+      }
+    });
+  } catch (error) {
+    problems.push(problem(path, `invalid JSON: ${error.message}`));
+  }
+  return problems;
+}
+
 export function findAssets(src) {
   if (!existsSync(src)) {
     return [];
@@ -112,6 +141,7 @@ export function validateTree(root) {
     }
     try {
       problems.push(...validateManifest(assetPath, JSON.parse(readFileSync(manifestPath, "utf8"))));
+      problems.push(...validateLicenceAudit(assetPath));
     } catch (error) {
       problems.push(problem(manifestPath, `invalid JSON: ${error.message}`));
     }

@@ -1,4 +1,9 @@
 The art in assets/ is licensed CC BY 4.0 unless an asset below says otherwise. See assets/LICENSE.
 The pipeline code is separate software licensed under the repository MIT licence.
 
-There are no assets yet.
+Office worker
+Path: src/characters/office-worker
+Licence: CC-BY-4.0
+Source: Base mesh, macro targets, Rigify metarig and weights; MPFB 2.0.17 data (MakeHuman core assets); every file used is listed in licence-audit.json; MakeHuman team (Data Collection AB, Joel Palmius, Jonas Hauquier); https://github.com/makehumancommunity/mpfb2/blob/v2.0.17/LICENSE.md; CC0-1.0; Male macros, targets baked, head scaled 1.2x, helper geometry removed, rig generated with Rigify
+Source: Eyes (low-poly) and eyebrows (eyebrow001); MakeHuman system assets, CC0 pack; MakeHuman team (Data Collection AB, Joel Palmius, Jonas Hauquier); https://files.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip; CC0-1.0; Fitted to the body; materials replaced by palette materials
+Source: Clothing, hair, materials, deformation skeleton and actions; Agentarium, made by make.py; Agentarium contributors; https://github.com/ducdv98/agentarium; CC-BY-4.0; Original work

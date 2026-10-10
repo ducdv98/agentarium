@@ -1,0 +1,40 @@
+{
+  "name": "Office worker",
+  "licence": "CC-BY-4.0",
+  "sources": [
+    {
+      "what": "Base mesh, macro targets, Rigify metarig and weights",
+      "source": "MPFB 2.0.17 data (MakeHuman core assets); every file used is listed in licence-audit.json",
+      "author": "MakeHuman team (Data Collection AB, Joel Palmius, Jonas Hauquier)",
+      "url": "https://github.com/makehumancommunity/mpfb2/blob/v2.0.17/LICENSE.md",
+      "licence": "CC0-1.0",
+      "changes": "Male macros, targets baked, head scaled 1.2x, helper geometry removed, rig generated with Rigify"
+    },
+    {
+      "what": "Eyes (low-poly) and eyebrows (eyebrow001)",
+      "source": "MakeHuman system assets, CC0 pack",
+      "author": "MakeHuman team (Data Collection AB, Joel Palmius, Jonas Hauquier)",
+      "url": "https://files.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip",
+      "licence": "CC0-1.0",
+      "changes": "Fitted to the body; materials replaced by palette materials"
+    },
+    {
+      "what": "Clothing, hair, materials, deformation skeleton and actions",
+      "source": "Agentarium, made by make.py",
+      "author": "Agentarium contributors",
+      "url": "https://github.com/ducdv98/agentarium",
+      "licence": "CC-BY-4.0",
+      "changes": "Original work"
+    }
+  ],
+  "render": {
+    "blend": "office-worker.blend",
+    "collection": "asset",
+    "atlas": "office-worker",
+    "animations": {
+      "tpose": { "action": "tpose", "fps": 1 },
+      "idle": { "action": "idle", "fps": 8 }
+    },
+    "masks": { "shirt": ["shirt"] }
+  }
+}

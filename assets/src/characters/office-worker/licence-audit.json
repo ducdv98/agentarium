@@ -1,0 +1,149 @@
+{
+  "mpfb": {
+    "version": "2.0.17",
+    "sha256": "4f0a879d64a39bf646fbf5f53601ac678855da329d650617dca5737548239a87",
+    "licence": "https://github.com/makehumancommunity/mpfb2/blob/v2.0.17/LICENSE.md"
+  },
+  "makehuman": {
+    "pack": "makehuman_system_assets_cc0.zip",
+    "sha256": "b542127a8e25547c7c29c19f2d1d2adb9a664c80396ecd694095dbc8028a0107"
+  },
+  "files": [
+    {
+      "path": "makehuman/eyebrows/eyebrow001/eyebrow001.mhclo",
+      "licence": "CC0-1.0",
+      "evidence": "stated in the file"
+    },
+    {
+      "path": "makehuman/eyebrows/eyebrow001/eyebrow001.mhmat",
+      "licence": "CC0-1.0",
+      "evidence": "stated in the file"
+    },
+    {
+      "path": "makehuman/eyebrows/eyebrow001/eyebrow001.obj",
+      "licence": "CC0-1.0",
+      "evidence": "stated in the file"
+    },
+    {
+      "path": "makehuman/eyebrows/eyebrow001/eyebrow001.png",
+      "licence": "CC0-1.0",
+      "evidence": "CC0 statement in eyebrow001.mhmat"
+    },
+    {
+      "path": "makehuman/eyes/low-poly/low-poly.mhclo",
+      "licence": "CC0-1.0",
+      "evidence": "stated in the file"
+    },
+    {
+      "path": "makehuman/eyes/low-poly/low-poly.obj",
+      "licence": "CC0-1.0",
+      "evidence": "stated in the file"
+    },
+    {
+      "path": "makehuman/eyes/materials/brown.mhmat",
+      "licence": "CC0-1.0",
+      "evidence": "stated in the file"
+    },
+    {
+      "path": "makehuman/eyes/materials/brown_eye.png",
+      "licence": "CC0-1.0",
+      "evidence": "CC0 statement in brown.mhmat"
+    },
+    {
+      "path": "mpfb/data/3dobjs/base.obj",
+      "licence": "CC0-1.0",
+      "evidence": "stated in the file"
+    },
+    {
+      "path": "mpfb/data/mesh_metadata/basemesh_vertex_groups.json",
+      "licence": "CC0-1.0",
+      "evidence": "MPFB LICENSE.md: JSON data with mesh information"
+    },
+    {
+      "path": "mpfb/data/mesh_metadata/hm08_config.json",
+      "licence": "CC0-1.0",
+      "evidence": "MPFB LICENSE.md: JSON data with mesh information"
+    },
+    {
+      "path": "mpfb/data/rigs/rigify/rig.human.json",
+      "licence": "CC0-1.0",
+      "evidence": "MPFB LICENSE.md: rigs, poses and expressions"
+    },
+    {
+      "path": "mpfb/data/rigs/rigify/weights.human_toes.json",
+      "licence": "CC0-1.0",
+      "evidence": "stated in the file"
+    },
+    {
+      "path": "mpfb/data/targets/macrodetails/african-female-young.target.gz",
+      "licence": "CC0-1.0",
+      "evidence": "MPFB LICENSE.md: targets and modifiers"
+    },
+    {
+      "path": "mpfb/data/targets/macrodetails/african-male-young.target.gz",
+      "licence": "CC0-1.0",
+      "evidence": "MPFB LICENSE.md: targets and modifiers"
+    },
+    {
+      "path": "mpfb/data/targets/macrodetails/asian-female-young.target.gz",
+      "licence": "CC0-1.0",
+      "evidence": "MPFB LICENSE.md: targets and modifiers"
+    },
+    {
+      "path": "mpfb/data/targets/macrodetails/asian-male-young.target.gz",
+      "licence": "CC0-1.0",
+      "evidence": "MPFB LICENSE.md: targets and modifiers"
+    },
+    {
+      "path": "mpfb/data/targets/macrodetails/caucasian-female-young.target.gz",
+      "licence": "CC0-1.0",
+      "evidence": "MPFB LICENSE.md: targets and modifiers"
+    },
+    {
+      "path": "mpfb/data/targets/macrodetails/caucasian-male-young.target.gz",
+      "licence": "CC0-1.0",
+      "evidence": "MPFB LICENSE.md: targets and modifiers"
+    },
+    {
+      "path": "mpfb/data/targets/macrodetails/macro.json",
+      "licence": "CC0-1.0",
+      "evidence": "MPFB LICENSE.md: targets and modifiers"
+    },
+    {
+      "path": "mpfb/data/targets/macrodetails/universal-female-young-averagemuscle-averageweight.target.gz",
+      "licence": "CC0-1.0",
+      "evidence": "MPFB LICENSE.md: targets and modifiers"
+    },
+    {
+      "path": "mpfb/data/targets/macrodetails/universal-male-young-averagemuscle-averageweight.target.gz",
+      "licence": "CC0-1.0",
+      "evidence": "MPFB LICENSE.md: targets and modifiers"
+    },
+    {
+      "path": "mpfb/data/targets/target.json",
+      "licence": "CC0-1.0",
+      "evidence": "MPFB LICENSE.md: targets and modifiers"
+    },
+    {
+      "path": "makehuman/eyebrows/eyebrow001/eyebrow001.thumb",
+      "licence": "CC0-1.0",
+      "evidence": "CC0 statement in eyebrow001.mhclo"
+    },
+    {
+      "path": "makehuman/eyes/low-poly/low-poly.thumb",
+      "licence": "CC0-1.0",
+      "evidence": "CC0 statement in low-poly.mhclo"
+    },
+    {
+      "path": "makehuman/eyes/materials/brown.thumb",
+      "licence": "CC0-1.0",
+      "evidence": "CC0 statement in brown.mhmat"
+    }
+  ],
+  "notInOutput": [
+    {
+      "path": "mpfb/data/node_trees/makeskin.json",
+      "reason": "material node template; make.py replaces every material"
+    }
+  ]
+}

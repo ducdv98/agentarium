@@ -65,8 +65,9 @@ management, the toon look and the outline from `pipeline/settings.json`, so ever
 
 - The file has a collection named by `render.collection`. Only that collection is rendered.
 - The collection has no lights and no cameras. The build fails if it finds any.
-- An animated asset has exactly one armature in the collection.
-- A material named after a `palette` entry in `settings.json` (`skin`, `trousers`, `hair`, `shoes`, `eyes`)
+- An animated asset has exactly one armature in the collection. It has no bone constraints and no drivers:
+  controls are baked before rendering (see Making a character), and the build fails otherwise.
+- A material named after a `palette` entry in `settings.json` (`skin`, `trousers`, `hair`, `brows`, `shoes`, `eyes`)
   is replaced by the shared toon material in that colour. Other materials render as authored.
 - The materials a mask lists (`render.masks`) render in the neutral `tint` colour, whatever they are named.
   The mask pass renders them white and everything else black. The packer turns each mask into a tint layer
@@ -80,35 +81,38 @@ management, the toon look and the outline from `pipeline/settings.json`, so ever
 - The asset faces screen south-west (towards the camera, down the -Y axis) at rest. The pipeline turns it
   for the four directions.
 
-## Commands
+## Making a character
 
 ```powershell
-pnpm assets:build
-pnpm assets:build --only office-worker
-pnpm assets:build --only assets/src/characters/office-worker
-pnpm assets:check
+pnpm assets:make office-worker
+pnpm assets:bake assets/src/characters/office-worker
+pnpm assets:bake assets/src/characters/office-worker --link
 ```
 
-`assets:build` validates manifests, writes `NOTICE`, renders with Blender, and
-packs atlases. `assets:check` validates manifests, `NOTICE`, and every atlas
-without Blender.
+`assets:make` builds a character's `.blend` from scratch with its `make.py`. It downloads (or reuses) the MPFB
+extension and the MakeHuman CC0 asset pack pinned in `settings.json` under `sources`, checks their sha256,
+installs MPFB into `assets/.cache/blender-user`, and runs the pinned Blender. Only `make.py` uses MPFB; MPFB's
+GPL code is a tool and is never committed.
 
-## Installing the pinned Blender
+A character `.blend` has two rigs:
 
-Use a Windows x64 render machine. Download the MSI from the URL in
-`pipeline/settings.json`:
+- `asset` holds the deformation skeleton, the one armature that is rendered and later exported for 3D. It has
+  only the `DEF-` bones of the Rigify rig, with the same names and rest pose, and every mesh is skinned to it.
+- `controls` holds the generated Rigify rig, its widgets and the metarig. Animate here, in actions named
+  `<name>.controls`. One Rigify rig serves every character variant.
 
-```powershell
-Get-FileHash blender-5.2.2-windows-x64.msi -Algorithm SHA256
-```
+`assets:bake` samples each `<name>.controls` action on every frame and keys the result into `<name>` on the
+skeleton, keeping the frame range and the cyclic flag, then saves. The manifest names the baked actions. To see
+the mesh follow the controls while you pose in Blender, run it with `--link`, which saves the skeleton linked to
+the controls. Bake again before `assets:build`, which refuses a linked skeleton.
 
-The result must equal `installerSha256`. Install to the default path in the
-settings file or set `AGENTARIUM_BLENDER` to `blender.exe`. The build also
-checks the installed executable against `exeSha256` before it starts Blender.
-Run `git lfs install` before adding a `.blend` file.
+`make.py` writes `licence-audit.json`. It records every file MPFB reads while it builds the character, and the
+evidence that each is CC0:
 
-Never commit Blender backups, temporary renders, or caches. Never commit
-Mixamo, Quaternius QAL, Sketchfab downloads, CC BY-SA, non-commercial content,
-or assets with an unclear licence. The ignored cache is `assets/.cache/`.
+- the file's own CC0 statement;
+- a CC0 statement in the `.mhclo` or `.mhmat` beside it that uses it;
+- or an asset kind that MPFB's `LICENSE.md` (pinned to the release) releases as CC0 1.0: the base mesh and
+  proxies, targets, textures, rigs, and JSON mesh data.
 
-Changing the Blender version means rebuilding all the art.
+Data that does not reach the output, such as MPFB's material template, is listed under `notInOutput`. The make
+fails on any file it cannot account for. `assets:check` fails on an entry without CC0 or known evidence.

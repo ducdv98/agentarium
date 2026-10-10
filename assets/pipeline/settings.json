@@ -8,6 +8,18 @@
     "defaultExe": "C:\\Program Files\\Blender Foundation\\Blender 5.2\\blender.exe",
     "exeSha256": "f141a3c5754500e6f84361099a4cd53f0bb7662b6a0d2cfaaa8fbb63e92234a0"
   },
+  "sources": {
+    "mpfb": {
+      "url": "https://extensions.blender.org/download/sha256:4f0a879d64a39bf646fbf5f53601ac678855da329d650617dca5737548239a87/add-on-mpfb-v2.0.17.zip",
+      "sha256": "4f0a879d64a39bf646fbf5f53601ac678855da329d650617dca5737548239a87",
+      "file": "add-on-mpfb-v2.0.17.zip"
+    },
+    "makehuman": {
+      "url": "https://files.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip",
+      "sha256": "b542127a8e25547c7c29c19f2d1d2adb9a664c80396ecd694095dbc8028a0107",
+      "file": "makehuman_system_assets_cc0.zip"
+    }
+  },
   "frame": {
     "size": [160, 208],
     "anchor": [80, 184],
@@ -33,6 +45,7 @@
     "skin": "#C68863",
     "trousers": "#2E3440",
     "hair": "#2B1D14",
+    "brows": "#2B1D14",
     "shoes": "#303034",
     "eyes": "#28201D",
     "ink": "#3F3F4A",

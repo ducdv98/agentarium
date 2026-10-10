@@ -1,14 +1,17 @@
 # Saves a small test asset for the Blender integration test:
-#   blender -b --factory-startup -P make-mannequin.py -- <output .blend>
+#   blender -b --factory-startup -P make-mannequin.py -- <output .blend> [--constrained | --object-constrained]
 # Collection "asset": one armature (root, spine), legs bone-parented to root and a torso to spine, with palette
 # materials (trousers, skin) and a mask material (shirt). Actions "walk" and "idle" key the spine on frames 1-4.
+# --constrained leaves a bone constraint on the rig, as an unbaked control link would; --object-constrained
+# leaves one on the rig object.
 import math
 import sys
 
 import bpy
 from mathutils import Matrix
 
-out = sys.argv[sys.argv.index("--") + 1]
+args = sys.argv[sys.argv.index("--") + 1:]
+out = args[0]
 bpy.ops.wm.read_factory_settings(use_empty=True)
 collection = bpy.data.collections.new("asset")
 bpy.context.scene.collection.children.link(collection)
@@ -57,4 +60,8 @@ for name, degrees in (("walk", 30), ("idle", 6)):
         bone.rotation_euler = (0, 0, math.radians(degrees * math.sin(frame * math.pi / 2)))
         bone.keyframe_insert("rotation_euler", frame=frame)
 rig.animation_data.action = None
+if "--constrained" in args:
+    rig.pose.bones["spine"].constraints.new("COPY_ROTATION")
+if "--object-constrained" in args:
+    rig.constraints.new("COPY_LOCATION")
 bpy.ops.wm.save_as_mainfile(filepath=out)

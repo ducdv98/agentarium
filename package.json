@@ -11,6 +11,8 @@
     "verify:all": "node scripts/verify-all.mjs",
     "smoke:pack": "node scripts/smoke-pack.mjs",
     "assets:build": "pnpm --filter @agentarium/assets assets:build",
+    "assets:make": "pnpm --filter @agentarium/assets assets:make",
+    "assets:bake": "pnpm --filter @agentarium/assets assets:bake",
     "assets:check": "pnpm --filter @agentarium/assets assets:check",
     "agentarium": "node packages/cli/dist/bin.js"
   },
