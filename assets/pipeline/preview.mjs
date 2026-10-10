@@ -1,7 +1,8 @@
 // Composes a room from its committed atlas and layout.json into one PNG at 2x, for review:
 //   node pipeline/preview.mjs <scene asset dir> [--characters <atlas>] [--slots] [--out <png>]
 // It draws in the order the isometric Renderer must use (assets/README.md, "Room layouts"): the floor, then the
-// walls, then props and characters sorted by depth (column + row), with front props over a character on their tile.
+// walls, then props, partitions and characters sorted by depth (column + row), with partitions first on their tile
+// and front props over a character on their tile.
 // --characters stands the atlas's idle (or first) clip on every Station slot; --slots tints each slot's tile.
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
@@ -79,6 +80,10 @@ export function drawOrder(layout, characters = []) {
   }));
   for (const wall of layout.walls ?? []) items.push({ kind: "wall", ...wall, key: [1, wall.at[0] + wall.at[1], 0] });
   for (const prop of layout.props ?? []) items.push({ kind: "prop", ...prop, key: [2, prop.at[0] + prop.at[1], prop.front ? 2 : 0] });
+  // A partition stands on its tile's back edge: behind everything on that tile, in front of the tiles behind.
+  for (const partition of layout.partitions ?? []) {
+    items.push({ kind: "partition", ...partition, key: [2, partition.at[0] + partition.at[1], -1] });
+  }
   for (const character of characters) items.push({ kind: "character", ...character, key: [2, character.at[0] + character.at[1], 1] });
   const cmp = (a, b) => a.key[0] - b.key[0] || a.key[1] - b.key[1] || a.key[2] - b.key[2] || a.at[0] - b.at[0];
   return items.sort(cmp);

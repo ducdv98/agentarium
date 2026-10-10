@@ -49,9 +49,42 @@ def part(name):
 
 
 def material(name):
+    if name == GLASS:
+        return glass()
     if name not in S["palette"]:
         raise ValueError(f"{name} is not a palette colour")
     return bpy.data.materials.get(name) or bpy.data.materials.new(name)
+
+
+GLASS = "see-through-glass"
+
+
+def glass():
+    """Not a palette name, so the pipeline renders it as authored: a flat tint that lets 70 % of what is behind
+    show through, so an Agent behind or inside the meeting room stays visible."""
+    m = bpy.data.materials.get(GLASS)
+    if m:
+        return m
+    m = bpy.data.materials.new(GLASS)
+    m.use_nodes = True
+    nt, links = m.node_tree, m.node_tree.links
+    nt.nodes.clear()
+    out = nt.nodes.new("ShaderNodeOutputMaterial")
+    tint = nt.nodes.new("ShaderNodeEmission")
+    h = S["palette"]["glass"].lstrip("#")
+    srgb = [int(h[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+    tint.inputs[0].default_value = (*(c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4 for c in srgb), 1)
+    clear = nt.nodes.new("ShaderNodeBsdfTransparent")
+    mix = nt.nodes.new("ShaderNodeMixShader")
+    mix.inputs[0].default_value = 0.3
+    links.new(clear.outputs[0], mix.inputs[1])
+    links.new(tint.outputs[0], mix.inputs[2])
+    links.new(mix.outputs[0], out.inputs[0])
+    if hasattr(m, "surface_render_method"):
+        m.surface_render_method = "BLENDED"
+    elif hasattr(m, "blend_method"):
+        m.blend_method = "BLEND"
+    return m
 
 
 def add(name, bm, mat, outline, smooth=False):
@@ -123,6 +156,17 @@ def wall_window():
     box("transom", (2 * half, 0.03, 0.03), (0, 0.44, 1.38), "trim", outline=False)
     box("sill", (2 * half + 0.1, 0.14, 0.04), (0, 0.39, sill - 0.02), "trim", outline=False)
     wall_trim()
+
+
+def glass_partition():
+    """A glass office partition on the tile's north-east edge (+Y), like a wall, 2 m tall on a low base."""
+    part("glass-partition")
+    box("base", (1.0, 0.08, 0.12), (0, 0.46, 0), "trim", outline=False)
+    box("pane", (1.0, 0.02, 1.84), (0, 0.46, 0.12), GLASS, outline=False)
+    box("rail", (1.0, 0.06, 0.04), (0, 0.46, 1.96), "metal", outline=False)
+    box("handrail", (1.0, 0.03, 0.02), (0, 0.45, 0.95), "metal", outline=False)
+    for x in (-0.49, 0.49):
+        box(f"post{x}", (0.04, 0.07, 2.0), (x, 0.46, 0), "metal", outline=False)
 
 
 # ---------------------------------------------------------------- furniture (front towards -Y)
@@ -303,8 +347,10 @@ BUILDERS = {
     "floor": lambda: floor("floor", "floor"),
     "floor-alt": lambda: floor("floor-alt", "floor-alt"),
     "carpet": lambda: floor("carpet", "carpet"),
+    "floor-wood": lambda: floor("floor-wood", "floor-wood"),
     "wall": wall,
     "wall-window": wall_window,
+    "glass-partition": glass_partition,
     "desk": desk,
     "chair": chair,
     "bookshelf": bookshelf,

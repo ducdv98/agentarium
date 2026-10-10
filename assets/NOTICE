@@ -11,4 +11,4 @@ Source: Clothing, hair, materials, deformation skeleton and actions; Agentarium,
 Office room
 Path: src/scenes/office-room
 Licence: CC-BY-4.0
-Source: Floors, walls, furniture, props and room layout; Agentarium scripted room source (make.py, layout.json); Agentarium contributors; https://github.com/ducdv98/agentarium; CC-BY-4.0; Original work, modelled from primitives by make.py; no third-party meshes or textures.
+Source: Floors, walls, glass partitions, furniture, props and room layout; Agentarium scripted room source (make.py, layout.json); Agentarium contributors; https://github.com/ducdv98/agentarium; CC-BY-4.0; Original work, modelled from primitives by make.py; no third-party meshes or textures.

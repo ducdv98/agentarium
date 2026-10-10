@@ -106,6 +106,10 @@ and `sw`, and picks the part's direction clip.
   floor. `floor.legend` maps each character to a part.
 - `walls` stand on a tile's edge, opposite their facing: `sw` is the north-east edge, `se` the north-west edge.
   That edge must be the room's outer edge, with no floor tile beyond it.
+- `partitions` divide the room, like the office's glass meeting room. A partition stands on a tile's back edge,
+  so its facing is `sw` (north-east edge) or `se` (north-west edge), and there is floor beyond it. To close the
+  front side of an inner room, put the partition on the back edge of the tile in front. Agents cannot walk across a
+  partition; leave a gap for a door.
 - `props` are furniture, one per tile. Parts listed in `seats` (chairs, sofas) do not block their tile. An Agent
   may stand or sit there, at most one seat per tile.
 - `stations` has one entry for each of the nine action categories and `rest`. Each entry has a `label` and
@@ -114,9 +118,9 @@ and `sw`, and picks the part's direction clip.
   floor tiles without a blocking prop.
 
 The Renderer draws a room in three layers. The floor and the walls are static, so each can be cached with
-`cacheAsTexture`. Props and Agents are then sorted by depth, `column + row`. On the same tile a prop draws
-behind the Agent, unless the prop has `front: true`, for example a chair whose back faces the camera. To cache
-static props (`docs/research/rendering.md`), give each depth row two cached bands, rear props then `front` props,
+`cacheAsTexture`. Props, partitions and Agents are then sorted by depth, `column + row`. On the same tile a
+partition draws first, and a prop draws behind the Agent, unless the prop has `front: true`, for example a chair whose back faces the camera. To cache
+static props (`docs/research/rendering.md`), give each depth row two cached bands, partitions and rear props, then `front` props,
 and draw that row's Agents between them. The layout fixes only the slots. When more Agents want a Station than it
 has slots, the Renderer decides where they go.
 `assets:check` validates every `layout.json` against its manifest's parts. `node assets/pipeline/preview.mjs

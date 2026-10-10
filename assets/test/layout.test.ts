@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { STATIONS, validateLayout } from "../pipeline/layout.mjs";
 
-const PARTS = ["floor", "carpet", "wall", "desk", "chair", "plant"];
+const PARTS = ["floor", "carpet", "wall", "glass", "desk", "chair", "plant"];
 
 /** A 10x2 room: one desk per station along row 0, each used from row 1. */
 function layout() {
@@ -58,6 +58,35 @@ describe("room layouts", () => {
       { part: "wall", at: [9, 1], facing: "ne" });
     expect(validateLayout(bad, PARTS)).toEqual([
       "walls.1: the ne edge of [3,1] is inside the room",
+    ]);
+  });
+
+  it("keeps partitions inside the room, on a tile's back edge", () => {
+    const bad = layout();
+    Object.assign(bad, { partitions: [
+      { part: "glass", at: [3, 1], facing: "sw" },
+      { part: "glass", at: [3, 0], facing: "sw" },
+      { part: "glass", at: [3, 1], facing: "ne" },
+      { part: "door", at: [4, 1], facing: "sw" },
+      { part: "glass", at: [3, 1], facing: "sw" },
+    ] });
+    expect(validateLayout(bad, PARTS)).toEqual([
+      "partitions.1: the ne edge of [3,0] is the room's outer edge; use walls",
+      "partitions.2: facing ne is not sw or se; put it on the neighbouring tile's back edge",
+      "partitions.3: door is not a part",
+      "partitions.4: the ne edge of [3,1] already has a partition",
+    ]);
+  });
+
+  it("does not let Agents walk through partitions", () => {
+    const bad = layout();
+    bad.size = [12, 2];
+    bad.floor.rows = ["............", "............"];
+    // Glass along the north-west edge of column 10 shuts the rest area in.
+    Object.assign(bad, { partitions: [0, 1].map((r) => ({ part: "glass", at: [10, r], facing: "se" })) });
+    bad.stations.rest.slots[0].at = [11, 1];
+    expect(validateLayout(bad, PARTS)).toEqual([
+      "stations.rest.slots.0: [11,1] cannot be reached from [0,1]",
     ]);
   });
 
@@ -124,11 +153,12 @@ describe("room layouts", () => {
 });
 
 describe("room draw order", () => {
-  it("draws floor, then walls, then props and characters by depth, front props over their tile's character", async () => {
+  it("draws floor, then walls, then props, partitions and characters by depth, front props over their tile's character", async () => {
     const { drawOrder } = await import("../pipeline/preview.mjs");
     const room = {
       floor: { legend: { ".": "floor" }, rows: ["..", ".."] },
       walls: [{ part: "wall", at: [1, 0], facing: "sw" }],
+      partitions: [{ part: "glass", at: [1, 1], facing: "sw" }],
       props: [
         { part: "desk", at: [1, 1], facing: "sw" },
         { part: "chair", at: [0, 1], facing: "ne", front: true },
@@ -140,7 +170,7 @@ describe("room draw order", () => {
     expect(order).toEqual([
       "floor:floor@0,0", "floor:floor@0,1", "floor:floor@1,0", "floor:floor@1,1",
       "wall:wall@1,0",
-      "prop:plant@0,0", "character:@0,1", "prop:chair@0,1", "prop:desk@1,1",
+      "prop:plant@0,0", "character:@0,1", "prop:chair@0,1", "partition:glass@1,1", "prop:desk@1,1",
     ]);
   });
 });

@@ -4,7 +4,8 @@
     "legend": {
       ".": "floor",
       ",": "floor-alt",
-      "c": "carpet"
+      "c": "carpet",
+      "w": "floor-wood"
     },
     "rows": [
       ".,.,.,.,.,.,",
@@ -13,10 +14,10 @@
       ",.,.,.,.,.,.",
       ".,.,.,.,.,.,",
       ",.,.,.,.,.,.",
-      ".,.,.,.,.,.,",
-      ",.,.,.,.,.,.",
-      ".,.cccccc,.,",
-      ",.,cccccc.,."
+      ".,.,.,.,wwww",
+      ",.,.,.,.wwww",
+      ".,.cccccwwww",
+      ",.,cccccwwww"
     ]
   },
   "walls": [
@@ -42,6 +43,15 @@
     { "part": "wall", "at": [0, 7], "facing": "se" },
     { "part": "wall", "at": [0, 8], "facing": "se" },
     { "part": "wall", "at": [0, 9], "facing": "se" }
+  ],
+  "partitions": [
+    { "part": "glass-partition", "at": [8, 6], "facing": "sw" },
+    { "part": "glass-partition", "at": [9, 6], "facing": "sw" },
+    { "part": "glass-partition", "at": [10, 6], "facing": "sw" },
+    { "part": "glass-partition", "at": [8, 6], "facing": "se" },
+    { "part": "glass-partition", "at": [8, 7], "facing": "se" },
+    { "part": "glass-partition", "at": [8, 8], "facing": "se" },
+    { "part": "glass-partition", "at": [8, 9], "facing": "se" }
   ],
   "seats": [
     "chair",
@@ -81,18 +91,25 @@
     { "part": "chair", "at": [5, 6], "facing": "ne", "front": true },
     { "part": "chair", "at": [6, 6], "facing": "ne", "front": true },
     { "part": "chair", "at": [7, 6], "facing": "ne", "front": true },
-    { "part": "table", "at": [9, 4], "facing": "sw" },
-    { "part": "table", "at": [9, 5], "facing": "sw" },
-    { "part": "comms-desk", "at": [11, 6], "facing": "nw" },
-    { "part": "comms-desk", "at": [11, 7], "facing": "nw" },
+    { "part": "comms-desk", "at": [11, 3], "facing": "nw" },
+    { "part": "comms-desk", "at": [11, 4], "facing": "nw" },
+    { "part": "table", "at": [9, 7], "facing": "sw" },
+    { "part": "table", "at": [10, 7], "facing": "sw" },
+    { "part": "chair", "at": [9, 6], "facing": "sw" },
+    { "part": "chair", "at": [10, 6], "facing": "sw" },
+    { "part": "chair", "at": [9, 8], "facing": "ne", "front": true },
+    { "part": "chair", "at": [10, 8], "facing": "ne", "front": true },
+    { "part": "chair", "at": [8, 7], "facing": "se" },
+    { "part": "chair", "at": [11, 7], "facing": "nw", "front": true },
+    { "part": "plant", "at": [8, 9], "facing": "sw" },
+    { "part": "plant", "at": [11, 9], "facing": "sw" },
     { "part": "coffee-table", "at": [5, 8], "facing": "sw" },
     { "part": "coffee-table", "at": [6, 8], "facing": "se" },
     { "part": "sofa", "at": [5, 9], "facing": "ne", "front": true },
     { "part": "sofa", "at": [6, 9], "facing": "ne", "front": true },
     { "part": "sofa", "at": [4, 8], "facing": "se" },
     { "part": "sofa", "at": [7, 8], "facing": "nw", "front": true },
-    { "part": "plant", "at": [3, 9], "facing": "sw" },
-    { "part": "plant", "at": [8, 9], "facing": "sw" }
+    { "part": "plant", "at": [3, 9], "facing": "sw" }
   ],
   "stations": {
     "read": {
@@ -134,19 +151,19 @@
     "network": {
       "label": "Comms desks",
       "slots": [
-        { "at": [10, 6], "facing": "se" },
-        { "at": [10, 7], "facing": "se" }
+        { "at": [10, 3], "facing": "se" },
+        { "at": [10, 4], "facing": "se" }
       ]
     },
     "delegate": {
-      "label": "Meeting table",
+      "label": "Meeting room",
       "slots": [
-        { "at": [8, 4], "facing": "se" },
-        { "at": [8, 5], "facing": "se" },
-        { "at": [10, 4], "facing": "nw" },
-        { "at": [10, 5], "facing": "nw" },
-        { "at": [9, 3], "facing": "sw" },
-        { "at": [9, 6], "facing": "ne" }
+        { "at": [9, 6], "facing": "sw" },
+        { "at": [10, 6], "facing": "sw" },
+        { "at": [9, 8], "facing": "ne" },
+        { "at": [10, 8], "facing": "ne" },
+        { "at": [8, 7], "facing": "se" },
+        { "at": [11, 7], "facing": "nw" }
       ]
     },
     "think": {

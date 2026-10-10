@@ -10,6 +10,7 @@ const NEIGHBOURS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 const WALL_EDGE = { sw: [[0, -1], "ne"], se: [[-1, 0], "nw"], ne: [[0, 1], "sw"], nw: [[1, 0], "se"] };
 const key = ([c, r]) => `${c},${r}`;
 const show = (at) => `[${at}]`;
+const edgeKey = (a, b) => [key(a), key(b)].sort().join("|");
 const isTile = (at) => Array.isArray(at) && at.length === 2 && at.every(Number.isInteger);
 
 /** Returns every problem with `layout`; empty means it is well formed. `parts` are the asset's rendered parts. */
@@ -72,6 +73,25 @@ export function validateLayout(layout, parts) {
     }
   });
   list("props").forEach((prop, i) => place(`props.${i}`, prop, true));
+  // Partitions (glass, inner walls) stand on a tile's back edge inside the room, so they always draw behind
+  // whatever is on their tile. An Agent cannot walk across them.
+  const shut = new Set();
+  list("partitions").forEach((partition, i) => {
+    const where = `partitions.${i}`;
+    place(where, partition, false);
+    if (!FACINGS.includes(partition?.facing) || !isTile(partition.at)) return;
+    if (partition.facing !== "sw" && partition.facing !== "se") {
+      return void problems.push(`${where}: facing ${partition.facing} is not sw or se; put it on the neighbouring tile's back edge`);
+    }
+    const [[dc, dr], edge] = WALL_EDGE[partition.facing];
+    const beyond = [partition.at[0] + dc, partition.at[1] + dr];
+    if (!floor.has(key(beyond))) {
+      return void problems.push(`${where}: the ${edge} edge of ${show(partition.at)} is the room's outer edge; use walls`);
+    }
+    const edgeAt = edgeKey(partition.at, beyond);
+    if (shut.has(edgeAt)) return void problems.push(`${where}: the ${edge} edge of ${show(partition.at)} already has a partition`);
+    shut.add(edgeAt);
+  });
 
   const stations = layout.stations ?? {};
   for (const name of Object.keys(stations)) {
@@ -100,7 +120,7 @@ export function validateLayout(layout, parts) {
     });
   }
 
-  // Agents walk between Stations over floor tiles without a blocking prop.
+  // Agents walk between Stations over floor tiles without a blocking prop, and never through a partition.
   if (reachable.length) {
     const start = reachable[0][1];
     const seen = new Set([key(start)]);
@@ -110,7 +130,7 @@ export function validateLayout(layout, parts) {
       for (const [dc, dr] of NEIGHBOURS) {
         const next = [c + dc, r + dr];
         const k = key(next);
-        if (floor.has(k) && !blocked.has(k) && !seen.has(k)) {
+        if (floor.has(k) && !blocked.has(k) && !seen.has(k) && !shut.has(edgeKey([c, r], next))) {
           seen.add(k);
           queue.push(next);
         }

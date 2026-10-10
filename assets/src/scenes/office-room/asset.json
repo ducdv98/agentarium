@@ -3,7 +3,7 @@
   "licence": "CC-BY-4.0",
   "sources": [
     {
-      "what": "Floors, walls, furniture, props and room layout",
+      "what": "Floors, walls, glass partitions, furniture, props and room layout",
       "source": "Agentarium scripted room source (make.py, layout.json)",
       "author": "Agentarium contributors",
       "url": "https://github.com/ducdv98/agentarium",
@@ -17,7 +17,7 @@
     "atlas": "office-room",
     "frame": { "size": [160, 272], "anchor": [80, 232] },
     "parts": [
-      "floor", "floor-alt", "carpet", "wall", "wall-window",
+      "floor", "floor-alt", "carpet", "floor-wood", "wall", "wall-window", "glass-partition",
       "desk", "chair", "bookshelf", "server-rack", "filing-cabinet", "comms-desk",
       "table", "whiteboard", "water-cooler", "printer", "sofa", "coffee-table", "plant"
     ]
