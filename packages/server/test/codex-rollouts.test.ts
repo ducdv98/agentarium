@@ -1,6 +1,6 @@
-import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { findCodexRollout, readCodexSessionMeta, readCodexApprovalsReviewer } from "../src/codex-rollouts";
 
@@ -10,7 +10,7 @@ const meta = (id: string, parent: string | null = null) => JSON.stringify({ type
 
 describe("Codex rollout metadata", () => {
   it("reads the last turn reviewer from a bounded tail", () => {
-    const path = join(mkdtempSync(join(tmpdir(), "codex-review-")), "rollout.jsonl");
+    const path = join(mkdtempSync(join(tmpdir(), "codex-review-")), "rollout-2026-10-10T00-00-00-t1.jsonl");
     writeFileSync(path, [
       JSON.stringify({ type: "turn_context", payload: { approvals_reviewer: "user" } }),
       "x".repeat(300_000),
@@ -18,6 +18,9 @@ describe("Codex rollout metadata", () => {
     ].join("\n"));
     expect(readCodexApprovalsReviewer(path)).toBe("auto_review");
     expect(readCodexApprovalsReviewer(join(path, "missing"))).toBeNull();
+    const notRollout = join(dirname(path), "notes.jsonl");
+    copyFileSync(path, notRollout);
+    expect(readCodexApprovalsReviewer(notRollout)).toBeNull();
   });
   it("reads only a bounded first line and searches newest dates before archives", () => {
     const home = mkdtempSync(join(tmpdir(), "codex-home-"));

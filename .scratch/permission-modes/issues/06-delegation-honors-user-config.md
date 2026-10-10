@@ -16,3 +16,5 @@
 `AGENTS.md` now runs `codex exec "<prompt>" < /dev/null` with no permission flags and has a "Permission mode" section.
 
 Verified 2026-10-10 with Codex 0.162.1, using `codex exec -c 'approval_policy="on-request"' -s workspace-write` from a scratch repo. The run header showed `approval: never` and `sandbox: workspace-write [workdir, /tmp, $TMPDIR]`, because exec ignores `approval_policy` and never waits for a person. The small task (add a test and run it) succeeded. A write to `F:\codex-sandbox-probe\outside.txt` failed with `Access to the path ... is denied` (exit 1) and Codex reported the failure. Nothing hung.
+
+Scope note: delegated runs inherit the user's sandbox, config layers and profile. They cannot inherit an interactive approval policy, because `codex exec` is unattended and always runs with `approval: never`. Nothing in the workflow imposes a mode. What exec does to approvals is documented in `AGENTS.md`, together with what Claude does about it.

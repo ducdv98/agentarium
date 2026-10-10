@@ -24,4 +24,4 @@ Auto-review fires the same `PermissionRequest` hook as a person-routed request, 
 
 The 0.160.0 `never`/bypass fixture tests still pass unchanged.
 
-End to end, 2026-10-10 on Codex 0.162.1: a real `on-request` + `read-only` session, hooks forwarded by the built `agentarium hook codex` to a dev daemon in isolated homes. Decline logged `needs_input`, then `tool_end ok=false`, then `stop`. Accept logged `needs_input`, then `tool_end ok=true`. Every event had `permission_mode: default`.
+End to end (`spikes/codex/e2e-daemon.mjs`), 2026-10-10 on Codex 0.162.1: a real `on-request` + `read-only` session, hooks forwarded by the built `agentarium hook codex` to a dev daemon in isolated homes. Decline logged `needs_input`, then `tool_end ok=false`, then `stop`. Accept logged `needs_input`, then `tool_end ok=true`. Every event had `permission_mode: default`.

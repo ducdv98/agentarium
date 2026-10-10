@@ -9,7 +9,9 @@ export interface CodexSessionMeta {
   cliVersion: string;
 }
 
+/** The path arrives in a hook payload: only a rollout file is read, and only a bounded tail of it. */
 export function readCodexApprovalsReviewer(path: string): string | null {
+  if (!/^rollout-[\w.-]+\.jsonl$/.test(basename(path))) return null;
   let fd: number | undefined;
   try {
     fd = openSync(path, "r");
