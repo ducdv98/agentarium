@@ -55,6 +55,47 @@ describe("installHooks", () => {
     expect(() => installHooks(file, opts)).toThrow(/not valid JSON/);
     expect(read()).toBe("{ nope");
   });
+
+  it.each([
+    ["null", null],
+    ["a string", "x"],
+    ["an array", [1]],
+    ["a number", 3],
+  ])("refuses a hooks container that is %s, naming the path, and leaves the file and backup untouched", (_, hooks) => {
+    const original = JSON.stringify({ model: "opus", hooks });
+    writeFileSync(file, original);
+    expect(() => installHooks(file, opts)).toThrow(`${file}: hooks must be an object`);
+    expect(read()).toBe(original);
+    expect(existsSync(backupPath(file))).toBe(false);
+  });
+
+  it.each([
+    ["null", null],
+    ["a string", "x"],
+    ["an object", { matcher: "Bash" }],
+  ])("refuses %s at an installed event before any write or backup", (_, value) => {
+    const original = JSON.stringify({ hooks: { Stop: value } });
+    writeFileSync(file, original);
+    expect(() => installHooks(file, opts)).toThrow(/hooks\.Stop must be an array/);
+    expect(read()).toBe(original);
+    expect(existsSync(backupPath(file))).toBe(false);
+  });
+
+  it("keeps malformed group entries inside an installed event array and appends ours", () => {
+    const junk = ["not a group", { matcher: "Bash" }];
+    writeFileSync(file, JSON.stringify({ hooks: { Stop: junk } }));
+    expect(installHooks(file, opts).changed).toBe(true);
+    const stop = JSON.parse(read()).hooks.Stop;
+    expect(stop.slice(0, 2)).toEqual(junk);
+    expect(stop).toHaveLength(3);
+  });
+
+  it("preserves malformed values under unrelated events when init succeeds", () => {
+    const junk = { matcher: "Bash", note: "not an array" };
+    writeFileSync(file, JSON.stringify({ hooks: { Unrelated: junk, PreToolUse: [] } }));
+    expect(installHooks(file, opts).changed).toBe(true);
+    expect(JSON.parse(read()).hooks.Unrelated).toEqual(junk);
+  });
 });
 
 describe("uninstallHooks", () => {

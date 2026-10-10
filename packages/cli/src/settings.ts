@@ -49,8 +49,24 @@ export function withoutHooks(settings: Json): Json {
   return Object.keys(hooks).length ? { ...others, hooks } : others;
 }
 
+/**
+ * Returns the JSON path and reason when `hooks` holds a shape we must replace to install,
+ * or null when installing can proceed. Unrelated events are never inspected.
+ */
+function hookShapeProblem(settings: Json): string | null {
+  if (settings.hooks === undefined) return null;
+  if (!isObj(settings.hooks)) return "hooks must be an object";
+  for (const event of HOOK_EVENTS) {
+    const groups = settings.hooks[event];
+    if (groups !== undefined && !Array.isArray(groups)) return `hooks.${event} must be an array of hook groups`;
+  }
+  return null;
+}
+
 /** Pure: our handlers replace any previous ones of ours. Applying twice equals applying once. */
 export function withHooks(settings: Json, opts: { port: number; token: string }): Json {
+  const problem = hookShapeProblem(settings);
+  if (problem) throw new Error(problem);
   const clean = withoutHooks(settings);
   const hooks: Json = isObj(clean.hooks) ? { ...clean.hooks } : {};
   const handler = {
@@ -97,6 +113,8 @@ export interface InstallResult {
 /** Idempotent. Backs up pre-existing settings once, before our first change. */
 export function installHooks(settingsPath: string, opts: { port: number; token: string }): InstallResult {
   const { settings, raw } = readSettings(settingsPath);
+  const problem = hookShapeProblem(settings);
+  if (problem) throw new Error(`${settingsPath}: ${problem}; refusing to modify it`);
   const next = serialize(withHooks(settings, opts));
   if (next === raw) return { changed: false, backedUp: false };
   let backedUp = false;
