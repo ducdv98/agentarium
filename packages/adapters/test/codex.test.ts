@@ -43,6 +43,28 @@ const root = (evs: NewEvent[]) => Object.values(state(evs).agents).find((a) => a
     expect(evs.filter((e) => e.kind === "tool_start" && e.category === "delegate").length).toBeGreaterThan(2);
     expect(Object.values(state(evs).agents).map((a) => a.status)).toEqual(["done", "done", "done"]);
   });
+  it("recovers a grandchild from its first mid-session hook and refines a stopped child", () => {
+    const hooks = fixture("subagents").hooks;
+    const first = hooks.find((h) => h.hook_event_name === "PreToolUse" && h.agent_id &&
+      h.tool_name === "Bash")!;
+    const child = hooks.find((h) => h.hook_event_name === "SubagentStart")!.agent_id as string;
+    const grandchild = first.agent_id as string;
+    const observed = createCodexAdapter({ machine: "m1", lineage: (id) =>
+      id === grandchild ? { parentThreadId: child } : null });
+    expect(observed.map(first).events).toEqual([
+      expect.objectContaining({ kind: "spawn", provenance: "observed", parent: expect.objectContaining({ agent: child }) }),
+      expect.objectContaining({ kind: "tool_start", agent: expect.objectContaining({ agent: grandchild }) }),
+    ]);
+    const noMetadata = createCodexAdapter({ machine: "m1", lineage: () => null });
+    expect(noMetadata.map(first).events.map((e) => e.kind)).toEqual(["tool_start"]);
+    const stop = hooks.find((h) => h.hook_event_name === "SubagentStop" && h.agent_id === child)!;
+    const refining = createCodexAdapter({ machine: "m1", lineage: () => ({ parentThreadId: stop.session_id as string }) });
+    refining.map(hooks.find((h) => h.hook_event_name === "SubagentStart" && h.agent_id === child)!);
+    expect(refining.map(stop).events).toEqual([
+      expect.objectContaining({ kind: "spawn", provenance: "observed", parent: expect.objectContaining({ agent: ROOT_AGENT }) }),
+      expect.objectContaining({ kind: "stop" }),
+    ]);
+  });
   it("tracks approvals, cancellation and interruption", () => {
     const accept = events("approve-accept");
     const waitingAt = accept.findIndex((e) => e.kind === "needs_input");

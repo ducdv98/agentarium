@@ -70,10 +70,23 @@ describe("Codex live mapping and outcomes", () => {
     const unknown: unknown[][] = [];
     const mapper = createCodexLiveMapper({ machine: "m", onUnknownOutcome: (...args) => unknown.push(args) });
     mapper.thread({ id: "s", sessionId: "s", cwd: "/repo" });
+    mapper.map({ method: "item/started", params: { threadId: "s", item: { type: "commandExecution", id: "t", command: "secret" } } });
     const output = mapper.map({ method: "item/completed", params: { threadId: "s", item: { type: "commandExecution", id: "t", status: "cancelled", command: "secret" } } });
     expect(output.events).toEqual([]);
     expect(unknown).toEqual([["t", "cancelled"]]);
     expect(JSON.stringify(output)).not.toContain("secret");
+  });
+  it("recovers an idle child without replaying old items or activating an active root", () => {
+    const mapper = createCodexLiveMapper({ machine: "m" });
+    expect(mapper.thread({ id: "s", sessionId: "s", status: { type: "active" } }).events).toEqual([]);
+    expect(mapper.thread({ id: "c", sessionId: "s", parentThreadId: "s", status: { type: "idle" } }).events).toEqual([
+      expect.objectContaining({ kind: "spawn", provenance: "observed", agent: expect.objectContaining({ agent: "c" }), parent: expect.objectContaining({ agent: ROOT_AGENT }) }),
+      expect.objectContaining({ kind: "stop", agent: expect.objectContaining({ agent: "c" }) }),
+    ]);
+    expect(mapper.map({ method: "item/completed", params: { threadId: "c", item: { id: "old", type: "commandExecution", status: "failed" } } }).events).toEqual([]);
+    expect(mapper.map({ method: "turn/completed", params: { threadId: "c", turn: { id: "old" } } }).events).toEqual([
+      expect.objectContaining({ kind: "stop" }),
+    ]);
   });
   it("maps supported tool kinds without forwarding output or prompts", () => {
     const mapper = createCodexLiveMapper({ machine: "m" });

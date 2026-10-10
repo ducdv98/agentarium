@@ -1,0 +1,991 @@
+{
+  "codex_cli_version": "0.160.0",
+  "scenario": "otel",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-17-43-01a124ac-bfc9-7332-bd87-3f7ff6aedf3a.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "source": "startup"
+    },
+    {
+      "at_ms": 36,
+      "session_id": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a",
+      "turn_id": "01a124ac-c1e4-7072-863c-87a3374cecc5",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-17-43-01a124ac-bfc9-7332-bd87-3f7ff6aedf3a.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "prompt": "Run the shell command 'ls /nope' once, then run 'echo ok' once, then call the MCP tool fx_fail once. Then reply DONE."
+    },
+    {
+      "at_ms": 4507,
+      "session_id": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a",
+      "turn_id": "01a124ac-c1e4-7072-863c-87a3374cecc5",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-17-43-01a124ac-bfc9-7332-bd87-3f7ff6aedf3a.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "ls /nope"
+      },
+      "tool_use_id": "exec-a2994354-c377-49ec-89be-7ceb62de6678"
+    },
+    {
+      "at_ms": 4607,
+      "session_id": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a",
+      "turn_id": "01a124ac-c1e4-7072-863c-87a3374cecc5",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-17-43-01a124ac-bfc9-7332-bd87-3f7ff6aedf3a.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "ls /nope"
+      },
+      "tool_response": "ls: cannot access '/nope': No such file or directory\n",
+      "tool_use_id": "exec-a2994354-c377-49ec-89be-7ceb62de6678"
+    },
+    {
+      "at_ms": 4648,
+      "session_id": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a",
+      "turn_id": "01a124ac-c1e4-7072-863c-87a3374cecc5",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-17-43-01a124ac-bfc9-7332-bd87-3f7ff6aedf3a.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "echo ok"
+      },
+      "tool_use_id": "exec-4e4ec498-69c5-48e3-877c-3fc43c3aab53"
+    },
+    {
+      "at_ms": 4725,
+      "session_id": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a",
+      "turn_id": "01a124ac-c1e4-7072-863c-87a3374cecc5",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-17-43-01a124ac-bfc9-7332-bd87-3f7ff6aedf3a.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "echo ok"
+      },
+      "tool_response": "ok\n",
+      "tool_use_id": "exec-4e4ec498-69c5-48e3-877c-3fc43c3aab53"
+    },
+    {
+      "at_ms": 7349,
+      "session_id": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a",
+      "turn_id": "01a124ac-c1e4-7072-863c-87a3374cecc5",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-17-43-01a124ac-bfc9-7332-bd87-3f7ff6aedf3a.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "mcp__fx__fx_fail",
+      "tool_input": {},
+      "tool_use_id": "exec-8f253fe4-c052-431c-82a5-0a88ccd383a4"
+    },
+    {
+      "at_ms": 9988,
+      "session_id": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a",
+      "turn_id": "01a124ac-c1e4-7072-863c-87a3374cecc5",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-17-43-01a124ac-bfc9-7332-bd87-3f7ff6aedf3a.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Stop",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "bypassPermissions",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE"
+    },
+    {
+      "at_ms": 10036,
+      "session_id": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a",
+      "transcript_path": "<DIR1>/sessions/2026/10/10/rollout-2026-10-10T07-17-43-01a124ac-bfc9-7332-bd87-3f7ff6aedf3a.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionEnd",
+      "reason": "other"
+    }
+  ],
+  "otel": [
+    {
+      "resourceLogs": [
+        {
+          "resource": {
+            "attributes": [
+              {
+                "key": "service.version",
+                "value": {
+                  "stringValue": "0.160.0"
+                }
+              },
+              {
+                "key": "service.name",
+                "value": {
+                  "stringValue": "codex_exec"
+                }
+              }
+            ]
+          },
+          "scopeLogs": [
+            {
+              "logRecords": [
+                {
+                  "timeUnixNano": "0",
+                  "attributes": [
+                    {
+                      "key": "event.name",
+                      "value": {
+                        "stringValue": "codex.conversation_starts"
+                      }
+                    },
+                    {
+                      "key": "event.timestamp",
+                      "value": {
+                        "stringValue": "2026-10-10T07:17:43.980Z"
+                      }
+                    },
+                    {
+                      "key": "conversation.id",
+                      "value": {
+                        "stringValue": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "timeUnixNano": "0",
+                  "attributes": [
+                    {
+                      "key": "event.name",
+                      "value": {
+                        "stringValue": "codex.user_prompt"
+                      }
+                    },
+                    {
+                      "key": "event.timestamp",
+                      "value": {
+                        "stringValue": "2026-10-10T07:17:44.039Z"
+                      }
+                    },
+                    {
+                      "key": "conversation.id",
+                      "value": {
+                        "stringValue": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "resourceLogs": [
+        {
+          "resource": {
+            "attributes": [
+              {
+                "key": "service.version",
+                "value": {
+                  "stringValue": "0.160.0"
+                }
+              },
+              {
+                "key": "service.name",
+                "value": {
+                  "stringValue": "codex_exec"
+                }
+              }
+            ]
+          },
+          "scopeLogs": [
+            {
+              "logRecords": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "resourceLogs": [
+        {
+          "resource": {
+            "attributes": [
+              {
+                "key": "service.version",
+                "value": {
+                  "stringValue": "0.160.0"
+                }
+              },
+              {
+                "key": "service.name",
+                "value": {
+                  "stringValue": "codex_exec"
+                }
+              }
+            ]
+          },
+          "scopeLogs": [
+            {
+              "logRecords": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "resourceLogs": [
+        {
+          "resource": {
+            "attributes": [
+              {
+                "key": "service.version",
+                "value": {
+                  "stringValue": "0.160.0"
+                }
+              },
+              {
+                "key": "service.name",
+                "value": {
+                  "stringValue": "codex_exec"
+                }
+              }
+            ]
+          },
+          "scopeLogs": [
+            {
+              "logRecords": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "resourceLogs": [
+        {
+          "resource": {
+            "attributes": [
+              {
+                "key": "service.version",
+                "value": {
+                  "stringValue": "0.160.0"
+                }
+              },
+              {
+                "key": "service.name",
+                "value": {
+                  "stringValue": "codex_exec"
+                }
+              }
+            ]
+          },
+          "scopeLogs": [
+            {
+              "logRecords": [
+                {
+                  "timeUnixNano": "0",
+                  "attributes": [
+                    {
+                      "key": "event.name",
+                      "value": {
+                        "stringValue": "codex.tool_decision"
+                      }
+                    },
+                    {
+                      "key": "tool_name",
+                      "value": {
+                        "stringValue": "exec_command"
+                      }
+                    },
+                    {
+                      "key": "tool_namespace",
+                      "value": {
+                        "stringValue": "functions"
+                      }
+                    },
+                    {
+                      "key": "call_id",
+                      "value": {
+                        "stringValue": "exec-a2994354-c377-49ec-89be-7ceb62de6678"
+                      }
+                    },
+                    {
+                      "key": "decision",
+                      "value": {
+                        "stringValue": "approved"
+                      }
+                    },
+                    {
+                      "key": "source",
+                      "value": {
+                        "stringValue": "Config"
+                      }
+                    },
+                    {
+                      "key": "event.timestamp",
+                      "value": {
+                        "stringValue": "2026-10-10T07:17:50.447Z"
+                      }
+                    },
+                    {
+                      "key": "conversation.id",
+                      "value": {
+                        "stringValue": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "resourceLogs": [
+        {
+          "resource": {
+            "attributes": [
+              {
+                "key": "service.version",
+                "value": {
+                  "stringValue": "0.160.0"
+                }
+              },
+              {
+                "key": "service.name",
+                "value": {
+                  "stringValue": "codex_exec"
+                }
+              }
+            ]
+          },
+          "scopeLogs": [
+            {
+              "logRecords": [
+                {
+                  "timeUnixNano": "0",
+                  "attributes": [
+                    {
+                      "key": "event.name",
+                      "value": {
+                        "stringValue": "codex.tool_result"
+                      }
+                    },
+                    {
+                      "key": "tool_result_seq",
+                      "value": {
+                        "intValue": "1"
+                      }
+                    },
+                    {
+                      "key": "tool_name",
+                      "value": {
+                        "stringValue": "exec_command"
+                      }
+                    },
+                    {
+                      "key": "tool_namespace",
+                      "value": {
+                        "stringValue": "functions"
+                      }
+                    },
+                    {
+                      "key": "call_id",
+                      "value": {
+                        "stringValue": "exec-a2994354-c377-49ec-89be-7ceb62de6678"
+                      }
+                    },
+                    {
+                      "key": "duration_ms",
+                      "value": {
+                        "stringValue": "62"
+                      }
+                    },
+                    {
+                      "key": "success",
+                      "value": {
+                        "stringValue": "true"
+                      }
+                    },
+                    {
+                      "key": "agent_name",
+                      "value": {
+                        "stringValue": "/root"
+                      }
+                    },
+                    {
+                      "key": "mcp_server",
+                      "value": {
+                        "stringValue": ""
+                      }
+                    },
+                    {
+                      "key": "event.timestamp",
+                      "value": {
+                        "stringValue": "2026-10-10T07:17:50.481Z"
+                      }
+                    },
+                    {
+                      "key": "conversation.id",
+                      "value": {
+                        "stringValue": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "timeUnixNano": "0",
+                  "attributes": [
+                    {
+                      "key": "event.name",
+                      "value": {
+                        "stringValue": "codex.tool_decision"
+                      }
+                    },
+                    {
+                      "key": "tool_name",
+                      "value": {
+                        "stringValue": "exec_command"
+                      }
+                    },
+                    {
+                      "key": "tool_namespace",
+                      "value": {
+                        "stringValue": "functions"
+                      }
+                    },
+                    {
+                      "key": "call_id",
+                      "value": {
+                        "stringValue": "exec-4e4ec498-69c5-48e3-877c-3fc43c3aab53"
+                      }
+                    },
+                    {
+                      "key": "decision",
+                      "value": {
+                        "stringValue": "approved"
+                      }
+                    },
+                    {
+                      "key": "source",
+                      "value": {
+                        "stringValue": "Config"
+                      }
+                    },
+                    {
+                      "key": "event.timestamp",
+                      "value": {
+                        "stringValue": "2026-10-10T07:17:50.558Z"
+                      }
+                    },
+                    {
+                      "key": "conversation.id",
+                      "value": {
+                        "stringValue": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "timeUnixNano": "0",
+                  "attributes": [
+                    {
+                      "key": "event.name",
+                      "value": {
+                        "stringValue": "codex.tool_result"
+                      }
+                    },
+                    {
+                      "key": "tool_result_seq",
+                      "value": {
+                        "intValue": "2"
+                      }
+                    },
+                    {
+                      "key": "tool_name",
+                      "value": {
+                        "stringValue": "exec_command"
+                      }
+                    },
+                    {
+                      "key": "tool_namespace",
+                      "value": {
+                        "stringValue": "functions"
+                      }
+                    },
+                    {
+                      "key": "call_id",
+                      "value": {
+                        "stringValue": "exec-4e4ec498-69c5-48e3-877c-3fc43c3aab53"
+                      }
+                    },
+                    {
+                      "key": "duration_ms",
+                      "value": {
+                        "stringValue": "33"
+                      }
+                    },
+                    {
+                      "key": "success",
+                      "value": {
+                        "stringValue": "true"
+                      }
+                    },
+                    {
+                      "key": "agent_name",
+                      "value": {
+                        "stringValue": "/root"
+                      }
+                    },
+                    {
+                      "key": "mcp_server",
+                      "value": {
+                        "stringValue": ""
+                      }
+                    },
+                    {
+                      "key": "event.timestamp",
+                      "value": {
+                        "stringValue": "2026-10-10T07:17:50.592Z"
+                      }
+                    },
+                    {
+                      "key": "conversation.id",
+                      "value": {
+                        "stringValue": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "timeUnixNano": "0",
+                  "attributes": [
+                    {
+                      "key": "event.name",
+                      "value": {
+                        "stringValue": "codex.tool_result"
+                      }
+                    },
+                    {
+                      "key": "tool_result_seq",
+                      "value": {
+                        "intValue": "3"
+                      }
+                    },
+                    {
+                      "key": "tool_name",
+                      "value": {
+                        "stringValue": "exec"
+                      }
+                    },
+                    {
+                      "key": "tool_namespace",
+                      "value": {
+                        "stringValue": "functions"
+                      }
+                    },
+                    {
+                      "key": "call_id",
+                      "value": {
+                        "stringValue": "call_bVaVKZ09toWjbD0u9Pkr8SaA"
+                      }
+                    },
+                    {
+                      "key": "duration_ms",
+                      "value": {
+                        "stringValue": "272"
+                      }
+                    },
+                    {
+                      "key": "success",
+                      "value": {
+                        "stringValue": "true"
+                      }
+                    },
+                    {
+                      "key": "agent_name",
+                      "value": {
+                        "stringValue": "/root"
+                      }
+                    },
+                    {
+                      "key": "mcp_server",
+                      "value": {
+                        "stringValue": ""
+                      }
+                    },
+                    {
+                      "key": "event.timestamp",
+                      "value": {
+                        "stringValue": "2026-10-10T07:17:50.638Z"
+                      }
+                    },
+                    {
+                      "key": "conversation.id",
+                      "value": {
+                        "stringValue": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "resourceLogs": [
+        {
+          "resource": {
+            "attributes": [
+              {
+                "key": "service.version",
+                "value": {
+                  "stringValue": "0.160.0"
+                }
+              },
+              {
+                "key": "service.name",
+                "value": {
+                  "stringValue": "codex_exec"
+                }
+              }
+            ]
+          },
+          "scopeLogs": [
+            {
+              "logRecords": [
+                {
+                  "timeUnixNano": "0",
+                  "attributes": [
+                    {
+                      "key": "event.name",
+                      "value": {
+                        "stringValue": "codex.tool_result"
+                      }
+                    },
+                    {
+                      "key": "tool_result_seq",
+                      "value": {
+                        "intValue": "4"
+                      }
+                    },
+                    {
+                      "key": "tool_name",
+                      "value": {
+                        "stringValue": "fx_fail"
+                      }
+                    },
+                    {
+                      "key": "tool_namespace",
+                      "value": {
+                        "stringValue": "mcp__fx"
+                      }
+                    },
+                    {
+                      "key": "call_id",
+                      "value": {
+                        "stringValue": "exec-8f253fe4-c052-431c-82a5-0a88ccd383a4"
+                      }
+                    },
+                    {
+                      "key": "duration_ms",
+                      "value": {
+                        "stringValue": "2"
+                      }
+                    },
+                    {
+                      "key": "success",
+                      "value": {
+                        "stringValue": "false"
+                      }
+                    },
+                    {
+                      "key": "agent_name",
+                      "value": {
+                        "stringValue": "/root"
+                      }
+                    },
+                    {
+                      "key": "mcp_server",
+                      "value": {
+                        "stringValue": "fx"
+                      }
+                    },
+                    {
+                      "key": "event.timestamp",
+                      "value": {
+                        "stringValue": "2026-10-10T07:17:53.261Z"
+                      }
+                    },
+                    {
+                      "key": "conversation.id",
+                      "value": {
+                        "stringValue": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "timeUnixNano": "0",
+                  "attributes": [
+                    {
+                      "key": "event.name",
+                      "value": {
+                        "stringValue": "codex.tool_result"
+                      }
+                    },
+                    {
+                      "key": "tool_result_seq",
+                      "value": {
+                        "intValue": "5"
+                      }
+                    },
+                    {
+                      "key": "tool_name",
+                      "value": {
+                        "stringValue": "exec"
+                      }
+                    },
+                    {
+                      "key": "tool_namespace",
+                      "value": {
+                        "stringValue": "functions"
+                      }
+                    },
+                    {
+                      "key": "call_id",
+                      "value": {
+                        "stringValue": "call_fGL8hT5F9rOK8dyoakwBWXMR"
+                      }
+                    },
+                    {
+                      "key": "duration_ms",
+                      "value": {
+                        "stringValue": "44"
+                      }
+                    },
+                    {
+                      "key": "success",
+                      "value": {
+                        "stringValue": "true"
+                      }
+                    },
+                    {
+                      "key": "agent_name",
+                      "value": {
+                        "stringValue": "/root"
+                      }
+                    },
+                    {
+                      "key": "mcp_server",
+                      "value": {
+                        "stringValue": ""
+                      }
+                    },
+                    {
+                      "key": "event.timestamp",
+                      "value": {
+                        "stringValue": "2026-10-10T07:17:53.262Z"
+                      }
+                    },
+                    {
+                      "key": "conversation.id",
+                      "value": {
+                        "stringValue": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "resourceLogs": [
+        {
+          "resource": {
+            "attributes": [
+              {
+                "key": "service.version",
+                "value": {
+                  "stringValue": "0.160.0"
+                }
+              },
+              {
+                "key": "service.name",
+                "value": {
+                  "stringValue": "codex_exec"
+                }
+              }
+            ]
+          },
+          "scopeLogs": [
+            {
+              "logRecords": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "resourceLogs": [
+        {
+          "resource": {
+            "attributes": [
+              {
+                "key": "service.version",
+                "value": {
+                  "stringValue": "0.160.0"
+                }
+              },
+              {
+                "key": "service.name",
+                "value": {
+                  "stringValue": "codex_exec"
+                }
+              }
+            ]
+          },
+          "scopeLogs": [
+            {
+              "logRecords": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "exec": [
+    {
+      "type": "thread.started",
+      "thread_id": "01a124ac-bfc9-7332-bd87-3f7ff6aedf3a"
+    },
+    {
+      "type": "turn.started"
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_0",
+        "type": "agent_message",
+        "text": "I’ll run the two commands in order, then call `fx_fail` once."
+      }
+    },
+    {
+      "type": "item.started",
+      "item": {
+        "id": "item_1",
+        "type": "command_execution",
+        "command": "/bin/bash -lc 'ls /nope'",
+        "aggregated_output": "",
+        "exit_code": null,
+        "status": "in_progress"
+      }
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_1",
+        "type": "command_execution",
+        "command": "/bin/bash -lc 'ls /nope'",
+        "aggregated_output": "ls: cannot access '/nope': No such file or directory\n",
+        "exit_code": 2,
+        "status": "failed"
+      }
+    },
+    {
+      "type": "item.started",
+      "item": {
+        "id": "item_2",
+        "type": "command_execution",
+        "command": "/bin/bash -lc 'echo ok'",
+        "aggregated_output": "",
+        "exit_code": null,
+        "status": "in_progress"
+      }
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_2",
+        "type": "command_execution",
+        "command": "/bin/bash -lc 'echo ok'",
+        "aggregated_output": "ok\n",
+        "exit_code": 0,
+        "status": "completed"
+      }
+    },
+    {
+      "type": "item.started",
+      "item": {
+        "id": "item_3",
+        "type": "mcp_tool_call",
+        "server": "fx",
+        "tool": "fx_fail",
+        "arguments": {},
+        "result": null,
+        "error": null,
+        "status": "in_progress"
+      }
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_3",
+        "type": "mcp_tool_call",
+        "server": "fx",
+        "tool": "fx_fail",
+        "arguments": {},
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "fx failure"
+            }
+          ],
+          "structured_content": null
+        },
+        "error": null,
+        "status": "failed"
+      }
+    },
+    {
+      "type": "item.completed",
+      "item": {
+        "id": "item_4",
+        "type": "agent_message",
+        "text": "DONE"
+      }
+    },
+    {
+      "type": "turn.completed",
+      "usage": {
+        "input_tokens": 48234,
+        "cached_input_tokens": 40576,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 102,
+        "reasoning_output_tokens": 0
+      }
+    }
+  ]
+}

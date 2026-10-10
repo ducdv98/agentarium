@@ -278,4 +278,60 @@ describe("Codex hooks", () => {
     const room = d.world("unassigned");
     expect(Object.values(room.agents).some((a) => a.ref.provider === "codex" && a.category === "exec")).toBe(true);
   });
+  it("correlates OTel failures to hook calls and rejects unauthenticated or non-JSON logs", async () => {
+    const d = await start();
+    const fx = JSON.parse(readFileSync(join(__dirname, "../../../spikes/fixtures/codex/otel.json"), "utf8")) as { hooks: Record<string, unknown>[]; otel: unknown[] };
+    const hook = (body: unknown) => fetch(`http://127.0.0.1:${d.port}/hooks/codex`, {
+      method: "POST", headers: { authorization: `Bearer ${d.token}` }, body: JSON.stringify(body),
+    });
+    const otel = (body: unknown, headers: Record<string, string> = {}) => fetch(`http://127.0.0.1:${d.port}/otel/v1/logs`, {
+      method: "POST", headers: { authorization: `Bearer ${d.token}`, "content-type": "application/json", ...headers }, body: JSON.stringify(body),
+    });
+    expect((await otel({}, { authorization: "Bearer wrong" })).status).toBe(401);
+    expect((await otel({}, { "content-type": "text/plain" })).status).toBe(415);
+    for (const payload of fx.hooks.filter((h) => h.hook_event_name !== "Stop" && h.hook_event_name !== "SessionEnd"))
+      expect((await hook(payload)).status).toBe(204);
+    const before = d.world("unassigned");
+    const root = () => Object.values(d.world("unassigned").agents)[0]!;
+    expect(root().pending).toHaveProperty("exec-8f253fe4-c052-431c-82a5-0a88ccd383a4");
+    for (const body of fx.otel) expect((await otel(body)).status).toBe(200);
+    expect(root().status).toBe("blocked");
+    expect(root().category).toBe("error");
+    expect(root().pending).not.toHaveProperty("exec-8f253fe4-c052-431c-82a5-0a88ccd383a4");
+    expect(before.agents[root().key]?.status).toBe("working");
+    const after = d.world("unassigned");
+    for (const body of fx.otel) await otel(body);
+    expect(d.world("unassigned")).toEqual(after);
+    await hook(fx.hooks.find((h) => h.hook_event_name === "Stop"));
+    expect(root().status).toBe("idle");
+  });
+  it("ignores an OTel failure that arrives after the call was cleared", async () => {
+    const d = await start();
+    const fx = JSON.parse(readFileSync(join(__dirname, "../../../spikes/fixtures/codex/otel.json"), "utf8")) as { hooks: Record<string, unknown>[]; otel: unknown[] };
+    for (const payload of fx.hooks.filter((h) => h.hook_event_name !== "SessionEnd")) {
+      await fetch(`http://127.0.0.1:${d.port}/hooks/codex`, { method: "POST", headers: { authorization: `Bearer ${d.token}` }, body: JSON.stringify(payload) });
+    }
+    const idle = d.world("unassigned");
+    expect(Object.values(idle.agents)[0]?.status).toBe("idle");
+    for (const body of fx.otel) {
+      await fetch(`http://127.0.0.1:${d.port}/otel/v1/logs`, {
+        method: "POST", headers: { authorization: `Bearer ${d.token}`, "content-type": "application/json" }, body: JSON.stringify(body),
+      });
+    }
+    expect(d.world("unassigned")).toEqual(idle);
+  });
+  it("restores Codex identity and activity exactly from the event log", async () => {
+    const dir = tmp("codex-restart-");
+    const d = await start(dir, { machine: "m" });
+    const fx = JSON.parse(readFileSync(join(__dirname, "../../../spikes/fixtures/codex/subagents.json"), "utf8")) as { hooks: Record<string, unknown>[] };
+    for (const payload of fx.hooks.slice(0, 10)) await fetch(`http://127.0.0.1:${d.port}/hooks/codex`, {
+      method: "POST", headers: { authorization: `Bearer ${d.token}` }, body: JSON.stringify(payload),
+    });
+    const prior = d.world("unassigned");
+    await d.close();
+    daemons.splice(daemons.indexOf(d), 1);
+    const restarted = await start(dir, { machine: "m" });
+    expect(restarted.world("unassigned")).toEqual(prior);
+    expect(Object.values(prior.agents).some((a) => a.ref.provider === "codex" && a.ref.agent !== "root")).toBe(true);
+  });
 });

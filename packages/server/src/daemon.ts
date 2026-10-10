@@ -1,6 +1,6 @@
 import { randomBytes, timingSafeEqual } from "node:crypto";
 import { readFile } from "node:fs/promises";
-import { hostname } from "node:os";
+import { homedir, hostname } from "node:os";
 import { extname, join, normalize, sep } from "node:path";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import type { Duplex } from "node:stream";
@@ -8,11 +8,13 @@ import { createClaudeCodeAdapter, createCodexAdapter, createCodexLiveMapper, cre
 import {
   DEFAULT_TIMEOUTS,
   SCHEMA_VERSION,
+  agentKey,
   diffWorld,
   emptyWorld,
   reduce,
   replay,
   type AgentEvent,
+  type AgentRef,
   type ClientMessage,
   type RoomSummary,
   type RoomsMessage,
@@ -27,6 +29,8 @@ import { UNASSIGNED_ROOM, resolveRoom } from "./rooms";
 import { jsonlLog, type EventLog } from "./storage";
 import { DAEMON_VERSION, DEFAULT_PORT } from "./version";
 import { startCodexLive } from "./codex-live";
+import { readCodexSessionMeta, findCodexRollout } from "./codex-rollouts";
+import { codexOtelOutcomes } from "./codex-otel";
 
 export interface DaemonOptions {
   port?: number;
@@ -50,6 +54,7 @@ export interface DaemonOptions {
   /** Client socket buffer size above which patches are skipped in favour of a later snapshot. */
   maxBufferedBytes?: number;
   codexControlSocket?: string;
+  codexHome?: string;
   log?: (message: string) => void;
 }
 
@@ -111,8 +116,13 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
   const maxBuffered = opts.maxBufferedBytes ?? 1_000_000;
 
   const claudeCode = createClaudeCodeAdapter({ machine: opts.machine ?? hostname() });
-  const codex = createCodexAdapter({ machine: opts.machine ?? hostname() });
+  const codexHome = opts.codexHome ?? process.env.CODEX_HOME ?? join(homedir(), ".codex");
+  const codex = createCodexAdapter({ machine: opts.machine ?? hostname(), lineage: (id, path) => {
+    const atPath = path ? readCodexSessionMeta(path) : null;
+    return atPath?.threadId === id ? atPath : findCodexRollout(codexHome, id);
+  } });
   const outcomeGate = createOutcomeGate();
+  const threads = new Map<string, { agent: AgentRef; roomId?: string; cwd?: string }>();
 
   const rooms = new Map<string, Room>();
   const getRoom = (id: string): Room => {
@@ -139,7 +149,12 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
 
   for (const id of await storage.rooms()) {
     const room = getRoom(id);
-    room.world = room.sent = replay(await storage.read(id), timeouts);
+    const events = await storage.read(id);
+    room.world = room.sent = replay(events, timeouts);
+    for (const event of events) if ("agent" in event && event.agent.provider === "codex") {
+      const threadId = event.agent.agent === "root" ? event.agent.session : event.agent.agent;
+      threads.set(threadId, { agent: event.agent, roomId: id });
+    }
     room.lastActive = room.world.now;
   }
 
@@ -255,9 +270,9 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
   };
 
   /** Stamps, reduces and logs one event; returns the room it landed in. */
-  async function ingest(cwd: string | undefined, newEvent: NewEvent): Promise<Room> {
+  async function ingest(cwd: string | undefined, newEvent: NewEvent, roomId?: string): Promise<Room> {
     const event = { ...newEvent, ts: clock() } as AgentEvent;
-    const room = getRoom(resolveRoom(cwd));
+    const room = getRoom(roomId ?? resolveRoom(cwd));
     room.world = reduce(room.world, event, timeouts);
     room.lastActive = event.ts;
     markDirty(room);
@@ -268,6 +283,7 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
   const codexLive = opts.codexControlSocket ? startCodexLive({
     socketPath: opts.codexControlSocket,
     mapper: createCodexLiveMapper({ machine: opts.machine ?? hostname(),
+      onThread: (id, agent, cwd) => threads.set(id, { agent, cwd }),
       onUnknownOutcome: (id, status) => (opts.log ?? console.log)(`codex live: unknown outcome ${id}: ${String(status)}`) }),
     onEvents: async ({ cwd, events }) => {
       for (const event of events) if (outcomeGate("live", event)) await ingest(cwd, event);
@@ -296,6 +312,24 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
       const room = await ingest(parsed.cwd, parsed.event);
       return reply(res, 202, { room: room.id });
     }
+    if (req.method === "POST" && url.pathname === "/otel/v1/logs") {
+      if (!tokenOk(req.headers.authorization?.startsWith("Bearer ") ? req.headers.authorization.slice(7) : undefined))
+        return reply(res, 401, { error: "unauthorized" });
+      if (!/^application\/json(?:\s*;|\s*$)/i.test(req.headers["content-type"] ?? ""))
+        return reply(res, 415, { error: "JSON required" });
+      const raw = await readBody(req);
+      if (raw === null) return reply(res, 413, { error: "body too large" });
+      let body: unknown;
+      try { body = JSON.parse(raw); } catch { return reply(res, 400, { error: "invalid JSON" }); }
+      for (const event of codexOtelOutcomes(body, (id) => threads.get(id)?.agent)) {
+        const location = threads.get(event.agent.agent === "root" ? event.agent.session : event.agent.agent);
+        // OTel is batched and can land after the turn ended; a failure only matters while the call is still open.
+        const room = getRoom(location?.roomId ?? resolveRoom(location?.cwd));
+        if (event.kind !== "tool_end" || !room.world.agents[agentKey(event.agent)]?.pending[event.tool_use_id]) continue;
+        if (outcomeGate("otel", event)) await ingest(location?.cwd, event, room.id);
+      }
+      return reply(res, 200, {});
+    }
     if (req.method === "POST" && (url.pathname === "/hooks/claude-code" || url.pathname === "/hooks/codex")) {
       if (!tokenOk(headerToken(req))) return reply(res, 401, { error: "unauthorized" });
       const raw = await readBody(req);
@@ -308,6 +342,14 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
       }
       const adapter: { map(payload: unknown): AdapterOutput } = url.pathname === "/hooks/codex" ? codex : claudeCode;
       const { cwd, events } = adapter.map(payload);
+      if (url.pathname === "/hooks/codex" && payload && typeof payload === "object") {
+        const p = payload as Record<string, unknown>;
+        if (typeof p.session_id === "string") {
+          const id = typeof p.agent_id === "string" ? p.agent_id : p.session_id;
+          threads.set(id, { agent: { machine: opts.machine ?? hostname(), provider: "codex", session: p.session_id,
+            agent: id === p.session_id ? "root" : id }, cwd });
+        }
+      }
       for (const event of events) if (url.pathname !== "/hooks/codex" || outcomeGate("hook", event)) await ingest(cwd, event);
       res.writeHead(204).end();
       return;

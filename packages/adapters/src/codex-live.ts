@@ -43,21 +43,31 @@ function toolStart(item: Record<string, unknown>, agent: AgentRef): ToolStart | 
     category: categoryForCodexTool(tool), ...(summary ? { summary } : {}) };
 }
 
-export function createCodexLiveMapper(opts: { machine: string; onUnknownOutcome?: (itemId: string, status: unknown) => void }) {
+export function createCodexLiveMapper(opts: { machine: string; onThread?: (threadId: string, agent: AgentRef, cwd?: string) => void; onUnknownOutcome?: (itemId: string, status: unknown) => void }) {
   const threads = new Map<string, { agent: AgentRef; cwd?: string }>();
   const open = new Map<string, ToolStart>();
+  const startedIn = new Map<string, string>();
   const requests = new Map<string, { threadId: string; itemId?: string }>();
   const empty = (): AdapterOutput => ({ events: [] });
   const requestKey = (id: unknown) => typeof id === "string" || typeof id === "number" ? String(id) : undefined;
-  function thread(value: unknown): void {
-    if (!isObj(value)) return;
+  function thread(value: unknown): AdapterOutput {
+    if (!isObj(value)) return empty();
     const id = text(value.id);
     const session = text(value.sessionId);
-    if (!id || !session) return;
+    if (!id || !session) return empty();
+    for (const [itemId, threadId] of startedIn) if (threadId === id) { startedIn.delete(itemId); open.delete(itemId); }
     const environment = Array.isArray(value.environments) ? value.environments[0] : undefined;
     const cwd = text(value.cwd) ?? (isObj(environment) ? text(environment.cwd) : undefined);
-    threads.set(id, { agent: { machine: opts.machine, provider: "codex", session,
-      agent: id === session ? ROOT_AGENT : id }, cwd });
+    const agent: AgentRef = { machine: opts.machine, provider: "codex", session,
+      agent: id === session ? ROOT_AGENT : id };
+    threads.set(id, { agent, cwd });
+    opts.onThread?.(id, agent, cwd);
+    const events: NewEvent[] = [];
+    const parent = text(value.parentThreadId);
+    if (parent) events.push({ schema_version: SCHEMA_VERSION, agent, kind: "spawn", provenance: "observed",
+      parent: { ...agent, agent: parent === session ? ROOT_AGENT : parent } });
+    if (isObj(value.status) && value.status.type === "idle") events.push({ schema_version: SCHEMA_VERSION, agent, kind: "stop" });
+    return cwd ? { cwd, events } : { events };
   }
   return {
     thread,
@@ -65,7 +75,7 @@ export function createCodexLiveMapper(opts: { machine: string; onUnknownOutcome?
       if (!isObj(message)) return empty();
       const method = text(message.method);
       const params = isObj(message.params) ? message.params : {};
-      if (method === "thread/started") { thread(params.thread); return empty(); }
+      if (method === "thread/started") return thread(params.thread);
       const threadId = text(params.threadId);
       if (!threadId) return empty();
       const known = threads.get(threadId);
@@ -84,12 +94,13 @@ export function createCodexLiveMapper(opts: { machine: string; onUnknownOutcome?
       }
       if (method === "item/started" && isObj(params.item)) {
         const start = toolStart(params.item, known.agent);
-        if (start) { open.set(start.tool_use_id, start); return out(start); }
+        if (start) { open.set(start.tool_use_id, start); startedIn.set(start.tool_use_id, threadId); return out(start); }
       }
       if (method === "item/completed" && isObj(params.item)) {
         const id = text(params.item.id);
-        if (!id || !toolStart(params.item, known.agent)) return out();
+        if (!id || startedIn.get(id) !== threadId || !toolStart(params.item, known.agent)) return out();
         open.delete(id);
+        startedIn.delete(id);
         const status = params.item.status;
         if (status !== "completed" && status !== "failed" && status !== "declined") {
           try { opts.onUnknownOutcome?.(id, status); } catch { /* Mapping never fails because diagnostics failed. */ }

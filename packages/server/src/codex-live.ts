@@ -5,7 +5,7 @@ import WebSocket from "ws";
 import type { AdapterOutput } from "@agentarium/adapters";
 
 interface Mapper {
-  thread(thread: unknown): void;
+  thread(thread: unknown): AdapterOutput;
   map(message: unknown): AdapterOutput;
 }
 
@@ -50,7 +50,8 @@ export function startCodexLive(opts: {
     try {
       const result = await rpc("thread/resume", { threadId: id, excludeTurns: true });
       if (!result || typeof result !== "object" || !("thread" in result)) return;
-      opts.mapper.thread(result.thread);
+      const recovery = opts.mapper.thread(result.thread);
+      if (recovery.events.length) await opts.onEvents(recovery);
       resumed.add(id);
       for (const message of duringResume.get(id) ?? []) deliver(message);
     } catch { /* Retry at the next poll. */ }

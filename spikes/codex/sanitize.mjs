@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Spike: turn raw captures in <raw-dir> into one sanitized fixture per scenario:
-// <out-dir>/<scenario>.json = { codex_cli_version, scenario, hooks: [...], app?: [...] }.
+// <out-dir>/<scenario>.json = { codex_cli_version, scenario, hooks: [...], app?, exec?, otel? }.
 // Replaces local paths and the user name, truncates long strings, drops streaming deltas.
 // Usage: node sanitize.mjs <raw-dir> <out-dir> <cli-version> <path-to-redact>...
 import { mkdirSync, readdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
@@ -33,6 +33,23 @@ const lines = (f) => readFileSync(f, "utf8").split("\n").filter((l) => l.trim())
 // Streaming and account noise; everything an adapter could key on stays.
 const NOISE = /delta|Delta|tokenUsage|rateLimits|account\/|remoteControl|configWarning|mcpServer\/startupStatus/;
 
+// OTel logs carry account ids, e-mail and tool arguments/output: keep only identifiers and outcomes.
+const OTEL_KEYS = new Set([
+  "event.name", "event.timestamp", "conversation.id", "call_id", "tool_name", "tool_namespace", "success",
+  "decision", "source", "duration_ms", "agent_name", "mcp_server", "tool_result_seq", "service.name", "service.version",
+]);
+const keep = (attrs = []) => attrs.filter((a) => OTEL_KEYS.has(a.key));
+const otlpAllowlisted = (body) => ({
+  resourceLogs: (body.resourceLogs ?? []).map((rl) => ({
+    resource: { attributes: keep(rl.resource?.attributes) },
+    scopeLogs: rl.scopeLogs.map((sl) => ({
+      logRecords: sl.logRecords
+        .map((r) => ({ timeUnixNano: r.timeUnixNano, attributes: keep(r.attributes) }))
+        .filter((r) => r.attributes.some((a) => a.key === "event.name" && /^codex\.(tool_|conversation_starts|user_prompt)/.test(a.value.stringValue))),
+    })),
+  })),
+});
+
 mkdirSync(outDir, { recursive: true });
 const scenarios = new Set(readdirSync(rawDir).map((f) => f.split(".")[0]));
 for (const s of [...scenarios].sort()) {
@@ -50,6 +67,8 @@ for (const s of [...scenarios].sort()) {
       .filter((m) => !NOISE.test(m.method ?? ""))
       .map(({ at, dir, jsonrpc: _j, ...m }) => clean({ at_ms: at - t0, dir, ...m }));
   }
+  const sinkFile = join(rawDir, `${s}.sink.jsonl`);
+  if (existsSync(sinkFile)) fixture.otel = lines(sinkFile).map((r) => clean(otlpAllowlisted(r.body)));
   const execFile = join(rawDir, `${s}.exec.jsonl`);
   if (existsSync(execFile)) fixture.exec = lines(execFile).map(clean);
   writeFileSync(join(outDir, `${s}.json`), `${JSON.stringify(fixture, null, 2)}\n`);

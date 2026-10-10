@@ -30,7 +30,7 @@ function summary(tool: string, input: unknown): string | undefined {
   return undefined;
 }
 
-export function createCodexAdapter(opts: { machine: string }): { map(payload: unknown): AdapterOutput } {
+export function createCodexAdapter(opts: { machine: string; lineage?: (threadId: string, rolloutPath?: string) => { parentThreadId: string | null } | null }): { map(payload: unknown): AdapterOutput } {
   const sessions = new Map<string, { callers: string[]; children: Set<string> }>();
   const ref = (session: string, agent: string): AgentRef => ({ machine: opts.machine, provider: "codex", session, agent });
   return {
@@ -50,7 +50,14 @@ export function createCodexAdapter(opts: { machine: string }): { map(payload: un
         if (!s) { s = { callers: [], children: new Set() }; sessions.set(session, s); }
         return s;
       };
-      switch (hook) {
+      const prior = agentId !== ROOT_AGENT && state().children.has(agentId);
+      const needsLineage = agentId !== ROOT_AGENT && (hook === "SubagentStop" || (!prior && hook !== "SubagentStart"));
+      const lineage = needsLineage ? opts.lineage?.(agentId, text(payload.agent_transcript_path) ?? text(payload.transcript_path)) : null;
+      const observed = lineage?.parentThreadId ? { ...base, kind: "spawn" as const,
+        parent: ref(session, lineage.parentThreadId === session ? ROOT_AGENT : lineage.parentThreadId), provenance: "observed" as const } : undefined;
+      const recovery = !prior && hook !== "SubagentStart" && observed ? [observed] : [];
+      if (agentId !== ROOT_AGENT) state().children.add(agentId);
+      const result = (() : AdapterOutput => { switch (hook) {
         case "SessionStart": return payload.source === "compact" ? out() : out({ ...base, agent: ref(session, ROOT_AGENT), kind: "session_start" });
         case "UserPromptSubmit": return out({ ...base, kind: "prompt" });
         case "PreToolUse": {
@@ -80,7 +87,7 @@ export function createCodexAdapter(opts: { machine: string }): { map(payload: un
           s.children.add(agentId);
           return out({ ...base, kind: "spawn", parent: ref(session, s.callers.shift() ?? ROOT_AGENT), provenance: "inferred" });
         }
-        case "SubagentStop": return agentId === ROOT_AGENT ? out() : out({ ...base, kind: "stop" });
+        case "SubagentStop": return agentId === ROOT_AGENT ? out() : out(...(observed ? [observed] : []), { ...base, kind: "stop" });
         case "Stop": return out({ ...base, kind: "stop" });
         case "Interrupt": return out({ ...base, agent: ref(session, ROOT_AGENT), kind: "stop" });
         case "SessionEnd": {
@@ -89,7 +96,8 @@ export function createCodexAdapter(opts: { machine: string }): { map(payload: un
           return out({ ...base, agent: ref(session, ROOT_AGENT), kind: "end" }, ...[...children].map((child): NewEvent => ({ ...base, agent: ref(session, child), kind: "end" })));
         }
         default: return out();
-      }
+      } })();
+      return recovery.length ? { ...result, events: [...recovery, ...result.events.filter((event) => event.kind !== "spawn")] } : result;
     },
   };
 }

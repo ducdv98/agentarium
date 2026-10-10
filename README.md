@@ -25,6 +25,18 @@ agentarium start
 
 For Codex TUI sessions on the shared app-server daemon, Agentarium also connects automatically to show pending approvals and tool outcomes. This connection is read-only: Agentarium never answers approval requests. Set `AGENTARIUM_CODEX_LIVE=0` to disable it. `codex exec` sessions remain hook-only.
 
+### Optional: Codex OTel
+
+Codex can send tool failures that hooks do not report, including MCP errors. Add this to `~/.codex/config.toml` yourself, replacing `<port>` with the Agentarium port and `<token>` with the token in `~/.agentarium/token`:
+
+```toml
+[otel]
+log_user_prompt = false
+exporter = { otlp-http = { endpoint = "http://127.0.0.1:<port>/otel/v1/logs", protocol = "json", headers = { Authorization = "Bearer <token>" } } }
+```
+
+Agentarium does not edit `config.toml`. The token lives there in plain text, as it does in Claude Code's settings.
+
 ## Commands
 
 | Command | What it does |

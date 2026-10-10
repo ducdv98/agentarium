@@ -27,6 +27,7 @@ Tooling, in [`spikes/codex/`](../../spikes/codex/):
 | `subagents` | root, child, and grandchild via `spawn_agent` |
 | `approve-accept` / `approve-decline` / `approve-cancel` | app-server, approval `untrusted`, sandbox `read-only`, one `touch` |
 | `interrupt` | app-server `turn/interrupt` during `sleep 30` |
+| `otel` | `ls /nope`, `echo ok`, MCP `fx_fail`, with OTel logs exported |
 | `tui` | interactive TUI (tmux) on the shared app-server daemon, approval `on-request`: one approved command, then one approval cancelled with Esc |
 
 ## Findings
@@ -92,6 +93,16 @@ No hook marks the end of the wait. After an accept, the next sign is `PostToolUs
 - `item/started` and `item/completed` with outcomes, plus `turn/started`, `turn/completed` (`status: interrupted` on cancel) and `hook/started` and `hook/completed`.
 
 The observer never answered the request, and the TUI still resolved it normally. `codex exec` sessions do not use the daemon, so they stay hook-only.
+
+### OTel
+
+Fixture `otel` (`otel-sink.mjs` received it as OTLP/HTTP JSON logs, configured with `[otel] exporter = { otlp-http = { endpoint = "…/v1/logs", protocol = "json" } }` and `log_user_prompt = false`). Only identifiers and outcomes are kept, because the raw logs hold the account id, e-mail address, and tool arguments and output.
+
+- `conversation.id` is the thread id, the same value as the hook `session_id` for a root thread and `agent_id` for a sub-agent. `agent_name` is the agent path (`/root`).
+- `codex.tool_decision` and `codex.tool_result` carry `call_id`, which **equals** the hook `tool_use_id`.
+- `codex.tool_result.success` reports the tool call, not the command. `ls /nope` (exit 2) reported `success: "true"`. An MCP `isError` reported `success: "false"`, and that call has no `PostToolUse`.
+- Code-mode wrapper calls (`tool_name: "exec"`, `call_id: "call_…"`) appear only in OTel and have no hook.
+- Values are strings (`"true"`, `"62"`). Records are batched, so they arrive after the hooks.
 
 ## What this means for the adapter
 
