@@ -73,6 +73,10 @@ _Avoid_: Plugin, connector
 The single local process that receives Events and serves the visualization.
 _Avoid_: Server, backend
 
+**Permission mode**:
+The approval policy and sandbox an agent runs under, as resolved from the user's own configuration. Agentarium observes it and never imposes one (ADR 0006).
+_Avoid_: Approval mode, YOLO mode
+
 ### Scene
 
 **Theme**:
