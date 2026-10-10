@@ -9,8 +9,8 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, renameSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { createInterface } from "node:readline/promises";
 import { fileURLToPath } from "node:url";
+import { ask } from "../ask.mjs";
 
 const outDir = process.argv[2];
 if (!outDir) {
@@ -35,10 +35,9 @@ const SCENARIOS = [
   { name: "tui-auto", mode: "auto", steps: ["Paste: Run this exact shell command with the Bash tool: rm -rf /nonexistent-agentarium-probe-dir . If it is refused, do not retry. Then reply DONE.", "If a prompt appears, choose No. Type /exit."] },
 ];
 
-const rl = createInterface({ input: process.stdin, output: process.stdout });
 console.log(`Raw captures go to ${raw}. Each scenario opens a fresh Claude Code session in a throwaway repo.`);
 for (const [i, s] of SCENARIOS.entries()) {
-  const answer = (await rl.question(`\n[${i + 1}/${SCENARIOS.length}] ${s.name} (${s.mode}). Enter to start, s to skip, q to stop: `)).trim();
+  const answer = (ask(`\n[${i + 1}/${SCENARIOS.length}] ${s.name} (${s.mode}). Enter to start, s to skip, q to stop: `)).trim();
   if (answer === "q") break;
   if (answer === "s") continue;
   const work = mkdtempSync(join(tmpdir(), "agentarium-claude-"));
@@ -52,15 +51,12 @@ for (const [i, s] of SCENARIOS.entries()) {
   const payloads = join(work, "payloads.jsonl");
   console.log("In the Claude session:");
   s.steps.forEach((step, n) => console.log(`  ${n + 1}. ${step}`));
-  await rl.question("Enter to open Claude Code: ");
-  rl.pause();
+  ask("Enter to open Claude Code: ");
   spawnSync("claude", ["--setting-sources", "project,local", "--settings", settings, "--permission-mode", s.mode], {
     cwd: repo, env: { ...process.env, AGENTARIUM_SPIKE_OUT: payloads }, stdio: "inherit",
   });
-  rl.resume();
   if (existsSync(payloads)) renameSync(payloads, join(raw, `${s.name}.hooks.jsonl`));
   else console.log("No hook payloads were recorded for this scenario.");
 }
-rl.close();
 execFileSync(process.execPath, [join(here, "sanitize-sequences.mjs"), raw, outDir, execFileSync("claude", ["--version"], { encoding: "utf8" }).split(" ")[0]], { stdio: "inherit" });
 console.log("Done. Check the new fixtures with git diff, and that ~/.claude/settings.json is unchanged.");

@@ -10,8 +10,8 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
-import { createInterface } from "node:readline/promises";
 import { fileURLToPath } from "node:url";
+import { ask } from "../ask.mjs";
 
 const scenario = process.argv[2] ?? "tui-permissions";
 const here = dirname(fileURLToPath(import.meta.url));
@@ -28,7 +28,6 @@ execFileSync(process.execPath, [join(here, "setup-codex-home.mjs"), isolatedCode
 writeFileSync(join(scratchRepo, "README.md"), "# scratch\n");
 execFileSync("git", ["init", "-q"], { cwd: scratchRepo });
 
-const rl = createInterface({ input: process.stdin, output: process.stdout });
 console.log(`
 Codex will open in a scratch repo (${scratchRepo}) with an isolated home. In it:
   1. Type /permissions and note the preset it shows as current.
@@ -40,8 +39,7 @@ Codex will open in a scratch repo (${scratchRepo}) with an isolated home. In it:
   3. If a custom profile is offered, choose it, note the policy and sandbox it shows, and run the prompt once more.
   4. Quit with /quit (or Ctrl+C twice).
 Write down which preset each turn used: the fixture records hooks and turn_context, not the preset's name.`);
-await rl.question("Enter to open Codex: ");
-rl.close();
+ask("Enter to open Codex: ");
 spawnSync("codex", [], { cwd: scratchRepo, env, stdio: "inherit" });
 
 spawnSync("codex", ["app-server", "daemon", "stop"], { env, stdio: "ignore" });
