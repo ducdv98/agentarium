@@ -142,6 +142,8 @@ For paired tools, use one authoritative surface and keep provider call IDs as ad
 
 ## Gaps where Codex has no equivalent
 
+Phase 2 decisions on each gap, checked against live captures, are in [codex-gap-decisions.md](codex-gap-decisions.md).
+
 Distinguish absent Codex signals from signals that exist but cannot be represented by today's AgentEvent.
 
 1. **No Claude-style Notification hook.** The inspected hook enum has no structured idle_prompt, permission_prompt, or elicitation_dialog notification. A completed turn maps to idle via stop; it should not raise needs-input merely because another prompt could be supplied. External notify only covers turn completion.
