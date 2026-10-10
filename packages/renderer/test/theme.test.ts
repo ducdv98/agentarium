@@ -2,7 +2,16 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { ACTION_CATEGORIES, AGENT_STATES, type AgentState } from "@agentarium/core";
-import { dotGrid, layoutWorld, resolveAgent, validateTheme, type Theme } from "../src";
+import {
+  dotGrid,
+  DIRECTIONS,
+  layoutWorld,
+  resolveAgent,
+  resolveAnimation,
+  validateTheme,
+  type Theme,
+} from "../src";
+import { completeTheme } from "./fixtures/theme";
 
 const agent = (over: Partial<AgentState> = {}): AgentState => ({
   key: "k",
@@ -65,6 +74,106 @@ describe("theme manifest", () => {
 
   it("carries the needs-input flag through", () => {
     expect(resolveAgent(dotGrid, agent({ status: "waiting", category: "wait" }), true).needsInput).toBe(true);
+  });
+
+  it("accepts a complete 2d manifest in strict mode", () => {
+    expect(validateTheme(completeTheme, { strict: true })).toEqual([]);
+  });
+
+  it("lists strict completeness gaps", () => {
+    const incomplete = {
+      ...completeTheme,
+      stations: { ...completeTheme.stations, read: undefined },
+      renderers: {
+        "2d": {
+          ...completeTheme.renderers?.["2d"],
+          atlases: [],
+          walk: { ne: "walk/ne" },
+          states: { idle: { ne: "idle/ne" } },
+          categories: { read: { ne: "read/ne" } },
+        },
+      },
+    } as unknown as Theme;
+    expect(validateTheme(incomplete, { strict: true })).toEqual([
+      "stations.read: missing",
+      "renderers.2d.atlases: empty",
+      "renderers.2d.walk.nw: missing",
+      "renderers.2d.walk.se: missing",
+      "renderers.2d.walk.sw: missing",
+      "renderers.2d.states.idle.nw: missing",
+      "renderers.2d.states.idle.se: missing",
+      "renderers.2d.states.idle.sw: missing",
+      "renderers.2d.states.waiting: missing",
+      "renderers.2d.states.blocked: missing",
+      "renderers.2d.categories.read.nw: missing",
+      "renderers.2d.categories.read.se: missing",
+      "renderers.2d.categories.read.sw: missing",
+      "renderers.2d.categories.write: missing",
+      "renderers.2d.categories.exec: missing",
+      "renderers.2d.categories.search: missing",
+      "renderers.2d.categories.network: missing",
+      "renderers.2d.categories.delegate: missing",
+      "renderers.2d.categories.think: missing",
+      "renderers.2d.categories.wait: missing",
+      "renderers.2d.categories.error: missing",
+    ]);
+  });
+
+  it("requires 2d only in strict mode", () => {
+    expect(validateTheme(dotGrid, { strict: true })).toEqual(["renderers.2d: missing"]);
+    expect(validateTheme(dotGrid)).toEqual([]);
+  });
+
+  it("resolves every animated state and category", () => {
+    for (const status of AGENT_STATES) {
+      for (const category of [...ACTION_CATEGORIES, null]) {
+        for (const direction of DIRECTIONS) {
+          for (const moving of [false, true]) {
+            const result = resolveAnimation(completeTheme, { status, category }, direction, moving);
+            if (status === "lost" || status === "done") expect(result).toBeNull();
+            else expect(result).toEqual(expect.any(String));
+          }
+        }
+      }
+    }
+  });
+
+  it("falls back by direction and to idle", () => {
+    const theme = {
+      ...completeTheme,
+      renderers: {
+        "2d": {
+          ...completeTheme.renderers?.["2d"],
+          walk: { ne: "walk/ne" },
+          states: { idle: { sw: "idle/sw" } },
+          categories: {},
+        },
+      },
+    } as unknown as Theme;
+    expect(resolveAnimation(theme, { status: "working", category: "read" }, "nw", true)).toBe("walk/ne");
+    expect(resolveAnimation(theme, { status: "working", category: "read" }, "ne", false)).toBe("idle/sw");
+    expect(resolveAnimation(theme, { status: "blocked", category: null }, "se", false)).toBe("idle/sw");
+    const waitOnly = { ...completeTheme, renderers: { "2d": { atlases: [], states: {}, categories: { wait: { se: "wait/se" } } } } };
+    expect(resolveAnimation(waitOnly, { status: "waiting", category: "wait" }, "ne", false)).toBe("wait/se");
+    expect(resolveAnimation(bare, { status: "idle", category: null }, "ne", false)).toBeNull();
+    expect(() => resolveAnimation({} as Theme, { status: "idle", category: null }, "ne", false)).not.toThrow();
+  });
+
+  it("flags malformed renderer fields without throwing", () => {
+    const broken = {
+      ...dotGrid,
+      renderers: {
+        "2d": { atlases: [""], walk: "walk", states: { strange: { xx: "" } }, categories: { read: { ne: 42 } } },
+      },
+    } as unknown as Theme;
+    expect(validateTheme(broken)).toEqual([
+      "renderers.2d.atlases.0: needs a path",
+      "renderers.2d.walk: not a clip",
+      "renderers.2d.states.strange: not an animated state",
+      "renderers.2d.states.strange.xx: not a direction",
+      "renderers.2d.states.strange.xx: needs an animation name",
+      "renderers.2d.categories.read.ne: needs an animation name",
+    ]);
   });
 });
 

@@ -1,5 +1,6 @@
 export * from "./theme";
+export * from "./atlas";
 export * from "./layout";
 export * from "./renderer";
 export * from "./dot-grid-renderer";
-export { dotGrid } from "./themes/dot-grid";
+export { dotGrid, shippedThemes } from "./themes";

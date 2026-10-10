@@ -74,7 +74,8 @@ Two layers:
 
 ## Manifest sketch
 
-Illustrative only; not a settled format.
+Illustrative only; not a settled format. The settled part is the 2D Renderer
+section, described below.
 
 ```json
 {
@@ -92,6 +93,40 @@ Illustrative only; not a settled format.
   "assets": "assets/farm/"
 }
 ```
+
+### `renderers.2d` (settled, phase 3)
+
+The 2D section of a Theme (`Renderer2d` in `packages/renderer/src/theme.ts`)
+lists `atlases`: Pixi v8 spritesheet JSON files, relative to the repository's
+`assets/` directory. It names a clip for `walk`, for the states `idle`,
+`waiting` and `blocked`, and for each of the nine action `categories`. A clip
+maps the four directions (`ne`, `nw`, `se`, `sw`) to animation names in those
+atlases. Working agents play their category's clip. Lost and done agents have
+no clip; they fade out.
+
+```json
+"renderers": {
+  "2d": {
+    "atlases": ["office/characters.json"],
+    "walk": { "ne": "walk/ne", "nw": "walk/nw", "se": "walk/se", "sw": "walk/sw" },
+    "states": { "idle": { "ne": "idle/ne", "...": "..." }, "waiting": {}, "blocked": {} },
+    "categories": { "read": { "ne": "read/ne", "...": "..." } }
+  }
+}
+```
+
+At runtime, `resolveAnimation` never throws. A missing direction uses another
+direction of the same clip. A missing clip uses idle (waiting tries the `wait`
+category first). With no idle clip, the result is null and the Renderer draws a
+placeholder.
+
+`validateTheme(theme)` accepts a Theme without a 2D section, so dot-grid stays
+valid. `validateTheme(theme, { strict: true })` is for themes we ship. It lists
+every gap: a missing station, atlas list, clip or direction. `checkAtlases`
+checks every name the manifest uses: it must be a playable animation in exactly
+one atlas, and each atlas must set `meta.scale: 2`. The test
+`packages/renderer/test/shipped-themes.test.ts` runs both checks in CI on every
+Theme in `shippedThemes` that has a 2D section.
 
 ## Scope
 
