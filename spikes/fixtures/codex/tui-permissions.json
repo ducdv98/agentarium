@@ -4,8 +4,8 @@
   "hooks": [
     {
       "at_ms": 0,
-      "session_id": "01a1259d-214d-75b1-853d-302531d24b4e",
-      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-40-17-01a1259d-214d-75b1-853d-302531d24b4e.jsonl",
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
       "cwd": "<CWD>",
       "hook_event_name": "SessionStart",
       "model": "gpt-6.1-sol",
@@ -13,10 +13,10 @@
       "source": "startup"
     },
     {
-      "at_ms": 358,
-      "session_id": "01a1259d-214d-75b1-853d-302531d24b4e",
-      "turn_id": "01a1259d-df5d-7e03-970d-eba1c05dd6ea",
-      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-40-17-01a1259d-214d-75b1-853d-302531d24b4e.jsonl",
+      "at_ms": 362,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125a9-99ff-7a30-bad8-3ca574c1ff56",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
       "cwd": "<CWD>",
       "hook_event_name": "UserPromptSubmit",
       "model": "gpt-6.1-sol",
@@ -24,10 +24,10 @@
       "prompt": "Create the file probe.txt containing hi with one shell command, then reply DONE."
     },
     {
-      "at_ms": 4857,
-      "session_id": "01a1259d-214d-75b1-853d-302531d24b4e",
-      "turn_id": "01a1259d-df5d-7e03-970d-eba1c05dd6ea",
-      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-40-17-01a1259d-214d-75b1-853d-302531d24b4e.jsonl",
+      "at_ms": 5412,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125a9-99ff-7a30-bad8-3ca574c1ff56",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
       "cwd": "<CWD>",
       "hook_event_name": "PreToolUse",
       "model": "gpt-6.1-sol",
@@ -36,13 +36,13 @@
       "tool_input": {
         "command": "Set-Content -LiteralPath probe.txt -Value hi -NoNewline"
       },
-      "tool_use_id": "exec-7c8d99c4-0582-4c4d-8dc1-e39e27445151"
+      "tool_use_id": "exec-94319c19-7b08-405f-abd5-02fbb71d7b9f"
     },
     {
-      "at_ms": 27026,
-      "session_id": "01a1259d-214d-75b1-853d-302531d24b4e",
-      "turn_id": "01a1259d-df5d-7e03-970d-eba1c05dd6ea",
-      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-40-17-01a1259d-214d-75b1-853d-302531d24b4e.jsonl",
+      "at_ms": 28400,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125a9-99ff-7a30-bad8-3ca574c1ff56",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
       "cwd": "<CWD>",
       "hook_event_name": "PostToolUse",
       "model": "gpt-6.1-sol",
@@ -52,13 +52,13 @@
         "command": "Set-Content -LiteralPath probe.txt -Value hi -NoNewline"
       },
       "tool_response": "",
-      "tool_use_id": "exec-7c8d99c4-0582-4c4d-8dc1-e39e27445151"
+      "tool_use_id": "exec-94319c19-7b08-405f-abd5-02fbb71d7b9f"
     },
     {
-      "at_ms": 29175,
-      "session_id": "01a1259d-214d-75b1-853d-302531d24b4e",
-      "turn_id": "01a1259d-df5d-7e03-970d-eba1c05dd6ea",
-      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-40-17-01a1259d-214d-75b1-853d-302531d24b4e.jsonl",
+      "at_ms": 30990,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125a9-99ff-7a30-bad8-3ca574c1ff56",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
       "cwd": "<CWD>",
       "hook_event_name": "Stop",
       "model": "gpt-6.1-sol",
@@ -67,10 +67,118 @@
       "last_assistant_message": "DONE"
     },
     {
-      "at_ms": 47261,
-      "session_id": "01a1259d-214d-75b1-853d-302531d24b4e",
-      "turn_id": "01a1259e-9db7-7cf2-9bf4-952ee04ac610",
-      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-40-17-01a1259d-214d-75b1-853d-302531d24b4e.jsonl",
+      "at_ms": 47948,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125aa-5b8a-7f72-9e10-fc2ae3eaf101",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-5.6-luna",
+      "permission_mode": "default",
+      "prompt": "Create the file probe1.txt containing hi with one shell command, then reply DONE."
+    },
+    {
+      "at_ms": 51174,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125aa-5b8a-7f72-9e10-fc2ae3eaf101",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-5.6-luna",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "Set-Content -LiteralPath probe1.txt -Value hi -NoNewline"
+      },
+      "tool_use_id": "exec-ea00916d-5ef4-4f20-b563-d60b7251f586"
+    },
+    {
+      "at_ms": 52637,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125aa-5b8a-7f72-9e10-fc2ae3eaf101",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-5.6-luna",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "Set-Content -LiteralPath probe1.txt -Value hi -NoNewline"
+      },
+      "tool_response": "",
+      "tool_use_id": "exec-ea00916d-5ef4-4f20-b563-d60b7251f586"
+    },
+    {
+      "at_ms": 54393,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125aa-5b8a-7f72-9e10-fc2ae3eaf101",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Stop",
+      "model": "gpt-5.6-luna",
+      "permission_mode": "default",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE"
+    },
+    {
+      "at_ms": 68098,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125aa-aa4e-7233-a947-7a1be5c8b90a",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-5.6-luna",
+      "permission_mode": "bypassPermissions",
+      "prompt": "Create the file probe.txt containing hi with one shell command, then reply DONE."
+    },
+    {
+      "at_ms": 70222,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125aa-aa4e-7233-a947-7a1be5c8b90a",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-5.6-luna",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "Set-Content -LiteralPath probe.txt -Value hi -NoNewline"
+      },
+      "tool_use_id": "exec-b037c951-7af1-4915-9d3c-e2fb32199295"
+    },
+    {
+      "at_ms": 70947,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125aa-aa4e-7233-a947-7a1be5c8b90a",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PostToolUse",
+      "model": "gpt-5.6-luna",
+      "permission_mode": "bypassPermissions",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "Set-Content -LiteralPath probe.txt -Value hi -NoNewline"
+      },
+      "tool_response": "",
+      "tool_use_id": "exec-b037c951-7af1-4915-9d3c-e2fb32199295"
+    },
+    {
+      "at_ms": 72651,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125aa-aa4e-7233-a947-7a1be5c8b90a",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Stop",
+      "model": "gpt-5.6-luna",
+      "permission_mode": "bypassPermissions",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE"
+    },
+    {
+      "at_ms": 83460,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125aa-e64f-7ad0-9d70-db3f4d975070",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
       "cwd": "<CWD>",
       "hook_event_name": "UserPromptSubmit",
       "model": "gpt-5.6-luna",
@@ -78,10 +186,10 @@
       "prompt": "Create the file probe.txt containing hi with one shell command, then reply DONE."
     },
     {
-      "at_ms": 49386,
-      "session_id": "01a1259d-214d-75b1-853d-302531d24b4e",
-      "turn_id": "01a1259e-9db7-7cf2-9bf4-952ee04ac610",
-      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-40-17-01a1259d-214d-75b1-853d-302531d24b4e.jsonl",
+      "at_ms": 89261,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125aa-e64f-7ad0-9d70-db3f4d975070",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
       "cwd": "<CWD>",
       "hook_event_name": "PreToolUse",
       "model": "gpt-5.6-luna",
@@ -90,13 +198,79 @@
       "tool_input": {
         "command": "Set-Content -LiteralPath probe.txt -Value hi -NoNewline"
       },
-      "tool_use_id": "exec-eaf11f59-78f5-4d5d-aeea-735657f8d296"
+      "tool_use_id": "exec-96a7e3fd-bcad-46d5-9521-5cec04872d9e"
     },
     {
-      "at_ms": 50756,
-      "session_id": "01a1259d-214d-75b1-853d-302531d24b4e",
-      "turn_id": "01a1259e-9db7-7cf2-9bf4-952ee04ac610",
-      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-40-17-01a1259d-214d-75b1-853d-302531d24b4e.jsonl",
+      "at_ms": 89722,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125aa-e64f-7ad0-9d70-db3f4d975070",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PermissionRequest",
+      "model": "gpt-5.6-luna",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "Set-Content -LiteralPath probe.txt -Value hi -NoNewline",
+        "description": "May I run this one shell command with write access to create probe.txt containing hi?"
+      }
+    },
+    {
+      "at_ms": 101555,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125aa-e64f-7ad0-9d70-db3f4d975070",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Interrupt",
+      "model": "gpt-5.6-luna",
+      "permission_mode": "default"
+    },
+    {
+      "at_ms": 108443,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125ab-47cd-7362-9ded-9c7dd0cda7f6",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-5.6-luna",
+      "permission_mode": "default",
+      "prompt": "Create the file probe.txt containing hi with one shell command, then reply DONE."
+    },
+    {
+      "at_ms": 111141,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125ab-47cd-7362-9ded-9c7dd0cda7f6",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-5.6-luna",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "Set-Content -LiteralPath probe.txt -Value hi -NoNewline"
+      },
+      "tool_use_id": "exec-1486a740-b9cf-427b-a240-6f09a7358ed1"
+    },
+    {
+      "at_ms": 111469,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125ab-47cd-7362-9ded-9c7dd0cda7f6",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PermissionRequest",
+      "model": "gpt-5.6-luna",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "Set-Content -LiteralPath probe.txt -Value hi -NoNewline",
+        "description": "Allow this one shell command to create probe.txt containing hi?"
+      }
+    },
+    {
+      "at_ms": 113155,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125ab-47cd-7362-9ded-9c7dd0cda7f6",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
       "cwd": "<CWD>",
       "hook_event_name": "PostToolUse",
       "model": "gpt-5.6-luna",
@@ -106,13 +280,13 @@
         "command": "Set-Content -LiteralPath probe.txt -Value hi -NoNewline"
       },
       "tool_response": "",
-      "tool_use_id": "exec-eaf11f59-78f5-4d5d-aeea-735657f8d296"
+      "tool_use_id": "exec-1486a740-b9cf-427b-a240-6f09a7358ed1"
     },
     {
-      "at_ms": 52937,
-      "session_id": "01a1259d-214d-75b1-853d-302531d24b4e",
-      "turn_id": "01a1259e-9db7-7cf2-9bf4-952ee04ac610",
-      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-40-17-01a1259d-214d-75b1-853d-302531d24b4e.jsonl",
+      "at_ms": 115890,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "turn_id": "01a125ab-47cd-7362-9ded-9c7dd0cda7f6",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
       "cwd": "<CWD>",
       "hook_event_name": "Stop",
       "model": "gpt-5.6-luna",
@@ -121,9 +295,9 @@
       "last_assistant_message": "DONE"
     },
     {
-      "at_ms": 68127,
-      "session_id": "01a1259d-214d-75b1-853d-302531d24b4e",
-      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-40-17-01a1259d-214d-75b1-853d-302531d24b4e.jsonl",
+      "at_ms": 157311,
+      "session_id": "01a125a9-7b4f-7071-9e46-ef50195bae84",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T18-53-46-01a125a9-7b4f-7071-9e46-ef50195bae84.jsonl",
       "cwd": "<CWD>",
       "hook_event_name": "SessionEnd",
       "reason": "other"
@@ -132,7 +306,7 @@
   "turn_context": [
     {
       "approval_policy": "on-request",
-      "approvals_reviewer": "user",
+      "approvals_reviewer": "auto_review",
       "sandbox_policy": {
         "type": "workspace-write",
         "network_access": false,
@@ -142,12 +316,33 @@
     },
     {
       "approval_policy": "on-request",
-      "approvals_reviewer": "user",
+      "approvals_reviewer": "auto_review",
       "sandbox_policy": {
         "type": "workspace-write",
         "network_access": false,
         "exclude_tmpdir_env_var": false,
         "exclude_slash_tmp": false
+      }
+    },
+    {
+      "approval_policy": "never",
+      "approvals_reviewer": "user",
+      "sandbox_policy": {
+        "type": "danger-full-access"
+      }
+    },
+    {
+      "approval_policy": "on-request",
+      "approvals_reviewer": "user",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "approval_policy": "on-request",
+      "approvals_reviewer": "user",
+      "sandbox_policy": {
+        "type": "read-only"
       }
     }
   ]

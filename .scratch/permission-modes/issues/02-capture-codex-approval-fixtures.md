@@ -4,14 +4,14 @@
 
 **Blocked by:** 01
 
-**Status:** ready-for-human
+**Status:** resolved
 
 - [x] `on-request` with `workspace-write` and with `read-only`: exec approval accepted, declined, and cancelled
 - [x] File-change approval, `request_permissions`, `request_user_input`, and MCP elicitation, each where reachable
 - [ ] `--approve-for-me` (auto-review): approved and rejected requests, recording whether `PermissionRequest` fires
 - [x] A sandbox failure under `never` beside a sandbox escalation under `on-request`, on the Windows elevated sandbox
 - [x] Each capture records the hook `permission_mode` value, so the mapping from approval policy (including granular and auto-review) to that field is known
-- [ ] Cases that need the TUI (`/permissions` presets) are driven through a human-in-the-loop script, not skipped silently
+- [x] Cases that need the TUI (`/permissions` presets) are driven through a human-in-the-loop script, not skipped silently
 - [x] Every capture uses an isolated `CODEX_HOME` and a scratch repo; the user's real Codex configuration is checked unchanged afterwards
 - [x] Fixtures are sanitized and sit beside the existing Codex fixtures, and the research doc's "needs human capture" list is updated
 
@@ -33,3 +33,5 @@ Remaining for a person (status `ready-for-human`):
 - Capture `request_permissions` and `request_user_input`, and cancel under `workspace-write`, if a model emits them.
 
 2026-10-10: `tui-permissions` captured with the fixed script. It covers only the default preset (`on-request` + `workspace-write`, reviewer `user`); the other presets are still to do.
+
+2026-10-10, second TUI run: `tui-permissions` now covers the auto-review, full-access and read-only presets, with Esc and approve under read-only. Each preset change shows up as a new rollout `turn_context`. The hook `permission_mode` reports `bypassPermissions` only for `never` and `default` for everything else. Resolved. Still open, and listed in the research doc as reachable only later: a custom profile, an auto-review rejection, `request_permissions`/`request_user_input`, and cancel under `workspace-write`.

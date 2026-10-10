@@ -132,7 +132,16 @@ Captured 2026-10-10 by a person with `spikes/claude/capture-interactive.mjs` (`t
 
 ### Codex TUI fixture
 
-`tui-permissions` (captured with `spikes/codex/capture-tui.mjs`) has two turns, both with `turn_context` `on-request` / reviewer `user` / `workspace-write` and hook `permission_mode = default`. The in-workspace write needed no approval. The capture shows no preset change, so it does not yet map `/permissions` presets to modes.
+`tui-permissions` (captured with `spikes/codex/capture-tui.mjs`) has five turns, one per preset picked in `/permissions`. Each new preset shows up as a new rollout `turn_context`; the hook `permission_mode` follows the approval policy only:
+
+| Rollout `turn_context` | Hook `permission_mode` | Hooks for an in-repo write |
+|---|---|---|
+| `on-request`, reviewer `auto_review`, `workspace-write` (two turns) | `default` | no prompt |
+| `never`, reviewer `user`, `danger-full-access` | `bypassPermissions` | no prompt |
+| `on-request`, reviewer `user`, `read-only`, answered with Esc | `default` | `PermissionRequest`, then `Interrupt` |
+| `on-request`, reviewer `user`, `read-only`, approved | `default` | `PermissionRequest`, then `PostToolUse` |
+
+So a TUI preset change is visible from outside only in the rollout, not in hooks: `default` covers both the auto-review and the user-reviewed presets.
 
 ## Implications for Agentarium
 
@@ -144,7 +153,7 @@ Captured 2026-10-10 by a person with `spikes/claude/capture-interactive.mjs` (`t
 
 ## Open / needs human capture
 
-1. Codex TUI: capture a turn under each `/permissions` preset other than the default (one is captured) and a custom profile; use [`spikes/codex/capture-tui.mjs`](../../spikes/codex/capture-tui.mjs).
+1. Codex TUI: a custom permission profile; use [`spikes/codex/capture-tui.mjs`](../../spikes/codex/capture-tui.mjs).
 2. Codex: capture granular auto-denial, an auto-review denial, and `request_permissions`/`request_user_input` if a future model/tool surface makes them reachable.
 3. Codex: repeat the sandbox escalation/failure comparison for Windows `unelevated`; current fixtures are `elevated`.
 4. Codex: capture managed `requirements.toml` rejection/constraint behavior without changing the user's managed configuration.

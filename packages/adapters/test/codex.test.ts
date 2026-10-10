@@ -120,3 +120,25 @@ const root = (evs: NewEvent[]) => Object.values(state(evs).agents).find((a) => a
     expect(categoryForCodexTool("view_image")).toBe("read");
   });
 });
+
+describe("Codex TUI presets (tui-permissions)", () => {
+  it("follows the preset's permission mode, fails the Esc'd prompt at Interrupt and passes the approved one", () => {
+    const a = createCodexAdapter({ machine: "m1" });
+    const turns: { hooks: string[]; events: NewEvent[] }[] = [];
+    for (const h of fixture("tui-permissions").hooks) {
+      if (h.hook_event_name === "UserPromptSubmit") turns.push({ hooks: [], events: [] });
+      const turn = turns.at(-1);
+      const evs = a.map(h).events;
+      if (turn) { turn.hooks.push(String(h.hook_event_name)); turn.events.push(...evs); }
+    }
+    const modes = turns.map((t) => t.events[0]?.permission_mode);
+    expect(modes).toEqual(["default", "default", "bypassPermissions", "default", "default"]);
+    const failed = (t: (typeof turns)[number]) => t.events.filter((e) => e.kind === "tool_end" && !e.ok);
+    expect(turns[3]!.hooks).toContain("Interrupt");
+    expect(failed(turns[3]!)).toHaveLength(1);
+    expect(turns[4]!.hooks).toContain("PermissionRequest");
+    expect(failed(turns[4]!)).toEqual([]);
+    expect(turns.slice(0, 3).every((t) => !t.events.some((e) => e.kind === "needs_input"))).toBe(true);
+  });
+});
+
