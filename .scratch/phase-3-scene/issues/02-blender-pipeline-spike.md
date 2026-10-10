@@ -12,3 +12,7 @@
 - [ ] A colour-mask (ID) pass is rendered in the same frame layout, and tinting it in Pixi is tried
 - [ ] `free-tex-packer-core`: its licence is checked, it packs the frames, and a script adds `animations` arrays and `meta.scale` for 2×. Pixi v8 loads the result and plays an `AnimatedSprite`
 - [ ] Record which engine is chosen and why. The figures go into `docs/research/scene-art-pipeline.md`
+
+## Comments
+
+- 2026-10-10 (from 01): The VPS is `aarch64`. Blender publishes no Linux arm64 build; the 5.2.2 Linux tarball is x64 only, and the "official tarball" plan in ADR 0007 cannot run here as written. Options: build 5.2.2 from source for arm64, run the x64 build under emulation, or render on an x64 host. The prototype used Ubuntu's apt Blender 4.0.2 (arm64, built without OpenImageDenoise). EEVEE under Xvfb with llvmpipe rendered 448×448 frames in about 2–3 s on 4 cores.

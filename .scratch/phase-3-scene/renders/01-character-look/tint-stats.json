@@ -1,0 +1,98 @@
+{
+ "natural/m_idle/blue": {
+  "mean": 7.38,
+  "p99": 29
+ },
+ "natural/m_idle/teal": {
+  "mean": 10.44,
+  "p99": 42
+ },
+ "natural/m_idle/violet": {
+  "mean": 5.29,
+  "p99": 21
+ },
+ "natural/m_idle/rose": {
+  "mean": 8.51,
+  "p99": 28
+ },
+ "natural/f_write/blue": {
+  "mean": 7.92,
+  "p99": 28
+ },
+ "natural/f_write/teal": {
+  "mean": 11.17,
+  "p99": 42
+ },
+ "natural/f_write/violet": {
+  "mean": 5.72,
+  "p99": 20
+ },
+ "natural/f_write/rose": {
+  "mean": 9.19,
+  "p99": 28
+ },
+ "clay/m_idle/blue": {
+  "mean": 3.2,
+  "p99": 19
+ },
+ "clay/m_idle/teal": {
+  "mean": 6.07,
+  "p99": 28
+ },
+ "clay/m_idle/violet": {
+  "mean": 2.38,
+  "p99": 13
+ },
+ "clay/m_idle/rose": {
+  "mean": 3.67,
+  "p99": 21
+ },
+ "clay/f_write/blue": {
+  "mean": 4.46,
+  "p99": 37
+ },
+ "clay/f_write/teal": {
+  "mean": 7.97,
+  "p99": 39
+ },
+ "clay/f_write/violet": {
+  "mean": 3.56,
+  "p99": 33
+ },
+ "clay/f_write/rose": {
+  "mean": 5.27,
+  "p99": 45
+ },
+ "toon/m_idle/blue": {
+  "mean": 2.53,
+  "p99": 60
+ },
+ "toon/m_idle/teal": {
+  "mean": 2.86,
+  "p99": 73
+ },
+ "toon/m_idle/violet": {
+  "mean": 2.13,
+  "p99": 48
+ },
+ "toon/m_idle/rose": {
+  "mean": 2.92,
+  "p99": 58
+ },
+ "toon/f_write/blue": {
+  "mean": 3.51,
+  "p99": 60
+ },
+ "toon/f_write/teal": {
+  "mean": 3.96,
+  "p99": 74
+ },
+ "toon/f_write/violet": {
+  "mean": 2.95,
+  "p99": 47
+ },
+ "toon/f_write/rose": {
+  "mean": 4.07,
+  "p99": 59
+ }
+}
