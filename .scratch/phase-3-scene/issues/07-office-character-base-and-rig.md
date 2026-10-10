@@ -4,7 +4,7 @@
 
 **Blocked by:** 01, 06
 
-**Status:** ready-for-human. Built and rendered; the owner polishes and approves it in Blender.
+**Status:** resolved
 
 - [x] Confirm the MPFB2 export contains only CC0 core assets, recorded in the asset's licence manifest
 - [x] One canonical deformation skeleton. Controls are baked before rendering
@@ -22,3 +22,4 @@
   - Blender tests (`AGENTARIUM_BLENDER_TESTS=1`): render and pack, refusal of bone and object constraints, and a bake check that the baked skeleton reproduces a parent and child control rig on every frame.
   - Polish is scripted: `assets:make` rebuilds the `.blend` from scratch, so change `make.py` (the cuts, push depths, macros, poses) and not the `.blend` by hand. The owner still approves the look from the contact sheet.
   - For 08 and 11: the atlas PNG is 3.3 MB for 17 frames x 4 directions with the mask layer. All of 08's clips together will probably pass the 10 MiB `smoke:pack` limit once atlases ship in the package.
+- 2026-10-11 (owner): Approved the polished look (contact sheet in `renders/07-office-character/`). Closed. 08 is unblocked.
