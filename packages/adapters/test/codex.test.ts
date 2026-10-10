@@ -142,3 +142,38 @@ describe("Codex TUI presets (tui-permissions)", () => {
   });
 });
 
+describe("Codex requests that wait on the user without a PermissionRequest hook", () => {
+  it.each(["reqperm-accept", "reqperm-decline", "user-input"])("shows %s as waiting from the tool's start until its result, then no longer waiting", (name) => {
+    const hooks = fixture(name).hooks;
+    const a = createCodexAdapter({ machine: "m1" });
+    const mapped = hooks.map((h) => ({ hook: String(h.hook_event_name), tool: h.tool_name, events: a.map(h).events }));
+    const start = mapped.findIndex((h) => h.hook === "PreToolUse" && /^request_/.test(String(h.tool)));
+    const end = mapped.findIndex((h, i) => i > start && h.hook === "PostToolUse");
+    expect(root(mapped.slice(0, start + 1).flatMap((h) => h.events))?.status).toBe("waiting");
+    expect(root(mapped.slice(0, end + 1).flatMap((h) => h.events))?.status).not.toBe("waiting");
+  });
+
+  it("records a declined permission request (nothing granted) as failed and a granted one as ok", () => {
+    const outcome = (name: string) => events(name).filter((e) => e.kind === "tool_end").map((e) => e.kind === "tool_end" && e.ok);
+    expect(outcome("reqperm-decline")).toEqual([false]);
+    expect(outcome("reqperm-accept")).toEqual([true, true]);
+  });
+
+  it("leaves an automatic reviewer's permission request out of needs-input", () => {
+    const a = createCodexAdapter({ machine: "m1", reviewer: () => "auto_review" });
+    const evs = fixture("reqperm-accept").hooks.flatMap((h) => a.map(h).events);
+    expect(evs.some((e) => e.kind === "needs_input")).toBe(false);
+  });
+
+  it("never shows a granular auto-rejection or a reviewer denial as waiting, and closes the denial as failed", () => {
+    expect(events("granular-deny").some((e) => e.kind === "needs_input")).toBe(false);
+    const a = createCodexAdapter({ machine: "m1", reviewer: () => "auto_review" });
+    const evs = fixture("auto-reject").hooks.flatMap((h) => a.map(h).events);
+    expect(evs.some((e) => e.kind === "needs_input")).toBe(false);
+    expect(evs.filter((e) => e.kind === "tool_end" && !e.ok)).toHaveLength(1);
+  });
+
+  it("closes a cancel under workspace-write as failed at Interrupt", () => {
+    expect(events("onreq-ww-cancel").filter((e) => e.kind === "tool_end" && !e.ok)).toHaveLength(1);
+  });
+});

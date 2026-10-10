@@ -1,0 +1,639 @@
+{
+  "codex_cli_version": "0.162.1",
+  "scenario": "granular-deny",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T19-02-09-01a125b1-2619-7623-9ef4-14da37cb0c66.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "SessionStart",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "source": "startup"
+    },
+    {
+      "at_ms": 362,
+      "session_id": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+      "turn_id": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T19-02-09-01a125b1-2619-7623-9ef4-14da37cb0c66.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "UserPromptSubmit",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "prompt": "Create the file c.txt containing hi with one shell command (Set-Content -Path c.txt -Value hi). The sandbox is read-only, so request escalated permissions for it. Do not retry after a refusal. Then reply DONE."
+    },
+    {
+      "at_ms": 4909,
+      "session_id": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+      "turn_id": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T19-02-09-01a125b1-2619-7623-9ef4-14da37cb0c66.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "PreToolUse",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "Set-Content -Path c.txt -Value hi"
+      },
+      "tool_use_id": "exec-c233216b-563f-4ac6-8248-338a93a56e27"
+    },
+    {
+      "at_ms": 7975,
+      "session_id": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+      "turn_id": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+      "transcript_path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T19-02-09-01a125b1-2619-7623-9ef4-14da37cb0c66.jsonl",
+      "cwd": "<CWD>",
+      "hook_event_name": "Stop",
+      "model": "gpt-6.1-sol",
+      "permission_mode": "default",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE\n\nAutomatic approval review rejected the command because escalated permissions are disabled. c.txt was not created; I did not retry."
+    }
+  ],
+  "app": [
+    {
+      "at_ms": -3931,
+      "dir": "reply",
+      "id": 2,
+      "result": {
+        "thread": {
+          "id": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+          "environments": [
+            {
+              "environmentId": "local",
+              "cwd": "<CWD>",
+              "runtimeWorkspaceRoots": [
+                "<CWD>"
+              ]
+            }
+          ],
+          "extra": null,
+          "sessionId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": false,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "openai",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "createdAt": 1791633729,
+          "updatedAt": 1791633729,
+          "recencyAt": 1791633729,
+          "status": {
+            "type": "idle"
+          },
+          "path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T19-02-09-01a125b1-2619-7623-9ef4-14da37cb0c66.jsonl",
+          "cwd": "<CWD>",
+          "cliVersion": "0.162.1",
+          "originator": "agentarium-spike",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        },
+        "model": "gpt-6.1-sol",
+        "modelProvider": "openai",
+        "serviceTier": null,
+        "disabledPluginIds": [],
+        "cwd": "<CWD>",
+        "runtimeWorkspaceRoots": [
+          "<CWD>"
+        ],
+        "instructionSources": [],
+        "approvalPolicy": {
+          "granular": {
+            "sandbox_approval": false,
+            "rules": true,
+            "skill_approval": false,
+            "request_permissions": false,
+            "mcp_elicitations": true
+          }
+        },
+        "approvalsReviewer": "user",
+        "sandbox": {
+          "type": "readOnly",
+          "networkAccess": false
+        },
+        "activePermissionProfile": null,
+        "reasoningEffort": "low",
+        "multiAgentMode": "explicitRequestOnly"
+      }
+    },
+    {
+      "at_ms": -3929,
+      "dir": "notify",
+      "method": "thread/started",
+      "params": {
+        "thread": {
+          "id": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+          "environments": [
+            {
+              "environmentId": "local",
+              "cwd": "<CWD>",
+              "runtimeWorkspaceRoots": [
+                "<CWD>"
+              ]
+            }
+          ],
+          "extra": null,
+          "sessionId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": false,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "openai",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "createdAt": 1791633729,
+          "updatedAt": 1791633729,
+          "recencyAt": 1791633729,
+          "status": {
+            "type": "idle"
+          },
+          "path": "<DIR1>\\sessions\\2026\\10\\10\\rollout-2026-10-10T19-02-09-01a125b1-2619-7623-9ef4-14da37cb0c66.jsonl",
+          "cwd": "<CWD>",
+          "cliVersion": "0.162.1",
+          "originator": "agentarium-spike",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        }
+      },
+      "emittedAtMs": 1791633729246
+    },
+    {
+      "at_ms": -3928,
+      "dir": "notify",
+      "method": "warning",
+      "params": {
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "message": "Under-development features enabled: default_mode_request_user_input, request_permissions_tool. Under-development features are incomplete and may behave unpredictably. To suppress this warning, set `suppress_unstable_features_warning = true` in <DIR1>\\config.toml."
+      },
+      "emittedAtMs": 1791633729246
+    },
+    {
+      "at_ms": -3897,
+      "dir": "reply",
+      "id": 3,
+      "result": {
+        "turn": {
+          "id": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+          "rootTurnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+          "items": [],
+          "itemsView": "notLoaded",
+          "status": "inProgress",
+          "error": null,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null
+        }
+      }
+    },
+    {
+      "at_ms": -3734,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "status": {
+          "type": "active",
+          "activeFlags": []
+        }
+      },
+      "emittedAtMs": 1791633729442
+    },
+    {
+      "at_ms": -3733,
+      "dir": "notify",
+      "method": "turn/started",
+      "params": {
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "turn": {
+          "id": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+          "rootTurnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+          "items": [],
+          "itemsView": "notLoaded",
+          "status": "inProgress",
+          "error": null,
+          "startedAt": 1791633729,
+          "completedAt": null,
+          "durationMs": null
+        }
+      },
+      "emittedAtMs": 1791633729442
+    },
+    {
+      "at_ms": -353,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "turnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+        "run": {
+          "id": "session-start:5:<DIR1>\\hooks.json",
+          "eventName": "sessionStart",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "thread",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 5,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791633732,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791633732823
+    },
+    {
+      "at_ms": 34,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "turnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+        "run": {
+          "id": "session-start:5:<DIR1>\\hooks.json",
+          "eventName": "sessionStart",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "thread",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 5,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791633732,
+          "completedAt": 1791633733,
+          "durationMs": 752,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791633733211
+    },
+    {
+      "at_ms": 42,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "turnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+        "run": {
+          "id": "user-prompt-submit:7:<DIR1>\\hooks.json",
+          "eventName": "userPromptSubmit",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 7,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791633733,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791633733219
+    },
+    {
+      "at_ms": 395,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "turnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+        "run": {
+          "id": "user-prompt-submit:7:<DIR1>\\hooks.json",
+          "eventName": "userPromptSubmit",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 7,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791633733,
+          "completedAt": 1791633733,
+          "durationMs": 358,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791633733572
+    },
+    {
+      "at_ms": 447,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "userMessage",
+          "id": "01a125b1-37c4-7752-a6c2-b26bca38de07",
+          "clientId": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "Create the file c.txt containing hi with one shell command (Set-Content -Path c.txt -Value hi). The sandbox is read-only, so request escalated permissions for it. Do not retry after a refusal. Then reply DONE.",
+              "text_elements": []
+            }
+          ]
+        },
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "turnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+        "startedAtMs": 1791633733623
+      },
+      "emittedAtMs": 1791633733623
+    },
+    {
+      "at_ms": 506,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "userMessage",
+          "id": "01a125b1-37c4-7752-a6c2-b26bca38de07",
+          "clientId": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "Create the file c.txt containing hi with one shell command (Set-Content -Path c.txt -Value hi). The sandbox is read-only, so request escalated permissions for it. Do not retry after a refusal. Then reply DONE.",
+              "text_elements": []
+            }
+          ]
+        },
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "turnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+        "completedAtMs": 1791633733623
+      },
+      "emittedAtMs": 1791633733683
+    },
+    {
+      "at_ms": 2845,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0829bbd2ee6468f9016aca294934288191b9abe35e82e07f86",
+          "text": "",
+          "phase": "commentary",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "turnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+        "startedAtMs": 1791633736022
+      },
+      "emittedAtMs": 1791633736022
+    },
+    {
+      "at_ms": 3471,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0829bbd2ee6468f9016aca294934288191b9abe35e82e07f86",
+          "text": "I’ll attempt the command once with escalated permissions, as requested.\n",
+          "phase": "commentary",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "turnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+        "completedAtMs": 1791633736579
+      },
+      "emittedAtMs": 1791633736647
+    },
+    {
+      "at_ms": 4599,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "turnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+        "run": {
+          "id": "pre-tool-use:0:<DIR1>\\hooks.json:exec-c233216b-563f-4ac6-8248-338a93a56e27",
+          "eventName": "preToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 0,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791633737,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791633737775
+    },
+    {
+      "at_ms": 4980,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "turnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+        "run": {
+          "id": "pre-tool-use:0:<DIR1>\\hooks.json:exec-c233216b-563f-4ac6-8248-338a93a56e27",
+          "eventName": "preToolUse",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 0,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791633737,
+          "completedAt": 1791633738,
+          "durationMs": 350,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791633738156
+    },
+    {
+      "at_ms": 6842,
+      "dir": "notify",
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0829bbd2ee6468f9016aca294d34908191ba90c7db95d7634e",
+          "text": "",
+          "phase": "final_answer",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "turnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+        "startedAtMs": 1791633740019
+      },
+      "emittedAtMs": 1791633740019
+    },
+    {
+      "at_ms": 7579,
+      "dir": "notify",
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "agentMessage",
+          "id": "msg_0829bbd2ee6468f9016aca294d34908191ba90c7db95d7634e",
+          "text": "DONE\n\nAutomatic approval review rejected the command because escalated permissions are disabled. c.txt was not created; I did not retry.",
+          "phase": "final_answer",
+          "memoryCitation": null,
+          "delivery": null,
+          "questions": null
+        },
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "turnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+        "completedAtMs": 1791633740694
+      },
+      "emittedAtMs": 1791633740756
+    },
+    {
+      "at_ms": 7630,
+      "dir": "notify",
+      "method": "hook/started",
+      "params": {
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "turnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+        "run": {
+          "id": "stop:10:<DIR1>\\hooks.json",
+          "eventName": "stop",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 10,
+          "status": "running",
+          "statusMessage": null,
+          "startedAt": 1791633740,
+          "completedAt": null,
+          "durationMs": null,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791633740806
+    },
+    {
+      "at_ms": 8017,
+      "dir": "notify",
+      "method": "hook/completed",
+      "params": {
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "turnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+        "run": {
+          "id": "stop:10:<DIR1>\\hooks.json",
+          "eventName": "stop",
+          "handlerType": "command",
+          "executionMode": "sync",
+          "scope": "turn",
+          "sourcePath": "<DIR1>\\hooks.json",
+          "source": "user",
+          "displayOrder": 10,
+          "status": "completed",
+          "statusMessage": null,
+          "startedAt": 1791633740,
+          "completedAt": 1791633741,
+          "durationMs": 390,
+          "entries": []
+        }
+      },
+      "emittedAtMs": 1791633741194
+    },
+    {
+      "at_ms": 8033,
+      "dir": "notify",
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "status": {
+          "type": "idle"
+        }
+      },
+      "emittedAtMs": 1791633741210
+    },
+    {
+      "at_ms": 8034,
+      "dir": "notify",
+      "method": "turn/completed",
+      "params": {
+        "threadId": "01a125b1-2619-7623-9ef4-14da37cb0c66",
+        "turn": {
+          "id": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+          "rootTurnId": "01a125b1-26e1-7680-93fb-69935d4e29ff",
+          "items": [
+            {
+              "type": "agentMessage",
+              "id": "msg_0829bbd2ee6468f9016aca294d34908191ba90c7db95d7634e",
+              "text": "DONE\n\nAutomatic approval review rejected the command because escalated permissions are disabled. c.txt was not created; I did not retry.",
+              "phase": "final_answer",
+              "memoryCitation": null,
+              "delivery": null,
+              "questions": null
+            }
+          ],
+          "itemsView": "summary",
+          "status": "completed",
+          "error": null,
+          "startedAt": 1791633729,
+          "completedAt": 1791633741,
+          "durationMs": 11932
+        }
+      },
+      "emittedAtMs": 1791633741210
+    }
+  ],
+  "turn_context": [
+    {
+      "approval_policy": {
+        "granular": {
+          "sandbox_approval": false,
+          "rules": true,
+          "skill_approval": false,
+          "request_permissions": false,
+          "mcp_elicitations": true
+        }
+      },
+      "approvals_reviewer": "user",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    }
+  ]
+}

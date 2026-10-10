@@ -8,7 +8,7 @@
 
 - [x] `on-request` with `workspace-write` and with `read-only`: exec approval accepted, declined, and cancelled
 - [x] File-change approval, `request_permissions`, `request_user_input`, and MCP elicitation, each where reachable
-- [ ] `--approve-for-me` (auto-review): approved and rejected requests, recording whether `PermissionRequest` fires
+- [x] `--approve-for-me` (auto-review): approved and rejected requests, recording whether `PermissionRequest` fires
 - [x] A sandbox failure under `never` beside a sandbox escalation under `on-request`, on the Windows elevated sandbox
 - [x] Each capture records the hook `permission_mode` value, so the mapping from approval policy (including granular and auto-review) to that field is known
 - [x] Cases that need the TUI (`/permissions` presets) are driven through a human-in-the-loop script, not skipped silently
@@ -35,3 +35,12 @@ Remaining for a person (status `ready-for-human`):
 2026-10-10: `tui-permissions` captured with the fixed script. It covers only the default preset (`on-request` + `workspace-write`, reviewer `user`); the other presets are still to do.
 
 2026-10-10, second TUI run: `tui-permissions` now covers the auto-review, full-access and read-only presets, with Esc and approve under read-only. Each preset change shows up as a new rollout `turn_context`. The hook `permission_mode` reports `bypassPermissions` only for `never` and `default` for everything else. Resolved. Still open, and listed in the research doc as reachable only later: a custom profile, an auto-review rejection, `request_permissions`/`request_user_input`, and cancel under `workspace-write`.
+
+2026-10-10, gaps closed. New fixtures:
+- `onreq-ww-cancel`: cancel under `workspace-write`.
+- `auto-reject`: the reviewer denied a POST of a fake `.env` to `https://exfil.invalid`. `PermissionRequest` still fires, and the item ends `declined` with no `PostToolUse`.
+- `reqperm-accept` and `reqperm-decline`, captured with feature flag `request_permissions_tool`.
+- `user-input`, captured with feature flag `default_mode_request_user_input`.
+- `granular-deny`, `granular.sandbox_approval = false`, which needs the `experimentalApi` capability: the escalation is auto-rejected with no request and no `PostToolUse`.
+
+Neither `request_permissions` nor `request_user_input` fires a `PermissionRequest` hook. The Codex hook adapter now raises needs-input at their `PreToolUse`; a reviewer-routed `request_permissions` is excluded. A `request_permissions` that grants nothing is recorded as failed. Still not captured: a TUI custom profile (the granular fixture covers the underlying policy), the Windows `unelevated` sandbox, and managed `requirements.toml`. They remain listed in the research doc.

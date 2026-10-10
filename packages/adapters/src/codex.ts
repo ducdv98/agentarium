@@ -13,6 +13,14 @@ export const categoryForCodexTool = (tool: string): ActionCategory => {
   return "think";
 };
 
+/** A request_permissions result grants nothing when every permission in it is null (declined or cancelled). */
+function granted(response: string): boolean {
+  try {
+    const parsed: unknown = JSON.parse(response);
+    return !isObj(parsed) || !isObj(parsed.permissions) || Object.values(parsed.permissions).some((v) => v !== null);
+  } catch { return true; }
+}
+
 function summary(tool: string, input: unknown): string | undefined {
   if (!isObj(input)) return undefined;
   const command = text(input.command);
@@ -60,6 +68,7 @@ export function createCodexAdapter(opts: { machine: string; lineage?: (threadId:
         ...prompts.close(session, agentId).map((tool_use_id): NewEvent => ({ ...base, kind: "tool_end", tool_use_id, ok: false })), ...events);
       const tool = text(payload.tool_name);
       const id = text(payload.tool_use_id);
+      const autoReviewed = () => { const path = text(payload.transcript_path); return !!path && opts.reviewer?.(path) === "auto_review"; };
       const state = () => {
         let s = sessions.get(session);
         if (!s) { s = { callers: [], children: new Set(), restored: new Set() }; sessions.set(session, s); }
@@ -88,14 +97,10 @@ export function createCodexAdapter(opts: { machine: string; lineage?: (threadId:
               if (callers.length > 100) callers.shift();
             }
             const label = summary(tool, payload.tool_input);
-            return out({
-              ...base,
-              kind: "tool_start",
-              tool_use_id: id,
-              tool,
-              category: categoryForCodexTool(tool),
-              ...(label ? { summary: label } : {}),
-            });
+            const start: NewEvent = { ...base, kind: "tool_start", tool_use_id: id, tool, category: categoryForCodexTool(tool), ...(label ? { summary: label } : {}) };
+            // These tools wait on the user themselves; Codex fires no PermissionRequest hook for them.
+            const asksUser = tool === "request_user_input" || (tool === "request_permissions" && !autoReviewed());
+            return asksUser ? out(start, { ...base, kind: "needs_input", summary: clip(tool) }) : out(start);
           }
           case "PostToolUse": {
             if (!id) return out();
@@ -105,12 +110,13 @@ export function createCodexAdapter(opts: { machine: string; lineage?: (threadId:
               const exit = /^Exit code: (\d+)/.exec(payload.tool_response);
               if (exit) ok = Number(exit[1]) === 0;
             } else if (tool?.startsWith("mcp__") && isObj(payload.tool_response)) ok = payload.tool_response.isError !== true;
+            else if (tool === "request_permissions" && typeof payload.tool_response === "string") ok = granted(payload.tool_response);
             // Bash hooks have no exit code; PostToolUse only establishes completion.
             return out({ ...base, kind: "tool_end", tool_use_id: id, ok });
           }
           case "PermissionRequest":
             prompts.prompted(session, agentId, tool, payload.tool_input);
-            return text(payload.transcript_path) && opts.reviewer?.(text(payload.transcript_path)!) === "auto_review" ? out() :
+            return autoReviewed() ? out() :
               out({ ...base, kind: "needs_input", ...(tool ? { summary: clip(tool) } : {}) });
           case "SubagentStart": {
             if (agentId === ROOT_AGENT) return out();

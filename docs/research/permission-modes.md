@@ -14,7 +14,7 @@ Captured 2026-10-10 on Windows 11 with isolated `CODEX_HOME` directories (Window
 | `on-request` | `read-only` | `default` |
 | `on-request` | `workspace-write` | `default` |
 | `on-request` + `approvals_reviewer = "auto_review"` | `read-only`, `workspace-write` | `default` |
-| granular object | any | not reached |
+| granular object | `read-only` | `default` |
 
 | Fixture | Hooks | Live |
 |---|---|---|
@@ -25,8 +25,13 @@ Captured 2026-10-10 on Windows 11 with isolated `CODEX_HOME` directories (Window
 | `mcp-elicit` | `PermissionRequest(mcp__fx__fx_elicit)` before the call | two `mcpServer/elicitation/request`s: the tool-call approval (`_meta.codex_approval_kind = "mcp_tool_call"`) and the server's own form |
 | `auto-approve`, `auto-approve-failed` | `PreToolUse`, **`PermissionRequest`**, `PostToolUse` | no client request; `item/autoApprovalReview/started` about 25 ms after the hook, then `.../completed` with `review.status` (`approved`) and `targetItemId`; a `guardianWarning` carries the rationale |
 | `never-sandbox-deny` | `PreToolUse`, `PostToolUse` with the access-denied text | item `failed`; no request |
+| `onreq-ww-cancel` | `PreToolUse`, `PermissionRequest`, `Interrupt` | request, resolved, item `declined` |
+| `auto-reject` | `PreToolUse`, **`PermissionRequest`**, `Stop` (no `PostToolUse`) | `autoApprovalReview/started`, then `completed` with `review.status = denied`; item `declined` |
+| `reqperm-accept`, `reqperm-decline` | `PreToolUse(request_permissions)`, then `PostToolUse` when answered; **no `PermissionRequest`** | `item/permissions/requestApproval`, resolved; a decline's `tool_response` grants all-`null` permissions |
+| `user-input` | `PreToolUse(request_user_input)`, then `PostToolUse` with the answers; **no `PermissionRequest`** | `item/tool/requestUserInput`, resolved |
+| `granular-deny` | `PreToolUse`, `Stop`; no request and no `PostToolUse` | nothing: `granular.sandbox_approval = false` rejects the escalation automatically |
 
-An in-workspace patch under `workspace-write` needs no approval. `request_user_input` and `request_permissions` never reached a server request from this model, so their shapes remain unverified. A reviewer denial was not captured: the reviewer approved a `git push --force origin main` in a repo without a remote, which then failed.
+An in-workspace patch under `workspace-write` needs no approval. The `request_permissions` and `request_user_input` tools are behind the feature flags `request_permissions_tool` and `default_mode_request_user_input` (both "under development", off by default in 0.162.1); the `reqperm-*` and `user-input` fixtures enable them in the isolated config. A granular approval policy needs the client to declare the `experimentalApi` capability at `initialize`. The reviewer approved a `git push --force origin main` in a repo without a remote (`auto-approve-failed`). It denied a request to POST a fake `.env` to `https://exfil.invalid` (`auto-reject`).
 
 **Auto-review fires the `PermissionRequest` hook** with the same payload shape and `permission_mode` (`default`) as a person-routed request. Hooks alone cannot tell them apart. Two sources can: the live `item/autoApprovalReview/started` notification, and the rollout's `turn_context.approvals_reviewer = "auto_review"` (the rollout path is the hook's `transcript_path`). Under `never` + `read-only` a write is a tool failure with no request. Under `on-request` the same write, or a write outside `workspace-write`, becomes an escalation request.
 
@@ -63,7 +68,7 @@ Managed requirements are constraints, not an ordinary lower-precedence default: 
 | `never` + `danger-full-access` | `-s danger-full-access`, config, or bypass flag if observed. | None for command execution. | `PostToolUse`; OTel result may arrive later. | Tool/turn error only. | No approval signal and shell exit status is absent from the hook payload. |
 | `on-request` + any sandbox | Hook `permission_mode = default` in 0.162.1 captures, CLI/config, plus live `thread/status/changed.activeFlags`. | For a command approval: `PreToolUse`, then `PermissionRequest`; live `item/commandExecution/requestApproval` and `waitingOnApproval`. File changes use `item/fileChange/requestApproval`; MCP elicitation uses `mcpServer/elicitation/request`. | Hook `PostToolUse` after execution; live `serverRequest/resolved`, `item/started`, then `item/completed`; OTel decision/result. | Decline: live item completes `declined`, generally no `PostToolUse`. Cancel/Esc: interrupted turn, no `PostToolUse`. | `request_permissions` and `request_user_input` were not reachable in the 0.162.1 model/tool surface. |
 | Granular approval object | Config inspection only; no equivalent complete mode field in normal hook payload. | Only enabled categories can pause: sandbox escalation, rules, MCP elicitation, `request_permissions`, or skill approval. | Same live request/resolution signals as above for enabled categories. | Same decline/cancel signals as above. | Auto-rejected categories have no user wait and may look like ordinary tool failure. |
-| `on-request` + `approvals_reviewer = auto_review` / `--approve-for-me` | Rollout `turn_context.approvals_reviewer`; live `item/autoApprovalReview/*`. Hook `permission_mode` stays `default`. | None: the reviewer decides. The `PermissionRequest` hook still fires, so it must not raise needs-input on its own. | Live `autoApprovalReview/completed` with `review.status = approved`, then the item completes and `PostToolUse` fires. | Reviewer denial: `review.status` other than approved, then the item fails (not captured). | Hook-only cannot see the reviewer without reading the rollout. |
+| `on-request` + `approvals_reviewer = auto_review` / `--approve-for-me` | Rollout `turn_context.approvals_reviewer`; live `item/autoApprovalReview/*`. Hook `permission_mode` stays `default`. | None: the reviewer decides. The `PermissionRequest` hook still fires, so it must not raise needs-input on its own. | Live `autoApprovalReview/completed` with `review.status = approved`, then the item completes and `PostToolUse` fires. | Reviewer denial (`auto-reject`): `review.status = denied`, the item is `declined`, no `PostToolUse`, then `Stop`. | Hook-only cannot see the reviewer without reading the rollout. |
 | `/permissions` preset / custom profile | Read selected profile and config only when Agentarium launched Codex; TUI selection itself is not a hook field. | Depends on resolved sandbox/policy; use the underlying signals above. | Underlying tool completion. | Underlying decline/interrupt/failure. | Outside observer cannot reliably reconstruct a TUI-selected custom profile from hooks alone. |
 | `--dangerously-bypass-approvals-and-sandbox` | CLI arg if Agentarium launched it. | None. | Normal completion hooks/OTel. | Tool/turn failure only. | Never infer this from “no PermissionRequest”: `never` and auto-approved cases look the same. |
 
@@ -154,8 +159,7 @@ So a TUI preset change is visible from outside only in the rollout, not in hooks
 ## Open / needs human capture
 
 1. Codex TUI: a custom permission profile; use [`spikes/codex/capture-tui.mjs`](../../spikes/codex/capture-tui.mjs).
-2. Codex: capture granular auto-denial, an auto-review denial, and `request_permissions`/`request_user_input` if a future model/tool surface makes them reachable.
-3. Codex: repeat the sandbox escalation/failure comparison for Windows `unelevated`; current fixtures are `elevated`.
-4. Codex: capture managed `requirements.toml` rejection/constraint behavior without changing the user's managed configuration.
-5. Claude: `Elicitation`/`Notification(elicitation_dialog)` still needs an MCP server that elicits.
-6. OTel: verify whether either CLI emits a stable resolved permission-mode attribute in the installed versions; current evidence does not establish one.
+2. Codex: repeat the sandbox escalation/failure comparison for Windows `unelevated`; current fixtures are `elevated`.
+3. Codex: capture managed `requirements.toml` rejection/constraint behavior without changing the user's managed configuration.
+4. Claude: `Elicitation`/`Notification(elicitation_dialog)` still needs an MCP server that elicits.
+5. OTel: verify whether either CLI emits a stable resolved permission-mode attribute in the installed versions; current evidence does not establish one.

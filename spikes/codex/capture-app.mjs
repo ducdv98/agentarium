@@ -25,9 +25,11 @@ let done;
 const finished = new Promise((r) => (done = r));
 let interrupted = false;
 let threadId;
+const extra = JSON.parse(threadParams ?? "{}");
 const rpc = await rpcSession(
   { CODEX_HOME: resolve(home) },
   {
+    experimental: typeof extra.approvalPolicy === "object",
     onNotify: (m) => {
       record("notify", m);
       if (m.method === "turn/completed") done();
@@ -40,7 +42,7 @@ const rpc = await rpcSession(
       record("request", m);
       const decision = answer === "interrupt" ? "accept" : answer;
       if (m.method === "item/tool/requestUserInput") {
-        return { answers: Object.fromEntries((m.params.questions ?? []).map((q) => [q.id, [q.options?.[0]?.label ?? "fixture answer"]])) };
+        return { answers: Object.fromEntries((m.params.questions ?? []).map((q) => [q.id, { answers: [q.options?.[0]?.label ?? "fixture answer"] }])) };
       }
       if (m.method === "mcpServer/elicitation/request") {
         return decision === "decline" || decision === "cancel"
@@ -56,7 +58,7 @@ const rpc = await rpcSession(
     },
   },
 );
-const started = await rpc.call("thread/start", { cwd: resolve(work), approvalPolicy, sandbox, ...JSON.parse(threadParams ?? "{}") });
+const started = await rpc.call("thread/start", { cwd: resolve(work), approvalPolicy, sandbox, ...extra });
 record("reply", started);
 threadId = started.result.thread.id;
 record("reply", await rpc.call("turn/start", { threadId, input: [{ type: "text", text: prompt }] }));

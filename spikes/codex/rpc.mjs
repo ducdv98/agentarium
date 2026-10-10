@@ -4,8 +4,9 @@ import { spawn } from "node:child_process";
 /**
  * Starts `codex app-server` with `env` merged over process.env. Server requests go to
  * `onRequest(msg)`, whose return value is sent back as the result; notifications go to `onNotify(msg)`.
+ * `experimental` opts into the experimental API (needed for a granular approval policy).
  */
-export async function rpcSession(env, { onNotify = () => {}, onRequest = () => null } = {}) {
+export async function rpcSession(env, { onNotify = () => {}, onRequest = () => null, experimental = false } = {}) {
   const p = spawn("codex", ["app-server"], { stdio: ["pipe", "pipe", "ignore"], env: { ...process.env, ...env } });
   let buf = "";
   let id = 0;
@@ -33,7 +34,7 @@ export async function rpcSession(env, { onNotify = () => {}, onRequest = () => n
       pending.set(n, r);
       write({ id: n, method, params });
     });
-  await call("initialize", { clientInfo: { name: "agentarium-spike", version: "0" } });
+  await call("initialize", { clientInfo: { name: "agentarium-spike", version: "0" }, ...(experimental ? { capabilities: { experimentalApi: true } } : {}) });
   write({ method: "initialized" });
   return { call, close: () => p.kill() };
 }
