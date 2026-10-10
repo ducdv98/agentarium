@@ -1,5 +1,6 @@
 import { ROOT_AGENT, SCHEMA_VERSION, type ActionCategory, type AgentRef, type NewEvent } from "@agentarium/core";
 import type { AdapterOutput } from "./claude-code";
+import { createPermissionPrompts } from "./permission-prompts";
 import { basename, categoryForMcpTool, clip, isObj, text } from "./shared";
 
 export const categoryForCodexTool = (tool: string): ActionCategory => {
@@ -30,8 +31,9 @@ function summary(tool: string, input: unknown): string | undefined {
   return undefined;
 }
 
-export function createCodexAdapter(opts: { machine: string; lineage?: (threadId: string, rolloutPath?: string) => { parentThreadId: string | null } | null }): { map(payload: unknown): AdapterOutput; restore(agent: AgentRef): void } {
+export function createCodexAdapter(opts: { machine: string; lineage?: (threadId: string, rolloutPath?: string) => { parentThreadId: string | null } | null; reviewer?: (rolloutPath: string) => string | null }): { map(payload: unknown): AdapterOutput; restore(agent: AgentRef): void } {
   const sessions = new Map<string, { callers: string[]; children: Set<string>; restored: Set<string> }>();
+  const prompts = createPermissionPrompts();
   const ref = (session: string, agent: string): AgentRef => ({ machine: opts.machine, provider: "codex", session, agent });
   return {
     restore(agent) {
@@ -50,9 +52,12 @@ export function createCodexAdapter(opts: { machine: string; lineage?: (threadId:
       const hook = text(payload.hook_event_name);
       if (!session || !hook) return { events: [] };
       const agentId = text(payload.agent_id) ?? ROOT_AGENT;
-      const base = { schema_version: SCHEMA_VERSION, agent: ref(session, agentId) } as const;
+      const mode = text(payload.permission_mode);
+      const base = { schema_version: SCHEMA_VERSION, agent: ref(session, agentId), ...(mode ? { permission_mode: mode } : {}) } as const;
       const cwd = text(payload.cwd);
       const out = (...events: NewEvent[]): AdapterOutput => cwd ? { cwd, events } : { events };
+      const closing = (...events: NewEvent[]): AdapterOutput => out(
+        ...prompts.close(session, agentId).map((tool_use_id): NewEvent => ({ ...base, kind: "tool_end", tool_use_id, ok: false })), ...events);
       const tool = text(payload.tool_name);
       const id = text(payload.tool_use_id);
       const state = () => {
@@ -73,9 +78,10 @@ export function createCodexAdapter(opts: { machine: string; lineage?: (threadId:
           case "SessionStart":
             return payload.source === "compact" ? out() : out({ ...base, agent: ref(session, ROOT_AGENT), kind: "session_start" });
           case "UserPromptSubmit":
-            return out({ ...base, kind: "prompt" });
+            return closing({ ...base, kind: "prompt" });
           case "PreToolUse": {
             if (!tool || !id) return out();
+            prompts.started(session, agentId, id, tool, payload.tool_input);
             if (tool === "collaborationspawn_agent") {
               const callers = state().callers;
               callers.push(agentId);
@@ -93,6 +99,7 @@ export function createCodexAdapter(opts: { machine: string; lineage?: (threadId:
           }
           case "PostToolUse": {
             if (!id) return out();
+            prompts.ended(session, agentId, id);
             let ok = true;
             if (tool === "apply_patch" && typeof payload.tool_response === "string") {
               const exit = /^Exit code: (\d+)/.exec(payload.tool_response);
@@ -102,7 +109,9 @@ export function createCodexAdapter(opts: { machine: string; lineage?: (threadId:
             return out({ ...base, kind: "tool_end", tool_use_id: id, ok });
           }
           case "PermissionRequest":
-            return out({ ...base, kind: "needs_input", ...(tool ? { summary: clip(tool) } : {}) });
+            prompts.prompted(session, agentId, tool, payload.tool_input);
+            return text(payload.transcript_path) && opts.reviewer?.(text(payload.transcript_path)!) === "auto_review" ? out() :
+              out({ ...base, kind: "needs_input", ...(tool ? { summary: clip(tool) } : {}) });
           case "SubagentStart": {
             if (agentId === ROOT_AGENT) return out();
             const s = state();
@@ -110,18 +119,22 @@ export function createCodexAdapter(opts: { machine: string; lineage?: (threadId:
             return out({ ...base, kind: "spawn", parent: ref(session, s.callers.shift() ?? ROOT_AGENT), provenance: "inferred" });
           }
           case "SubagentStop":
-            return agentId === ROOT_AGENT ? out() : out(...(observed ? [observed] : []), { ...base, kind: "stop" });
+            return agentId === ROOT_AGENT ? out() : closing(...(observed ? [observed] : []), { ...base, kind: "stop" });
           case "Stop":
-            return out({ ...base, kind: "stop" });
+            return closing({ ...base, kind: "stop" });
           case "Interrupt":
-            return out({ ...base, agent: ref(session, ROOT_AGENT), kind: "stop" });
+            return closing({ ...base, agent: ref(session, ROOT_AGENT), kind: "stop" });
           case "SessionEnd": {
             const children = sessions.get(session)?.children ?? new Set<string>();
-            sessions.delete(session);
-            return out(
+            const result = out(
+              ...prompts.close(session, ROOT_AGENT).map((tool_use_id): NewEvent => ({ ...base, agent: ref(session, ROOT_AGENT), kind: "tool_end", tool_use_id, ok: false })),
+              ...[...children].flatMap((child): NewEvent[] => prompts.close(session, child).map((tool_use_id) => ({ ...base, agent: ref(session, child), kind: "tool_end", tool_use_id, ok: false }))),
               { ...base, agent: ref(session, ROOT_AGENT), kind: "end" },
               ...[...children].map((child): NewEvent => ({ ...base, agent: ref(session, child), kind: "end" })),
             );
+            sessions.delete(session);
+            prompts.forgetSession(session);
+            return result;
           }
           default:
             return out();

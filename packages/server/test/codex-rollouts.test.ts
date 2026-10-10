@@ -2,13 +2,23 @@ import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { findCodexRollout, readCodexSessionMeta } from "../src/codex-rollouts";
+import { findCodexRollout, readCodexSessionMeta, readCodexApprovalsReviewer } from "../src/codex-rollouts";
 
 const meta = (id: string, parent: string | null = null) => JSON.stringify({ type: "session_meta", payload: {
   id, session_id: "root", parent_thread_id: parent, cwd: "/repo", cli_version: "0.160.0", instructions: "x".repeat(200_000),
 } }) + "\n" + "DO NOT READ THE REST".repeat(100_000);
 
 describe("Codex rollout metadata", () => {
+  it("reads the last turn reviewer from a bounded tail", () => {
+    const path = join(mkdtempSync(join(tmpdir(), "codex-review-")), "rollout.jsonl");
+    writeFileSync(path, [
+      JSON.stringify({ type: "turn_context", payload: { approvals_reviewer: "user" } }),
+      "x".repeat(300_000),
+      JSON.stringify({ type: "turn_context", payload: { approvals_reviewer: "auto_review" } }),
+    ].join("\n"));
+    expect(readCodexApprovalsReviewer(path)).toBe("auto_review");
+    expect(readCodexApprovalsReviewer(join(path, "missing"))).toBeNull();
+  });
   it("reads only a bounded first line and searches newest dates before archives", () => {
     const home = mkdtempSync(join(tmpdir(), "codex-home-"));
     const older = join(home, "sessions/2026/10/09");

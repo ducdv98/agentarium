@@ -13,6 +13,28 @@ const state = (evs: NewEvent[]) => replay(evs.map((e, i) => ({ ...e, ts: i + 1 }
 const root = (evs: NewEvent[]) => Object.values(state(evs).agents).find((a) => a.ref.agent === ROOT_AGENT);
 
  describe("codex adapter fixtures", () => {
+  it.each(["onreq-ro-accept", "onreq-ww-accept", "file-ro-accept", "mcp-elicit"])("keeps %s waiting until completion", (name) => {
+    const hooks = fixture(name).hooks;
+    const a = createCodexAdapter({ machine: "m1" });
+    const evs = hooks.slice(0, hooks.findIndex((h) => h.hook_event_name === "PermissionRequest") + 1).flatMap((h) => a.map(h).events);
+    expect(root(evs)?.status).toBe("waiting");
+    expect(evs.filter((e) => e.kind === "tool_end" && e.ok === false)).toHaveLength(0);
+  });
+  it.each(["onreq-ro-decline", "onreq-ww-decline", "file-decline", "onreq-ro-cancel"])("closes %s as a failed prompt", (name) => {
+    const evs = events(name);
+    const ended = evs.find((e) => e.kind === "tool_end" && e.ok === false);
+    expect(ended).toMatchObject({ tool_use_id: expect.any(String) });
+    expect(root(evs)?.status).toBe("idle");
+  });
+  it.each(["onreq-ro-accept", "onreq-ww-accept", "never-sandbox-deny"])("keeps permission mode for %s", (name) => {
+    expect(root(events(name))?.permissionMode).toBe(name === "never-sandbox-deny" ? "bypassPermissions" : "default");
+  });
+  it("does not expose automatic review as needs-input when rollout review says so", () => {
+    const fx = fixture("auto-approve");
+    const withReview = createCodexAdapter({ machine: "m1", reviewer: () => "auto_review" });
+    expect(fx.hooks.flatMap((h) => withReview.map(h).events).some((e) => e.kind === "needs_input")).toBe(false);
+    expect(events("auto-approve").some((e) => e.kind === "needs_input")).toBe(true);
+  });
   it.each(["exec-fail", "long-exec"])("maps %s to exec and an idle then done agent", (name) => {
     const evs = events(name);
     expect(evs.map((e) => e.kind)).toEqual(["session_start", "prompt", "tool_start", "tool_end", "stop", "end"]);

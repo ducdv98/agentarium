@@ -32,6 +32,27 @@ function scenario(name: string) {
 }
 
 describe("Codex live fixture replay", () => {
+  it("resumes an auto-reviewed command", () => {
+    const source = fixture("auto-approve");
+    const live = createCodexLiveMapper({ machine: "m" });
+    const thread = source.app.find((entry) => entry.method === "thread/started")!;
+    const startedEntry = source.app.find((entry) => entry.method === "item/started" && (entry.params as Record<string, unknown>).item &&
+      ((entry.params as Record<string, unknown>).item as Record<string, unknown>).type === "commandExecution")!;
+    const review = source.app.find((entry) => entry.method === "item/autoApprovalReview/started")!;
+    live.map(thread);
+    live.map(startedEntry);
+    const resumed = live.map(review);
+    expect(resumed.events).toEqual([expect.objectContaining({ kind: "tool_start", tool_use_id: "exec-1b1de942-77b3-4740-acb3-006c08e9f509" })]);
+    const { events } = scenario("auto-approve");
+    const state = replay(events);
+    expect(Object.values(state.agents).find((a) => a.ref.agent === ROOT_AGENT)?.status).toBe("idle");
+    const needsInput = events.findIndex((e) => e.kind === "needs_input");
+    expect(events.slice(needsInput + 1).some((e) => e.kind === "tool_start")).toBe(true);
+  });
+  it.each([["onreq-ww-decline", false], ["onreq-ww-accept", true]] as const)("maps %s command outcome", (name, ok) => {
+    const { events } = scenario(name);
+    expect(events.filter((e) => e.kind === "tool_end").at(-1)).toMatchObject({ ok });
+  });
   it("accepts an approval, resumes the command, and ends idle", () => {
     const { checkpoints: s, root } = scenario("approve-accept");
     expect(root(s["item/commandExecution/requestApproval"]!)?.status).toBe("waiting");

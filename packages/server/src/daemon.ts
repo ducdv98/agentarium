@@ -29,7 +29,7 @@ import { UNASSIGNED_ROOM, resolveRoom } from "./rooms";
 import { jsonlLog, type EventLog } from "./storage";
 import { DAEMON_VERSION, DEFAULT_PORT } from "./version";
 import { startCodexLive } from "./codex-live";
-import { readCodexSessionMeta, findCodexRollout } from "./codex-rollouts";
+import { readCodexSessionMeta, findCodexRollout, readCodexApprovalsReviewer } from "./codex-rollouts";
 import { codexOtelOutcomes } from "./codex-otel";
 
 export interface DaemonOptions {
@@ -117,7 +117,7 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
 
   const claudeCode = createClaudeCodeAdapter({ machine: opts.machine ?? hostname() });
   const codexHome = opts.codexHome ?? process.env.CODEX_HOME ?? join(homedir(), ".codex");
-  const codex = createCodexAdapter({ machine: opts.machine ?? hostname(), lineage: (id, path) => {
+  const codex = createCodexAdapter({ machine: opts.machine ?? hostname(), reviewer: readCodexApprovalsReviewer, lineage: (id, path) => {
     const atPath = path ? readCodexSessionMeta(path) : null;
     return atPath?.threadId === id ? atPath : findCodexRollout(codexHome, id);
   } });

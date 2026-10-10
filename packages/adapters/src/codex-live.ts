@@ -102,6 +102,11 @@ export function createCodexLiveMapper(opts: { machine: string; onThread?: (threa
         const start = request?.threadId === threadId && request.itemId ? open.get(request.itemId) : undefined;
         return start ? out(start) : out();
       }
+      if (method === "item/autoApprovalReview/started") {
+        const id = text(params.targetItemId);
+        const start = id && startedIn.get(id) === threadId ? open.get(id) : undefined;
+        return start ? out(start) : out();
+      }
       if (method === "item/started" && isObj(params.item)) {
         const start = toolStart(params.item, known.agent);
         if (start) { open.set(start.tool_use_id, start); startedIn.set(start.tool_use_id, threadId); return out(start); }
