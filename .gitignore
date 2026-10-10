@@ -8,3 +8,7 @@ packages/cli/README.md
 
 # raw hook captures (unsanitized; fixtures go through spikes/sanitize-fixtures.mjs)
 spikes/*.jsonl
+
+assets/.cache/
+*.blend1
+*.blend@

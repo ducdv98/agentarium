@@ -1,0 +1,47 @@
+{
+  "blender": {
+    "version": "5.2.2",
+    "buildHash": "d13f752e3b9c",
+    "platform": "win32-x64",
+    "installer": "https://download.blender.org/release/Blender5.2/blender-5.2.2-windows-x64.msi",
+    "installerSha256": "8dac2751ebe8e3867327eec52f1ef9b344c0a27499bb6221a301b4b35f2828d1",
+    "defaultExe": "C:\\Program Files\\Blender Foundation\\Blender 5.2\\blender.exe",
+    "exeSha256": "f141a3c5754500e6f84361099a4cd53f0bb7662b6a0d2cfaaa8fbb63e92234a0"
+  },
+  "frame": {
+    "size": [160, 208],
+    "anchor": [80, 184],
+    "scale": 2,
+    "tilePixels": [128, 64],
+    "tileMeters": 1.4142135623730951
+  },
+  "directions": { "sw": 0, "se": 90, "ne": 180, "nw": 270 },
+  "camera": { "rotation": [60, 0, 45], "distance": 30, "clipEnd": 100 },
+  "sun": { "energy": 3.2, "angle": 8, "direction": [0.2, -1.0, 1.6] },
+  "world": { "color": [0.42, 0.44, 0.48], "strength": 1.0 },
+  "colourManagement": {
+    "viewTransform": "Standard",
+    "look": "None",
+    "exposure": 0,
+    "gamma": 1,
+    "displayDevice": "sRGB",
+    "filmTransparent": true,
+    "filterSize": 1.5
+  },
+  "eevee": { "taaRenderSamples": 32, "useGtao": false, "useSoftShadows": true, "useShadows": true },
+  "palette": {
+    "skin": "#C68863",
+    "trousers": "#2E3440",
+    "hair": "#2B1D14",
+    "shoes": "#303034",
+    "eyes": "#28201D",
+    "ink": "#3F3F4A",
+    "tint": "#E7E7E7"
+  },
+  "toonRamp": [
+    { "position": 0.0, "color": [0.5, 0.5, 0.6] },
+    { "position": 0.45, "color": [1.0, 1.0, 1.0] }
+  ],
+  "outline": { "thickness": 0.018 },
+  "packing": { "maxSize": 4096, "padding": 2 }
+}

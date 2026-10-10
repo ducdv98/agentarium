@@ -90,4 +90,6 @@ If you remove the package first, its hooks stay in your Claude Code settings fil
 
 ## Licence
 
-MIT. See [LICENSE](LICENSE).
+Code is MIT. See [LICENSE](LICENSE). Art in `assets/` is CC BY 4.0. See
+[assets/LICENSE](assets/LICENSE) and [assets/NOTICE](assets/NOTICE) for the
+licence and attributions.

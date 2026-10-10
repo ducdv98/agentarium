@@ -10,6 +10,8 @@
     "build": "pnpm -r build",
     "verify:all": "node scripts/verify-all.mjs",
     "smoke:pack": "node scripts/smoke-pack.mjs",
+    "assets:build": "pnpm --filter @agentarium/assets assets:build",
+    "assets:check": "pnpm --filter @agentarium/assets assets:check",
     "agentarium": "node packages/cli/dist/bin.js"
   },
   "devDependencies": {

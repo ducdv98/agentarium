@@ -10,6 +10,7 @@ import { join, resolve } from "node:path";
 const cli = resolve(import.meta.dirname, "../packages/cli");
 const isWindows = process.platform === "win32";
 const tmp = mkdtempSync(join(tmpdir(), "agentarium-smoke-"));
+const MAX_TARBALL_BYTES = 10 * 1024 * 1024; // room for the office atlases in the UI
 
 function sh(command, opts = {}) {
   const r = spawnSync(command, { shell: true, encoding: "utf8", ...opts });
@@ -35,6 +36,9 @@ try {
   check(existsSync(join(cli, "dist/bin.js")), "packages/cli is built");
 
   const [packed] = JSON.parse(sh(`npm pack --json --pack-destination "${tmp}"`, { cwd: cli }));
+  const human = (bytes) => `${(bytes / 1024 / 1024).toFixed(2)} MiB`;
+  console.log(`tarball size: ${human(packed.size)} packed, ${human(packed.unpackedSize)} unpacked`);
+  check(packed.size <= MAX_TARBALL_BYTES, `tarball is at most ${human(MAX_TARBALL_BYTES)}`);
   const files = packed.files.map((f) => f.path);
   for (const f of ["dist/bin.js", "dist/daemon.js", "dist/ui/index.html", "package.json", "LICENSE", "README.md"]) {
     check(files.includes(f), `tarball contains ${f}`);
