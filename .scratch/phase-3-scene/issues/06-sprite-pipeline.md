@@ -16,3 +16,7 @@
 - [ ] CC BY 4.0 licence file for the art, and a README note separating it from the MIT code
 - [ ] Generated atlases are committed. A CI check (no Blender) verifies each manifest's animations exist in its atlas
 - [ ] `smoke:pack` reports the npm tarball size, with a limit we choose
+
+## Comments
+
+- 2026-10-10 (from 03): In the spike scene, the texture count, not the sprite count, set Pixi draw calls; the iGPU and the RTX batch 16 textures. One atlas per animation and direction, as in spike 02, already uses 8 textures before any prop, so pack many clips per atlas. See `docs/research/rendering.md`, section "Batching".
