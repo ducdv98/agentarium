@@ -19,13 +19,21 @@ When running Matt Pocock engineering workflows, Claude is the orchestrator. Code
 
 Note: Codex usually hangs and did not produce any output. Check its progress after a 2 minutes. If Codex is stuck, you can cancel the current task and re-run it.
 
+### Permission mode
+
+Delegated Codex runs use the user's own Codex configuration: run `codex exec "<prompt>" < /dev/null` and pass no approval, sandbox or bypass flags (ADR 0006). Never add `--dangerously-bypass-approvals-and-sandbox`, `-s danger-full-access` or `-a never` unless the user asks for that run.
+
+`codex exec` is unattended: it runs with `approval: never` whatever `approval_policy` says, and keeps the configured sandbox. A step the sandbox blocks does not wait for approval. It comes back to Codex as a failed command (for example `Access to the path ... is denied`), and Codex reports it. When that happens, Claude does the blocked step itself under its own permission mode, so the user is asked through Claude, or tells the user which step was blocked and lets them decide whether to widen the sandbox. Check the run header (`approval:` and `sandbox:` lines) when a result looks incomplete.
+
+Codex cannot start a nested `codex exec` from inside a sandboxed Codex session. Without network access it loops on `invalid peer certificate: UnknownIssuer` and `Reconnecting... waiting for network`. With `sandbox_workspace_write.network_access=true` it fails with `Could not find home directory`, because the Windows elevated sandbox user has no home. Do not ask Codex to delegate to `codex exec`. Use Codex's built-in sub-agents in the prompt instead, or have Claude do the work.
+
 ### Research
 
 Deligate research tasks to Codex. Claude can self-invoke to perform research work when Codex is unavailable or stuck.
 
 Use:
 
-    codex --dangerously-bypass-approvals-and-sandbox exec "<research instruction prompt>"
+    codex exec "<research instruction prompt>"
 
 ### /implement
 
@@ -39,7 +47,7 @@ For each ticket:
 
 Use:
 
-    codex --dangerously-bypass-approvals-and-sandbox exec "<implementation prompt>"
+    codex exec "<implementation prompt>"
 
 Codex must not commit unless explicitly instructed.
 
@@ -67,9 +75,9 @@ Use independent Codex invocations for the two axes where practical.
 
 Example:
 
-    codex --dangerously-bypass-approvals-and-sandbox exec "<standards review prompt>"
+    codex exec "<standards review prompt>"
 
-    codex --dangerously-bypass-approvals-and-sandbox exec "<spec review prompt>"
+    codex exec "<spec review prompt>"
 
 Claude then:
 - collects both reviews
