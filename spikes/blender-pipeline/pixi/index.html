@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Blender pipeline spike: Pixi check</title>
+<style>
+  body { margin: 0; background: #262a32; color: #e6e8ec; font: 14px/1.4 system-ui, sans-serif; }
+  header { padding: 12px 16px; display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  #status { font-family: ui-monospace, monospace; white-space: pre-wrap; padding: 0 16px 12px; }
+  button { font: inherit; padding: 4px 10px; }
+</style>
+</head>
+<body>
+<header>
+  <strong>Pixi v8 atlas check (phase-3-scene 02)</strong>
+  <label>Atlas <select id="atlas"><option value="eevee">eevee</option><option value="cycles">cycles</option></select></label>
+  <label>Shirt tint <select id="tint">
+    <option value="none">off (neutral shirt)</option><option value="3B82F6" selected>blue</option>
+    <option value="14B8A6">teal</option><option value="8B5CF6">violet</option><option value="F43F5E">rose</option>
+  </select></label>
+  <label>Zoom <select id="zoom"><option value="1" selected>1x</option><option value="2">2x</option></select></label>
+</header>
+<div id="stage"></div>
+<details open><summary style="padding: 0 16px">Status (window.__spike)</summary><div id="status">loading...</div></details>
+<script type="module">
+import { Application, Assets, AnimatedSprite, Container, Graphics, Text, VERSION } from "/pixi.js/pixi.mjs";
+
+const DIRS = ["sw", "se", "ne", "nw"];
+const status = document.getElementById("status");
+const params = new URLSearchParams(location.search);
+for (const id of ["atlas", "tint", "zoom"]) if (params.get(id)) document.getElementById(id).value = params.get(id);
+const sel = (id) => document.getElementById(id).value;
+const report = (s) => { window.__spike = s; status.textContent = JSON.stringify(s, null, 1); };
+
+const app = new Application();
+await app.init({ width: 600, height: 480, background: "#262a32", resolution: window.devicePixelRatio || 1, autoDensity: true, antialias: true });
+document.getElementById("stage").appendChild(app.canvas);
+
+async function build() {
+  const engine = sel("atlas");
+  app.stage.removeChildren();
+  const base = `/out/${engine}/atlas/`;
+  const index = await (await fetch(base + "index.json")).json();
+  const world = new Container();
+  const zoom = Number(sel("zoom"));
+  world.scale.set(zoom);
+  app.renderer.resize(600 * zoom, 480 * zoom);
+  app.stage.addChild(world);
+  const result = { pixi: VERSION, engine, sheets: {}, playing: [], tint: sel("tint"), errors: [],
+    expectedSprites: index.anims.length * index.dirs.length * 2 };
+  for (const [row, anim] of index.anims.entries()) {
+    for (const [col, dir] of index.dirs.entries()) {
+      const key = `${anim}/${dir}`;
+      const x = 75 + col * 150, y = 200 + row * 230;
+      world.addChild(new Graphics().poly([x, y - 32, x + 64, y, x, y + 32, x - 64, y]).fill(0xd6d0c6).stroke({ color: 0xbcb4a8, width: 1 }));
+      world.addChild(new Text({ text: key, style: { fill: 0xe6e8ec, fontSize: 12 }, x: x - 30, y: y + 40 }));
+      const info = index.sheets[key];
+      if (!info) { result.errors.push(`no atlas for ${key}`); continue; }
+      const sheet = await Assets.load(base + info.json);
+      const first = sheet.textures[Object.keys(sheet.textures)[0]];
+      result.sheets[key] = { textures: Object.keys(sheet.textures).length, resolution: sheet.resolution, frameSize: [first.width, first.height] };
+      const frames = sheet.animations[key], shirtFrames = sheet.animations[`${key}-shirt`];
+      if (!frames || !shirtFrames) { result.errors.push(`missing animations in ${info.json}`); continue; }
+      const body = new AnimatedSprite(frames);
+      const shirt = new AnimatedSprite(shirtFrames);
+      for (const s of [body, shirt]) {
+        s.position.set(x, y);
+        s.animationSpeed = info.fps / 60;
+        s.changes = 0;
+        s.onFrameChange = () => s.changes++;
+        s.play();
+      }
+      shirt.visible = sel("tint") !== "none";
+      if (shirt.visible) shirt.tint = Number.parseInt(sel("tint"), 16);
+      world.addChild(body, shirt);
+      result.playing.push({ name: key, frames: frames.length, anchor: [+body.anchor.x.toFixed(3), +body.anchor.y.toFixed(3)],
+        size: [Math.round(body.width), Math.round(body.height)] });
+    }
+  }
+  report(result);
+  // after a second, confirm the sprites actually advanced
+  setTimeout(() => {
+    const sprites = world.children.filter((c) => c instanceof AnimatedSprite);
+    const advanced = sprites.filter((s) => s.changes > 0).length;
+    result.advanced = `${advanced}/${result.expectedSprites}`;
+    result.ok = advanced === result.expectedSprites && result.errors.length === 0;
+    report(result);
+  }, 1500);
+}
+for (const id of ["atlas", "tint", "zoom"]) document.getElementById(id).addEventListener("change", () => build().catch(fail));
+const fail = (e) => report({ error: String(e?.stack ?? e) });
+build().catch(fail);
+</script>
+</body>
+</html>
