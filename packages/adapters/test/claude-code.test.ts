@@ -228,4 +228,30 @@ describe("claude code permission modes (2.1.296 fixtures)", () => {
     const stop = a.map({ session_id: "s", hook_event_name: "Stop" }).events;
     expect(stop[0]).toMatchObject({ kind: "tool_end", tool_use_id: "r1", ok: false });
   });
+
+  describe("interactive captures", () => {
+    it.each(["tui-deny", "tui-esc", "tui-idle-prompt", "tui-ask-question", "tui-auto"])("shows the first prompt in %s as waiting", (name) => {
+      const hooks = mapAll(name);
+      const world = replay(asEvents(hooks.slice(0, hooks.findIndex((h) => h.hook === "PermissionRequest") + 1).flatMap((h) => h.events)));
+      expect(Object.values(world.agents)[0]?.status).toBe("waiting");
+    });
+
+    it("records a TUI denial as failed only when the next prompt arrives, since no hook closes it", () => {
+      const hooks = mapAll("tui-deny");
+      const next = hooks.findIndex((h, i) => h.hook === "UserPromptSubmit" && i > hooks.findIndex((x) => x.hook === "PermissionRequest"));
+      expect(hooks.slice(hooks.findIndex((h) => h.hook === "PermissionRequest") + 1, next).every((h) => h.events.every((e) => e.kind === "needs_input"))).toBe(true);
+      expect(kinds(hooks[next]!.events)).toEqual(["tool_end", "prompt"]);
+      expect(hooks[next]!.events[0]).toMatchObject({ ok: false });
+    });
+
+    it("closes a sub-agent's denied TUI prompt at SubagentStop", () => {
+      const stop = mapAll("tui-subagent").find((h) => h.hook === "SubagentStop")!;
+      expect(kinds(stop.events)).toEqual(["tool_end", "end"]);
+      expect(stop.events[0]).toMatchObject({ ok: false });
+    });
+
+    it("records no failure for an answered question", () => {
+      expect(failures(flat("tui-ask-question"))).toEqual([]);
+    });
+  });
 });

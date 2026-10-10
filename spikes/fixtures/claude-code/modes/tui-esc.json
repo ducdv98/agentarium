@@ -1,0 +1,87 @@
+{
+  "claude_code_version": "2.1.296",
+  "scenario": "tui-esc",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "689e7300-daec-468f-aac3-1dff4c9f4946",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-dvRTPd-repo\\689e7300-daec-468f-aac3-1dff4c9f4946.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-dvRTPd-repo\\689e7300-daec-468f-aac3-1dff4c9f4946\\scratchpad",
+      "hook_event_name": "SessionStart",
+      "source": "startup",
+      "model": "claude-opus-5-5"
+    },
+    {
+      "at_ms": 87730,
+      "session_id": "689e7300-daec-468f-aac3-1dff4c9f4946",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-dvRTPd-repo\\689e7300-daec-468f-aac3-1dff4c9f4946.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-dvRTPd-repo\\689e7300-daec-468f-aac3-1dff4c9f4946\\scratchpad",
+      "prompt_id": "14481a94-6501-474f-96ae-e0544586eb60",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "Run this exact shell command with the Bash tool: node -e \"require('fs').writeFileSync('b.txt','x')\" . If it is refused, do not retry. Then reply DONE"
+    },
+    {
+      "at_ms": 91012,
+      "session_id": "689e7300-daec-468f-aac3-1dff4c9f4946",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-dvRTPd-repo\\689e7300-daec-468f-aac3-1dff4c9f4946.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-dvRTPd-repo\\689e7300-daec-468f-aac3-1dff4c9f4946\\scratchpad",
+      "prompt_id": "14481a94-6501-474f-96ae-e0544586eb60",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PreToolUse",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write a test file with Node"
+      },
+      "tool_use_id": "toolu_012uMb4JxZobf73wFNRsjNNd"
+    },
+    {
+      "at_ms": 91236,
+      "session_id": "689e7300-daec-468f-aac3-1dff4c9f4946",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-dvRTPd-repo\\689e7300-daec-468f-aac3-1dff4c9f4946.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-dvRTPd-repo\\689e7300-daec-468f-aac3-1dff4c9f4946\\scratchpad",
+      "prompt_id": "14481a94-6501-474f-96ae-e0544586eb60",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PermissionRequest",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write a test file with Node"
+      },
+      "permission_suggestions": [
+        {
+          "type": "addRules",
+          "rules": [
+            {
+              "toolName": "Bash",
+              "ruleContent": "node -e \"require('fs').writeFileSync('b.txt','x')\""
+            }
+          ],
+          "behavior": "allow",
+          "destination": "localSettings"
+        }
+      ]
+    },
+    {
+      "at_ms": 98892,
+      "session_id": "689e7300-daec-468f-aac3-1dff4c9f4946",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-dvRTPd-repo\\689e7300-daec-468f-aac3-1dff4c9f4946.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-dvRTPd-repo\\689e7300-daec-468f-aac3-1dff4c9f4946\\scratchpad",
+      "prompt_id": "64d7203e-591c-4bd9-8a6f-45b49acee36e",
+      "hook_event_name": "SessionEnd",
+      "reason": "prompt_input_exit"
+    }
+  ]
+}

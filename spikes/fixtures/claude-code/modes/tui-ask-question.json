@@ -1,0 +1,194 @@
+{
+  "claude_code_version": "2.1.296",
+  "scenario": "tui-ask-question",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "3234779c-62d0-4009-8051-676b9428e69e",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jVzfRa-repo\\3234779c-62d0-4009-8051-676b9428e69e.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-jVzfRa-repo\\3234779c-62d0-4009-8051-676b9428e69e\\scratchpad",
+      "hook_event_name": "SessionStart",
+      "source": "startup",
+      "model": "claude-opus-5-5"
+    },
+    {
+      "at_ms": 770,
+      "session_id": "3234779c-62d0-4009-8051-676b9428e69e",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jVzfRa-repo\\3234779c-62d0-4009-8051-676b9428e69e.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-jVzfRa-repo\\3234779c-62d0-4009-8051-676b9428e69e\\scratchpad",
+      "prompt_id": "989b1b00-983c-4ade-b1ee-7e41c08981c8",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "Use the AskUserQuestion tool to ask me whether to name a file a.txt or b.txt, then reply DONE"
+    },
+    {
+      "at_ms": 3409,
+      "session_id": "3234779c-62d0-4009-8051-676b9428e69e",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jVzfRa-repo\\3234779c-62d0-4009-8051-676b9428e69e.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-jVzfRa-repo\\3234779c-62d0-4009-8051-676b9428e69e\\scratchpad",
+      "prompt_id": "989b1b00-983c-4ade-b1ee-7e41c08981c8",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PreToolUse",
+      "tool_name": "AskUserQuestion",
+      "tool_input": {
+        "questions": [
+          {
+            "question": "Which name should the file use?",
+            "header": "File name",
+            "options": [
+              {
+                "label": "a.txt",
+                "description": "Name the file a.txt"
+              },
+              {
+                "label": "b.txt",
+                "description": "Name the file b.txt"
+              }
+            ],
+            "multiSelect": false
+          }
+        ]
+      },
+      "tool_use_id": "toolu_01KWTNFnY5trjDXcRooyJXFk"
+    },
+    {
+      "at_ms": 3623,
+      "session_id": "3234779c-62d0-4009-8051-676b9428e69e",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jVzfRa-repo\\3234779c-62d0-4009-8051-676b9428e69e.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-jVzfRa-repo\\3234779c-62d0-4009-8051-676b9428e69e\\scratchpad",
+      "prompt_id": "989b1b00-983c-4ade-b1ee-7e41c08981c8",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PermissionRequest",
+      "tool_name": "AskUserQuestion",
+      "tool_input": {
+        "questions": [
+          {
+            "question": "Which name should the file use?",
+            "header": "File name",
+            "options": [
+              {
+                "label": "a.txt",
+                "description": "Name the file a.txt"
+              },
+              {
+                "label": "b.txt",
+                "description": "Name the file b.txt"
+              }
+            ],
+            "multiSelect": false
+          }
+        ]
+      }
+    },
+    {
+      "at_ms": 9589,
+      "session_id": "3234779c-62d0-4009-8051-676b9428e69e",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jVzfRa-repo\\3234779c-62d0-4009-8051-676b9428e69e.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-jVzfRa-repo\\3234779c-62d0-4009-8051-676b9428e69e\\scratchpad",
+      "prompt_id": "989b1b00-983c-4ade-b1ee-7e41c08981c8",
+      "hook_event_name": "Notification",
+      "message": "Claude needs your permission",
+      "notification_type": "permission_prompt"
+    },
+    {
+      "at_ms": 44468,
+      "session_id": "3234779c-62d0-4009-8051-676b9428e69e",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jVzfRa-repo\\3234779c-62d0-4009-8051-676b9428e69e.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-jVzfRa-repo\\3234779c-62d0-4009-8051-676b9428e69e\\scratchpad",
+      "prompt_id": "989b1b00-983c-4ade-b1ee-7e41c08981c8",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PostToolUse",
+      "tool_name": "AskUserQuestion",
+      "tool_input": {
+        "questions": [
+          {
+            "question": "Which name should the file use?",
+            "header": "File name",
+            "options": [
+              {
+                "label": "a.txt",
+                "description": "Name the file a.txt"
+              },
+              {
+                "label": "b.txt",
+                "description": "Name the file b.txt"
+              }
+            ],
+            "multiSelect": false
+          }
+        ],
+        "answers": {
+          "Which name should the file use?": "a.txt"
+        },
+        "annotations": {}
+      },
+      "tool_response": {
+        "questions": [
+          {
+            "question": "Which name should the file use?",
+            "header": "File name",
+            "options": [
+              {
+                "label": "a.txt",
+                "description": "Name the file a.txt"
+              },
+              {
+                "label": "b.txt",
+                "description": "Name the file b.txt"
+              }
+            ],
+            "multiSelect": false
+          }
+        ],
+        "answers": {
+          "Which name should the file use?": "a.txt"
+        },
+        "annotations": {}
+      },
+      "tool_use_id": "toolu_01KWTNFnY5trjDXcRooyJXFk",
+      "duration_ms": 1
+    },
+    {
+      "at_ms": 46451,
+      "session_id": "3234779c-62d0-4009-8051-676b9428e69e",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jVzfRa-repo\\3234779c-62d0-4009-8051-676b9428e69e.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-jVzfRa-repo\\3234779c-62d0-4009-8051-676b9428e69e\\scratchpad",
+      "prompt_id": "989b1b00-983c-4ade-b1ee-7e41c08981c8",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "Stop",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE (you picked a.txt)",
+      "background_tasks": [],
+      "session_crons": []
+    },
+    {
+      "at_ms": 49095,
+      "session_id": "3234779c-62d0-4009-8051-676b9428e69e",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-jVzfRa-repo\\3234779c-62d0-4009-8051-676b9428e69e.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-jVzfRa-repo\\3234779c-62d0-4009-8051-676b9428e69e\\scratchpad",
+      "prompt_id": "a726f24a-7181-472e-a3cc-c2e88f8e2dba",
+      "hook_event_name": "SessionEnd",
+      "reason": "prompt_input_exit"
+    }
+  ]
+}

@@ -4,10 +4,10 @@
 
 **Blocked by:** 01
 
-**Status:** ready-for-human
+**Status:** resolved
 
 - [x] Headless (`-p`) captures in `manual`, `acceptEdits`, `plan`, `auto`, `dontAsk`, and `bypassPermissions`, plus an `ask` rule and a `deny` rule
-- [ ] Interactive captures through a human-in-the-loop script: approve, deny, Esc, `AskUserQuestion`, plan-mode exit approval, a sub-agent's permission prompt, and an elicitation where reachable
+- [x] Interactive captures through a human-in-the-loop script: approve, deny, Esc, `AskUserQuestion`, plan-mode exit approval, a sub-agent's permission prompt, and an elicitation where reachable
 - [x] `PermissionDenied`, `PostToolUseFailure`, and `Notification` types are recorded wherever they fire, or recorded as not firing
 - [x] Hooks are supplied through `--settings` or an isolated config dir in a scratch repo; the user's real Claude settings are checked unchanged afterwards
 - [x] Fixtures are sanitized and sit beside the existing Claude Code payloads, and the research doc's "needs human capture" list is updated
@@ -21,3 +21,5 @@ Every mode was captured headlessly, plus an `ask` rule, a `deny` rule, a failing
 The interactive TUI cases (deny, Esc, Notification timing, AskUserQuestion, an elicitation) have a human-in-the-loop script, `spikes/claude/capture-interactive.mjs`, which has not been run yet. `~/.claude/settings.json` was not modified (mtime predates the captures). One plan file that a capture wrote into `~/.claude/plans/` was removed.
 
 Remaining for a person (status `ready-for-human`): run `node spikes/claude/capture-interactive.mjs spikes/fixtures/claude-code/modes` in a real terminal, then commit the `tui-*` fixtures and update the research doc.
+
+Interactive captures done 2026-10-10 (`tui-*` fixtures). Finding: a TUI deny or Esc fires no hook. Follow-up in ticket 08.

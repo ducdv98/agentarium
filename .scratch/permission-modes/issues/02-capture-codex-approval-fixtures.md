@@ -31,3 +31,5 @@ Remaining for a person (status `ready-for-human`):
 - Run `spikes/codex/capture-tui.mjs` for the `/permissions` presets.
 - Capture an auto-review rejection. The `--approve-for-me` item stays open because only approvals were captured.
 - Capture `request_permissions` and `request_user_input`, and cancel under `workspace-write`, if a model emits them.
+
+2026-10-10: `tui-permissions` captured with the fixed script. It covers only the default preset (`on-request` + `workspace-write`, reviewer `user`); the other presets are still to do.

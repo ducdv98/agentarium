@@ -1,0 +1,75 @@
+{
+  "claude_code_version": "2.1.296",
+  "scenario": "tui-auto",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "7fa99790-da6e-4205-9625-5c939a9c9433",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-7hewNL-repo\\7fa99790-da6e-4205-9625-5c939a9c9433.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-7hewNL-repo\\7fa99790-da6e-4205-9625-5c939a9c9433\\scratchpad",
+      "hook_event_name": "SessionStart",
+      "source": "startup",
+      "model": "claude-opus-5-5"
+    },
+    {
+      "at_ms": 807,
+      "session_id": "7fa99790-da6e-4205-9625-5c939a9c9433",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-7hewNL-repo\\7fa99790-da6e-4205-9625-5c939a9c9433.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-7hewNL-repo\\7fa99790-da6e-4205-9625-5c939a9c9433\\scratchpad",
+      "prompt_id": "6082b514-12de-46da-9188-2fcb8c7f8c45",
+      "permission_mode": "auto",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "Run this exact shell command with the Bash tool: rm -rf /nonexistent-agentarium-probe-dir . If it is refused, do not retry. Then reply DONE."
+    },
+    {
+      "at_ms": 3683,
+      "session_id": "7fa99790-da6e-4205-9625-5c939a9c9433",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-7hewNL-repo\\7fa99790-da6e-4205-9625-5c939a9c9433.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-7hewNL-repo\\7fa99790-da6e-4205-9625-5c939a9c9433\\scratchpad",
+      "prompt_id": "6082b514-12de-46da-9188-2fcb8c7f8c45",
+      "permission_mode": "auto",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PreToolUse",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "rm -rf /nonexistent-agentarium-probe-dir",
+        "description": "Remove a directory that doesn't exist"
+      },
+      "tool_use_id": "toolu_015FVUV3UWN9q93vV4ynZ1B5"
+    },
+    {
+      "at_ms": 3869,
+      "session_id": "7fa99790-da6e-4205-9625-5c939a9c9433",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-7hewNL-repo\\7fa99790-da6e-4205-9625-5c939a9c9433.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-7hewNL-repo\\7fa99790-da6e-4205-9625-5c939a9c9433\\scratchpad",
+      "prompt_id": "6082b514-12de-46da-9188-2fcb8c7f8c45",
+      "permission_mode": "auto",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PermissionRequest",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "rm -rf /nonexistent-agentarium-probe-dir",
+        "description": "Remove a directory that doesn't exist"
+      },
+      "permission_suggestions": []
+    },
+    {
+      "at_ms": 9220,
+      "session_id": "7fa99790-da6e-4205-9625-5c939a9c9433",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-7hewNL-repo\\7fa99790-da6e-4205-9625-5c939a9c9433.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-7hewNL-repo\\7fa99790-da6e-4205-9625-5c939a9c9433\\scratchpad",
+      "prompt_id": "13228a47-e12a-447d-9507-56fbc12bea70",
+      "hook_event_name": "SessionEnd",
+      "reason": "prompt_input_exit"
+    }
+  ]
+}

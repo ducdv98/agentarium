@@ -1,0 +1,198 @@
+{
+  "claude_code_version": "2.1.296",
+  "scenario": "tui-deny",
+  "hooks": [
+    {
+      "at_ms": 0,
+      "session_id": "42c9c30e-7b25-4c0c-8370-718f63881d94",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94\\scratchpad",
+      "hook_event_name": "SessionStart",
+      "source": "startup",
+      "model": "claude-opus-5-5"
+    },
+    {
+      "at_ms": 14255,
+      "session_id": "42c9c30e-7b25-4c0c-8370-718f63881d94",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94\\scratchpad",
+      "prompt_id": "55359057-3907-4713-bb1a-c87cd6ddc541",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "Run this exact shell command with the Bash tool: node -e \"require('fs').writeFileSync('b.txt','x')\""
+    },
+    {
+      "at_ms": 16727,
+      "session_id": "42c9c30e-7b25-4c0c-8370-718f63881d94",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94\\scratchpad",
+      "prompt_id": "55359057-3907-4713-bb1a-c87cd6ddc541",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PreToolUse",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write b.txt containing x via Node"
+      },
+      "tool_use_id": "toolu_017AH4utxYTzhoBKo1LgnvXJ"
+    },
+    {
+      "at_ms": 16975,
+      "session_id": "42c9c30e-7b25-4c0c-8370-718f63881d94",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94\\scratchpad",
+      "prompt_id": "55359057-3907-4713-bb1a-c87cd6ddc541",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PermissionRequest",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write b.txt containing x via Node"
+      },
+      "permission_suggestions": [
+        {
+          "type": "addRules",
+          "rules": [
+            {
+              "toolName": "Bash",
+              "ruleContent": "node -e \"require('fs').writeFileSync('b.txt','x')\""
+            }
+          ],
+          "behavior": "allow",
+          "destination": "localSettings"
+        }
+      ]
+    },
+    {
+      "at_ms": 23027,
+      "session_id": "42c9c30e-7b25-4c0c-8370-718f63881d94",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94\\scratchpad",
+      "prompt_id": "55359057-3907-4713-bb1a-c87cd6ddc541",
+      "hook_event_name": "Notification",
+      "message": "Claude needs your permission",
+      "notification_type": "permission_prompt"
+    },
+    {
+      "at_ms": 85746,
+      "session_id": "42c9c30e-7b25-4c0c-8370-718f63881d94",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94\\scratchpad",
+      "prompt_id": "60595bac-d966-4680-bb46-443b6b0c7389",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "Paste: Run this exact shell command with the Bash tool: node -e \"require('fs').writeFileSync('b.txt','x')\" . If it is refused, do not retry. Then reply DONE"
+    },
+    {
+      "at_ms": 88850,
+      "session_id": "42c9c30e-7b25-4c0c-8370-718f63881d94",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94\\scratchpad",
+      "prompt_id": "60595bac-d966-4680-bb46-443b6b0c7389",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PreToolUse",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write b.txt containing x via Node"
+      },
+      "tool_use_id": "toolu_019uW6qD1EZkKLpttd423UXK"
+    },
+    {
+      "at_ms": 88977,
+      "session_id": "42c9c30e-7b25-4c0c-8370-718f63881d94",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94\\scratchpad",
+      "prompt_id": "60595bac-d966-4680-bb46-443b6b0c7389",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "PermissionRequest",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "node -e \"require('fs').writeFileSync('b.txt','x')\"",
+        "description": "Write b.txt containing x via Node"
+      },
+      "permission_suggestions": [
+        {
+          "type": "addRules",
+          "rules": [
+            {
+              "toolName": "Bash",
+              "ruleContent": "node -e \"require('fs').writeFileSync('b.txt','x')\""
+            }
+          ],
+          "behavior": "allow",
+          "destination": "localSettings"
+        }
+      ]
+    },
+    {
+      "at_ms": 161595,
+      "session_id": "42c9c30e-7b25-4c0c-8370-718f63881d94",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94\\scratchpad",
+      "prompt_id": "30162c35-d2d3-4be4-a022-cc36cb688985",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "where is my reply: \"DONE\"?"
+    },
+    {
+      "at_ms": 163354,
+      "session_id": "42c9c30e-7b25-4c0c-8370-718f63881d94",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94\\scratchpad",
+      "prompt_id": "30162c35-d2d3-4be4-a022-cc36cb688985",
+      "permission_mode": "default",
+      "effort": {
+        "level": "medium"
+      },
+      "hook_event_name": "Stop",
+      "stop_hook_active": false,
+      "last_assistant_message": "DONE\n\nThe command was refused again, so I didn't retry and `b.txt` wasn't created.",
+      "background_tasks": [],
+      "session_crons": []
+    },
+    {
+      "at_ms": 223548,
+      "session_id": "42c9c30e-7b25-4c0c-8370-718f63881d94",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94\\scratchpad",
+      "prompt_id": "30162c35-d2d3-4be4-a022-cc36cb688985",
+      "hook_event_name": "Notification",
+      "message": "Claude is waiting for your input",
+      "notification_type": "idle_prompt"
+    },
+    {
+      "at_ms": 226853,
+      "session_id": "42c9c30e-7b25-4c0c-8370-718f63881d94",
+      "transcript_path": "<HOME>\\.claude\\projects\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94.jsonl",
+      "cwd": "<CWD>",
+      "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\C--Users-user-AppData-Local-Temp-agentarium-claude-t4Tqsh-repo\\42c9c30e-7b25-4c0c-8370-718f63881d94\\scratchpad",
+      "prompt_id": "9e87754a-497b-40f1-8103-aebc2a7eccbb",
+      "hook_event_name": "SessionEnd",
+      "reason": "prompt_input_exit"
+    }
+  ]
+}

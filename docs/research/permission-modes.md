@@ -119,6 +119,21 @@ Captured 2026-10-10 with `spikes/claude/capture-headless.mjs`: one `claude -p` s
 
 No mode fired `PermissionDenied`, and no denial (by the user, a rule, `dontAsk` or the `auto` safety check) fired `PostToolUseFailure`. A denied call simply never gets a `PostToolUse`, and the turn's `Stop` (or the sub-agent's `SubagentStop`) is the first closing signal. `permission_mode` is on every payload except `SessionStart` and `SessionEnd`, and changes mid-session when plan mode is exited. `--permission-prompts none` is the one case where `PermissionRequest` fires without a person being asked. It reports `default` and closes at `Stop` within milliseconds.
 
+### Claude Code 2.1.296 interactive fixtures
+
+Captured 2026-10-10 by a person with `spikes/claude/capture-interactive.mjs` (`tui-*` in `spikes/fixtures/claude-code/modes/`).
+
+- **Denying with No or Esc in the TUI fires no hook at all.** There is no `Stop`, `PostToolUse`, `PostToolUseFailure` or `PermissionDenied` (`tui-deny`, `tui-esc`). The turn ends silently and the next hook is the user's next `UserPromptSubmit`, which can be minutes later or never. Headless denial does fire `Stop`, so this differs from headless.
+- The transcript does record it: a user entry with a `tool_result` for the same `tool_use_id`, `toolUseResult: "User rejected tool use"`, then `[Request interrupted by user for tool use]`. The transcript path is on every hook payload.
+- `Notification(permission_prompt)` fires once, about 6 s after an unanswered `PermissionRequest`. `idle_prompt` fires about 60 s after `Stop`, never after a TUI denial.
+- `AskUserQuestion`: `PermissionRequest`, then `PostToolUse` when answered.
+- In `auto` mode the `rm -rf` safety check is routed to the person as a `PermissionRequest` (`tui-auto`), whereas headless denied it silently.
+- A sub-agent's denied prompt ends at `SubagentStop`, so it closes there (`tui-subagent`). The sub-agent ran in the background: the parent's `PostToolUse(Agent)` and `Stop` came before the sub-agent's tool calls.
+
+### Codex TUI fixture
+
+`tui-permissions` (captured with `spikes/codex/capture-tui.mjs`) has two turns, both with `turn_context` `on-request` / reviewer `user` / `workspace-write` and hook `permission_mode = default`. The in-workspace write needed no approval. The capture shows no preset change, so it does not yet map `/permissions` presets to modes.
+
 ## Implications for Agentarium
 
 * Codex adapters must combine hook `PermissionRequest` with app-server approval requests/status when a daemon connection exists. Raise needs-input only for a human-routed request, not for `auto_review`, `never`, `dontAsk`, sandbox failure, or a hook decision that merely ran.
@@ -129,9 +144,9 @@ No mode fired `PermissionDenied`, and no denial (by the user, a rule, `dontAsk` 
 
 ## Open / needs human capture
 
-1. Codex TUI: capture each `/permissions` preset/custom profile and the exact effective mode shown after changing it; use [`spikes/codex/capture-tui.mjs`](../../spikes/codex/capture-tui.mjs).
+1. Codex TUI: capture a turn under each `/permissions` preset other than the default (one is captured) and a custom profile; use [`spikes/codex/capture-tui.mjs`](../../spikes/codex/capture-tui.mjs).
 2. Codex: capture granular auto-denial, an auto-review denial, and `request_permissions`/`request_user_input` if a future model/tool surface makes them reachable.
 3. Codex: repeat the sandbox escalation/failure comparison for Windows `unelevated`; current fixtures are `elevated`.
 4. Codex: capture managed `requirements.toml` rejection/constraint behavior without changing the user's managed configuration.
-5. Claude interactive: deny and Esc in the TUI, `Notification(permission_prompt)` timing, `AskUserQuestion`, a sub-agent prompt, and an `auto` safety-check denial; use [`spikes/claude/capture-interactive.mjs`](../../spikes/claude/capture-interactive.mjs). `Elicitation`/`Notification(elicitation_dialog)` still needs an MCP server that elicits.
+5. Claude: `Elicitation`/`Notification(elicitation_dialog)` still needs an MCP server that elicits.
 6. OTel: verify whether either CLI emits a stable resolved permission-mode attribute in the installed versions; current evidence does not establish one.
