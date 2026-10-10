@@ -25,7 +25,7 @@ Revisit this if usage-log entries show stale waiting states, for example a user-
 
 ### Standalone error event: **no**
 
-The `error` category still comes only from a failed `tool_end`, and turn-level failures map to `stop`. No capture produced a turn failure (`turn/completed` with `status: failed`, or `exec` `turn.failed`). Interrupts and cancels finish as `stop` (`interrupt`, `approve-cancel`). Every tool failure in the fixtures maps to an existing failed `tool_end` once the live connection or OTel is present. No capture shows a case that needs a new event, so there is nothing to add yet.
+The `error` category still comes only from a failed `tool_end`, and turn-level failures map to `stop`. No capture produced a turn failure (`turn/completed` with `status: failed`, or `exec` `turn.failed`). Interrupts and cancels finish as `stop` (`interrupt`, `approve-cancel`). The observed failed tool ends are an approval decline from live `item/completed.status: declined` and an MCP `isError` result from OTel `tool_result.success: "false"`. The `patch-fail` fixture has neither live nor OTel evidence, so its failure remains unreported in hook-only mode until `Stop` clears the pending call. No capture shows a case that needs a new event, so there is nothing to add yet.
 
 ### Sub-agent termination: **accept lost-timeout cleanup**
 

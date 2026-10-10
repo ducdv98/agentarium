@@ -39,6 +39,23 @@ describe("Codex hooks", () => {
     expect(command).toContain('\\`');
     expect(command).toContain('\\\\');
   });
+  it("keeps user commands while replacing and removing only Codex handlers", () => {
+    const path = join(dir(), "hooks.json");
+    const target = codexTarget(47821, "/cli", "/home");
+    const user = ["echo hook codex --port 1", "my-tool hook codex"];
+    const old = '"/node" "/cli" hook codex --port 1';
+    const hooks = [...user, old, target.handler.command].map((command) => ({ type: "command", command }));
+    writeFileSync(path, JSON.stringify({ hooks: { Stop: [{ hooks }] } }));
+    installHooks(path, { port: 47821, token: "" }, {}, target);
+    const installed = JSON.parse(readFileSync(path, "utf8"));
+    const commands = installed.hooks.Stop.flatMap((group: { hooks: { command: string }[] }) => group.hooks.map((hook) => hook.command));
+    expect(commands).toEqual([...user, target.handler.command]);
+    installed.theme = "dark"; // Force surgical uninstall so the matcher is exercised again.
+    writeFileSync(path, JSON.stringify(installed));
+    uninstallHooks(path, {}, target);
+    const remaining = JSON.parse(readFileSync(path, "utf8"));
+    expect(remaining.hooks.Stop[0].hooks.map((hook: { command: string }) => hook.command)).toEqual(user);
+  });
   it("refuses destructive reshape", () => {
     const path = join(dir(), "hooks.json");
     writeFileSync(path, '{"hooks":{"Interrupt":null}}');

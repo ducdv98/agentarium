@@ -23,3 +23,5 @@
 - **`SubagentStop` maps to `stop` (idle), not `end`:** a Codex sub-agent can get more input later. Sub-agents end when the root's `SessionEnd` arrives, or through the lost timeout.
 - **`Interrupt` maps to `stop` on the root:** cancelled turns send `Interrupt` instead of `Stop`.
 - **Verified end to end** against Codex 0.160.0: `codex exec` with a sub-agent produced the expected events in the daemon's log.
+
+**Code review (2026-10-10):** `isOurs` now matches only the exact command shape Agentarium installs, so a user command that happens to contain `hook codex` is never removed.

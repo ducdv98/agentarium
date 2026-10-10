@@ -47,11 +47,13 @@ const claudeTarget = (opts: { port: number; token: string }): HookTarget => ({
 });
 
 const shellQuote = (value: string): string => `"${value.replace(/[\\"$`]/g, (c) => `\\${c}`)}"`;
+const quotedArg = String.raw`"(?:\\.|[^"\\])*"`;
+const codexCommand = new RegExp(`^${quotedArg} ${quotedArg} hook codex --port \\d+(?: --home ${quotedArg})?$`);
 
 /** The hook runs in Codex's environment, not ours, so the port and Agentarium home travel in the command. */
 export const codexTarget = (port: number, script: string, home: string): HookTarget => ({
   events: ["SessionStart", "UserPromptSubmit", "PreToolUse", "PermissionRequest", "PostToolUse", "SubagentStart", "SubagentStop", "Stop", "Interrupt", "SessionEnd"],
-  isOurs: (h) => isObj(h) && h.type === "command" && typeof h.command === "string" && /\shook codex(\s|$)/.test(h.command),
+  isOurs: (h) => isObj(h) && h.type === "command" && typeof h.command === "string" && codexCommand.test(h.command),
   handler: { type: "command", command: `${shellQuote(process.execPath)} ${shellQuote(script)} hook codex --port ${port} --home ${shellQuote(home)}`, timeout: HOOK_TIMEOUT_S },
 });
 

@@ -1,10 +1,11 @@
-import { mkdtempSync, rmSync, symlinkSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, rmSync, symlinkSync } from "node:fs";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { WebSocketServer } from "ws";
 import { startDaemon, type Daemon } from "../src";
+import { startCodexLive } from "../src/codex-live";
 
 const dirs: string[] = [];
 const daemons: Daemon[] = [];
@@ -24,6 +25,82 @@ afterEach(async () => {
 });
 
 describe("Codex live daemon", () => {
+  it("times out unanswered RPC calls and retries discovery", async () => {
+    const socketPath = join(temp(), "control.sock");
+    const server = createServer();
+    const wss = new WebSocketServer({ server });
+    await new Promise<void>((resolve) => server.listen(socketPath, resolve));
+    servers.push({ close: async () => {
+      for (const client of wss.clients) client.terminate();
+      await new Promise<void>((resolve) => wss.close(() => resolve()));
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    } });
+    let discoveryCalls = 0;
+    wss.on("connection", (client) => client.on("message", (bytes) => {
+      const message = JSON.parse(bytes.toString()) as { id: number; method: string };
+      if (message.method === "initialize") client.send(JSON.stringify({ jsonrpc: "2.0", id: message.id, result: {} }));
+      if (message.method === "thread/loaded/list") discoveryCalls++;
+    }));
+    const observer = startCodexLive({
+      socketPath,
+      mapper: { thread: () => ({ events: [] }), map: () => ({ events: [] }) },
+      onEvents: () => {},
+      log: () => {},
+      pollMs: 30,
+      rpcTimeoutMs: 20,
+    });
+    try {
+      await waitFor(() => discoveryCalls >= 2);
+      expect(observer.connected()).toBe(true);
+    } finally {
+      await observer.close();
+    }
+  });
+  it("reuses one short socket alias across reconnects and removes it on close", async () => {
+    const dir = temp();
+    const socketPath = join(dir, "control.sock");
+    const longSocketPath = join(dir, "x".repeat(100));
+    const server = createServer();
+    const wss = new WebSocketServer({ server });
+    await new Promise<void>((resolve) => server.listen(socketPath, resolve));
+    symlinkSync(socketPath, longSocketPath);
+    servers.push({ close: async () => {
+      for (const client of wss.clients) client.terminate();
+      await new Promise<void>((resolve) => wss.close(() => resolve()));
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    } });
+    const aliases = () => readdirSync(tmpdir()).filter((name) => name.startsWith("agentarium-codex-") && name !== dir.split("/").at(-1));
+    const before = new Set(aliases());
+    let connections = 0;
+    wss.on("connection", (client) => {
+      connections++;
+      client.on("message", (bytes) => {
+        const message = JSON.parse(bytes.toString()) as { id: number; method: string };
+        if (message.method === "initialize") client.send(JSON.stringify({ jsonrpc: "2.0", id: message.id, result: {} }));
+        if (message.method === "thread/loaded/list") {
+          client.send(JSON.stringify({ jsonrpc: "2.0", id: message.id, result: { data: [] } }));
+          if (connections === 1) client.close();
+        }
+      });
+    });
+    const observer = startCodexLive({
+      socketPath: longSocketPath,
+      mapper: { thread: () => ({ events: [] }), map: () => ({ events: [] }) },
+      onEvents: () => {},
+      log: () => {},
+      retryMs: 20,
+      pollMs: 100,
+    });
+    let created: string[] = [];
+    try {
+      await waitFor(() => connections >= 2 && observer.connected());
+      created = aliases().filter((name) => !before.has(name));
+      expect(created).toHaveLength(1);
+    } finally {
+      await observer.close();
+    }
+    expect(existsSync(join(tmpdir(), created[0]!))).toBe(false);
+  });
   it("observes an approval and its outcome without replying to the app-server request", async () => {
     const dir = temp();
     const socketPath = join(dir, "control.sock");

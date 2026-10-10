@@ -30,10 +30,20 @@ function summary(tool: string, input: unknown): string | undefined {
   return undefined;
 }
 
-export function createCodexAdapter(opts: { machine: string; lineage?: (threadId: string, rolloutPath?: string) => { parentThreadId: string | null } | null }): { map(payload: unknown): AdapterOutput } {
-  const sessions = new Map<string, { callers: string[]; children: Set<string> }>();
+export function createCodexAdapter(opts: { machine: string; lineage?: (threadId: string, rolloutPath?: string) => { parentThreadId: string | null } | null }): { map(payload: unknown): AdapterOutput; restore(agent: AgentRef): void } {
+  const sessions = new Map<string, { callers: string[]; children: Set<string>; restored: Set<string> }>();
   const ref = (session: string, agent: string): AgentRef => ({ machine: opts.machine, provider: "codex", session, agent });
   return {
+    restore(agent) {
+      if (agent.provider !== "codex" || agent.agent === ROOT_AGENT) return;
+      let session = sessions.get(agent.session);
+      if (!session) {
+        session = { callers: [], children: new Set(), restored: new Set() };
+        sessions.set(agent.session, session);
+      }
+      session.children.add(agent.agent);
+      session.restored.add(agent.agent);
+    },
     map(payload) {
       if (!isObj(payload)) return { events: [] };
       const session = text(payload.session_id);
@@ -47,56 +57,77 @@ export function createCodexAdapter(opts: { machine: string; lineage?: (threadId:
       const id = text(payload.tool_use_id);
       const state = () => {
         let s = sessions.get(session);
-        if (!s) { s = { callers: [], children: new Set() }; sessions.set(session, s); }
+        if (!s) { s = { callers: [], children: new Set(), restored: new Set() }; sessions.set(session, s); }
         return s;
       };
       const prior = agentId !== ROOT_AGENT && state().children.has(agentId);
-      const needsLineage = agentId !== ROOT_AGENT && (hook === "SubagentStop" || (!prior && hook !== "SubagentStart"));
+      const restored = agentId !== ROOT_AGENT && state().restored.has(agentId);
+      const needsLineage = agentId !== ROOT_AGENT && ((hook === "SubagentStop" && !restored) || (!prior && hook !== "SubagentStart"));
       const lineage = needsLineage ? opts.lineage?.(agentId, text(payload.agent_transcript_path) ?? text(payload.transcript_path)) : null;
       const observed = lineage?.parentThreadId ? { ...base, kind: "spawn" as const,
         parent: ref(session, lineage.parentThreadId === session ? ROOT_AGENT : lineage.parentThreadId), provenance: "observed" as const } : undefined;
       const recovery = !prior && hook !== "SubagentStart" && observed ? [observed] : [];
       if (agentId !== ROOT_AGENT) state().children.add(agentId);
-      const result = (() : AdapterOutput => { switch (hook) {
-        case "SessionStart": return payload.source === "compact" ? out() : out({ ...base, agent: ref(session, ROOT_AGENT), kind: "session_start" });
-        case "UserPromptSubmit": return out({ ...base, kind: "prompt" });
-        case "PreToolUse": {
-          if (!tool || !id) return out();
-          if (tool === "collaborationspawn_agent") {
-            const callers = state().callers;
-            callers.push(agentId);
-            if (callers.length > 100) callers.shift();
+      function mapHook(hook: string, payload: Record<string, unknown>, session: string): AdapterOutput {
+        switch (hook) {
+          case "SessionStart":
+            return payload.source === "compact" ? out() : out({ ...base, agent: ref(session, ROOT_AGENT), kind: "session_start" });
+          case "UserPromptSubmit":
+            return out({ ...base, kind: "prompt" });
+          case "PreToolUse": {
+            if (!tool || !id) return out();
+            if (tool === "collaborationspawn_agent") {
+              const callers = state().callers;
+              callers.push(agentId);
+              if (callers.length > 100) callers.shift();
+            }
+            const label = summary(tool, payload.tool_input);
+            return out({
+              ...base,
+              kind: "tool_start",
+              tool_use_id: id,
+              tool,
+              category: categoryForCodexTool(tool),
+              ...(label ? { summary: label } : {}),
+            });
           }
-          const label = summary(tool, payload.tool_input);
-          return out({ ...base, kind: "tool_start", tool_use_id: id, tool, category: categoryForCodexTool(tool), ...(label ? { summary: label } : {}) });
+          case "PostToolUse": {
+            if (!id) return out();
+            let ok = true;
+            if (tool === "apply_patch" && typeof payload.tool_response === "string") {
+              const exit = /^Exit code: (\d+)/.exec(payload.tool_response);
+              if (exit) ok = Number(exit[1]) === 0;
+            } else if (tool?.startsWith("mcp__") && isObj(payload.tool_response)) ok = payload.tool_response.isError !== true;
+            // Bash hooks have no exit code; PostToolUse only establishes completion.
+            return out({ ...base, kind: "tool_end", tool_use_id: id, ok });
+          }
+          case "PermissionRequest":
+            return out({ ...base, kind: "needs_input", ...(tool ? { summary: clip(tool) } : {}) });
+          case "SubagentStart": {
+            if (agentId === ROOT_AGENT) return out();
+            const s = state();
+            s.children.add(agentId);
+            return out({ ...base, kind: "spawn", parent: ref(session, s.callers.shift() ?? ROOT_AGENT), provenance: "inferred" });
+          }
+          case "SubagentStop":
+            return agentId === ROOT_AGENT ? out() : out(...(observed ? [observed] : []), { ...base, kind: "stop" });
+          case "Stop":
+            return out({ ...base, kind: "stop" });
+          case "Interrupt":
+            return out({ ...base, agent: ref(session, ROOT_AGENT), kind: "stop" });
+          case "SessionEnd": {
+            const children = sessions.get(session)?.children ?? new Set<string>();
+            sessions.delete(session);
+            return out(
+              { ...base, agent: ref(session, ROOT_AGENT), kind: "end" },
+              ...[...children].map((child): NewEvent => ({ ...base, agent: ref(session, child), kind: "end" })),
+            );
+          }
+          default:
+            return out();
         }
-        case "PostToolUse": {
-          if (!id) return out();
-          let ok = true;
-          if (tool === "apply_patch" && typeof payload.tool_response === "string") {
-            const exit = /^Exit code: (\d+)/.exec(payload.tool_response);
-            if (exit) ok = Number(exit[1]) === 0;
-          } else if (tool?.startsWith("mcp__") && isObj(payload.tool_response)) ok = payload.tool_response.isError !== true;
-          // Bash hooks have no exit code; PostToolUse only establishes completion.
-          return out({ ...base, kind: "tool_end", tool_use_id: id, ok });
-        }
-        case "PermissionRequest": return out({ ...base, kind: "needs_input", ...(tool ? { summary: clip(tool) } : {}) });
-        case "SubagentStart": {
-          if (agentId === ROOT_AGENT) return out();
-          const s = state();
-          s.children.add(agentId);
-          return out({ ...base, kind: "spawn", parent: ref(session, s.callers.shift() ?? ROOT_AGENT), provenance: "inferred" });
-        }
-        case "SubagentStop": return agentId === ROOT_AGENT ? out() : out(...(observed ? [observed] : []), { ...base, kind: "stop" });
-        case "Stop": return out({ ...base, kind: "stop" });
-        case "Interrupt": return out({ ...base, agent: ref(session, ROOT_AGENT), kind: "stop" });
-        case "SessionEnd": {
-          const children = sessions.get(session)?.children ?? new Set<string>();
-          sessions.delete(session);
-          return out({ ...base, agent: ref(session, ROOT_AGENT), kind: "end" }, ...[...children].map((child): NewEvent => ({ ...base, agent: ref(session, child), kind: "end" })));
-        }
-        default: return out();
-      } })();
+      }
+      const result = mapHook(hook, payload, session);
       return recovery.length ? { ...result, events: [...recovery, ...result.events.filter((event) => event.kind !== "spawn")] } : result;
     },
   };

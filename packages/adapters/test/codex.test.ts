@@ -43,6 +43,19 @@ const root = (evs: NewEvent[]) => Object.values(state(evs).agents).find((a) => a
     expect(evs.filter((e) => e.kind === "tool_start" && e.category === "delegate").length).toBeGreaterThan(2);
     expect(Object.values(state(evs).agents).map((a) => a.status)).toEqual(["done", "done", "done"]);
   });
+  it("ends restored children without looking up their lineage", () => {
+    let lookups = 0;
+    const adapter = createCodexAdapter({ machine: "m1", lineage: () => { lookups++; return null; } });
+    adapter.restore({ machine: "m1", provider: "codex", session: "s", agent: "child" });
+    expect(adapter.map({ session_id: "s", agent_id: "child", hook_event_name: "PreToolUse", tool_name: "Bash", tool_use_id: "t" }).events)
+      .toEqual([expect.objectContaining({ kind: "tool_start" })]);
+    expect(adapter.map({ session_id: "s", agent_id: "child", hook_event_name: "SubagentStop" }).events)
+      .toEqual([expect.objectContaining({ kind: "stop" })]);
+    expect(lookups).toBe(0);
+    expect(adapter.map({ session_id: "s", hook_event_name: "SessionEnd" }).events)
+      .toEqual([expect.objectContaining({ kind: "end", agent: expect.objectContaining({ agent: ROOT_AGENT }) }),
+        expect.objectContaining({ kind: "end", agent: expect.objectContaining({ agent: "child" }) })]);
+  });
   it("recovers a grandchild from its first mid-session hook and refines a stopped child", () => {
     const hooks = fixture("subagents").hooks;
     const first = hooks.find((h) => h.hook_event_name === "PreToolUse" && h.agent_id &&

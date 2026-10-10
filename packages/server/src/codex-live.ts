@@ -16,6 +16,7 @@ export function startCodexLive(opts: {
   log: (message: string) => void;
   retryMs?: number;
   pollMs?: number;
+  rpcTimeoutMs?: number;
 }): { connected(): boolean; close(): Promise<void> } {
   let stopped = false;
   let connected = false;
@@ -23,11 +24,13 @@ export function startCodexLive(opts: {
   let ws: WebSocket | undefined;
   let retry: NodeJS.Timeout | undefined;
   let poll: NodeJS.Timeout | undefined;
-  const tempDirs = new Set<string>();
+  let shortPath: Promise<string> | undefined;
+  let tempDir: string | undefined;
   let nextId = 1;
-  const pending = new Map<number, { resolve(value: unknown): void; reject(reason: Error): void }>();
+  const pending = new Map<number, { resolve(value: unknown): void; reject(reason: Error): void; timer: NodeJS.Timeout }>();
   const resumed = new Set<string>();
   const resuming = new Set<string>();
+  const closedDuringResume = new Set<string>();
   const duringResume = new Map<string, unknown[]>();
   const transition = (available: boolean, reason = "connection closed") => {
     connected = available;
@@ -39,9 +42,13 @@ export function startCodexLive(opts: {
   const rpc = (method: string, params: object): Promise<unknown> => new Promise((resolve, reject) => {
     if (ws?.readyState !== WebSocket.OPEN) { reject(new Error("connection closed")); return; }
     const id = nextId++;
-    pending.set(id, { resolve, reject });
+    const timer = setTimeout(() => {
+      pending.delete(id);
+      reject(new Error(`RPC ${method} timed out`));
+    }, opts.rpcTimeoutMs ?? 10_000);
+    pending.set(id, { resolve, reject, timer });
     ws.send(JSON.stringify({ jsonrpc: "2.0", id, method, params }), (error) => {
-      if (error) { pending.delete(id); reject(error); }
+      if (error && pending.delete(id)) { clearTimeout(timer); reject(error); }
     });
   });
   const resume = async (id: string) => {
@@ -49,13 +56,14 @@ export function startCodexLive(opts: {
     resuming.add(id);
     try {
       const result = await rpc("thread/resume", { threadId: id, excludeTurns: true });
+      if (closedDuringResume.has(id)) return;
       if (!result || typeof result !== "object" || !("thread" in result)) return;
       const recovery = opts.mapper.thread(result.thread);
       if (recovery.events.length) await opts.onEvents(recovery);
       resumed.add(id);
       for (const message of duringResume.get(id) ?? []) deliver(message);
     } catch { /* Retry at the next poll. */ }
-    finally { duringResume.delete(id); resuming.delete(id); }
+    finally { duringResume.delete(id); resuming.delete(id); closedDuringResume.delete(id); }
   };
   const discover = async () => {
     if (!connected) return;
@@ -80,16 +88,16 @@ export function startCodexLive(opts: {
     let path = opts.socketPath;
     try {
       if (Buffer.byteLength(path) > 100) {
-        const dir = await mkdtemp(join(tmpdir(), "agentarium-codex-"));
-        tempDirs.add(dir);
-        path = join(dir, "socket");
-        await symlink(opts.socketPath, path);
+        shortPath ??= (async () => {
+          const dir = await mkdtemp(join(tmpdir(), "agentarium-codex-"));
+          tempDir = dir;
+          const alias = join(dir, "socket");
+          await symlink(opts.socketPath, alias);
+          return alias;
+        })();
+        path = await shortPath;
       }
-      if (stopped) {
-        await Promise.all([...tempDirs].map((dir) => rm(dir, { recursive: true, force: true })));
-        tempDirs.clear();
-        return;
-      }
+      if (stopped) return;
       const socket = new WebSocket(`ws+unix://${path}:/`);
       ws = socket;
       let reason = "connection closed";
@@ -102,13 +110,17 @@ export function startCodexLive(opts: {
         if (typeof msg.id === "number" && !msg.method && pending.has(msg.id)) {
           const call = pending.get(msg.id)!;
           pending.delete(msg.id);
+          clearTimeout(call.timer);
           if (msg.error) call.reject(new Error(JSON.stringify(msg.error)));
           else call.resolve(msg.result);
           return;
         }
         if (msg.method === "thread/closed" && msg.params && typeof msg.params === "object") {
           const id = (msg.params as Record<string, unknown>).threadId;
-          if (typeof id === "string") resumed.delete(id);
+          if (typeof id === "string") {
+            resumed.delete(id);
+            if (resuming.has(id)) closedDuringResume.add(id);
+          }
         }
         if (msg.method === "thread/started" && msg.params && typeof msg.params === "object") {
           const thread = (msg.params as Record<string, unknown>).thread;
@@ -119,7 +131,7 @@ export function startCodexLive(opts: {
         }
         const params = msg.params && typeof msg.params === "object" ? msg.params as Record<string, unknown> : undefined;
         const threadId = params?.threadId;
-        if (typeof threadId === "string" && resuming.has(threadId)) {
+        if (typeof threadId === "string" && resuming.has(threadId) && msg.method !== "thread/closed") {
           const queued = duringResume.get(threadId) ?? [];
           queued.push(message);
           duringResume.set(threadId, queued);
@@ -132,8 +144,9 @@ export function startCodexLive(opts: {
         connected = false;
         resumed.clear();
         resuming.clear();
+        closedDuringResume.clear();
         duringResume.clear();
-        for (const call of pending.values()) call.reject(new Error("connection closed"));
+        for (const call of pending.values()) { clearTimeout(call.timer); call.reject(new Error("connection closed")); }
         pending.clear();
         if (poll) clearInterval(poll);
         if (!stopped) {
@@ -165,10 +178,10 @@ export function startCodexLive(opts: {
       if (retry) clearTimeout(retry);
       if (poll) clearInterval(poll);
       ws?.terminate();
-      for (const call of pending.values()) call.reject(new Error("connection closed"));
+      for (const call of pending.values()) { clearTimeout(call.timer); call.reject(new Error("connection closed")); }
       pending.clear();
-      await Promise.all([...tempDirs].map((dir) => rm(dir, { recursive: true, force: true })));
-      tempDirs.clear();
+      if (shortPath) await shortPath.catch(() => undefined);
+      if (tempDir) await rm(tempDir, { recursive: true, force: true });
     },
   };
 }

@@ -78,6 +78,16 @@ export function createCodexLiveMapper(opts: { machine: string; onThread?: (threa
       if (method === "thread/started") return thread(params.thread);
       const threadId = text(params.threadId);
       if (!threadId) return empty();
+      if (method === "thread/closed") {
+        threads.delete(threadId);
+        for (const [itemId, startedThread] of startedIn) {
+          if (startedThread !== threadId) continue;
+          startedIn.delete(itemId);
+          open.delete(itemId);
+        }
+        for (const [key, request] of requests) if (request.threadId === threadId) requests.delete(key);
+        return empty();
+      }
       const known = threads.get(threadId);
       if (!known) return empty();
       const out = (...events: NewEvent[]): AdapterOutput => known.cwd ? { cwd: known.cwd, events } : { events };
@@ -106,7 +116,9 @@ export function createCodexLiveMapper(opts: { machine: string; onThread?: (threa
           try { opts.onUnknownOutcome?.(id, status); } catch { /* Mapping never fails because diagnostics failed. */ }
           return out();
         }
-        return out({ schema_version: SCHEMA_VERSION, agent: known.agent, kind: "tool_end", tool_use_id: id, ok: status === "completed" });
+        const exitCode = params.item.exitCode;
+        const ok = status === "completed" && (typeof exitCode !== "number" || exitCode === 0);
+        return out({ schema_version: SCHEMA_VERSION, agent: known.agent, kind: "tool_end", tool_use_id: id, ok });
       }
       if (method === "turn/completed") return out({ schema_version: SCHEMA_VERSION, agent: known.agent, kind: "stop" });
       return out();

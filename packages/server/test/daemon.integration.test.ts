@@ -192,7 +192,23 @@ describe("lifecycle", () => {
     const before = d1.world(room);
     await d1.close();
     const d2 = await start(dataDir);
-    expect(d2.world(room)).toEqual(before);
+    expect(d2.world(room).agents).toEqual(before.agents);
+    expect(d2.world(room).now).toBeGreaterThanOrEqual(before.now);
+  });
+
+  it("times out a stale pending call during restart replay", async () => {
+    const dataDir = tmp("agentarium-aged-restart-");
+    let now = 1_000;
+    const options = { clock: () => now, timeouts: { idleMs: 10, lostMs: 100, waitingLostMs: 200 } };
+    const d1 = await start(dataDir, options);
+    const room = ((await (await post(d1, { event: ev("tool_start", {
+      tool_use_id: "old", tool: "Bash", category: "exec",
+    }) })).json()) as { room: string }).room;
+    await d1.close();
+    daemons.splice(daemons.indexOf(d1), 1);
+    now = 1_500;
+    const d2 = await start(dataDir, options);
+    expect(Object.values(d2.world(room).agents)[0]).toMatchObject({ status: "lost", pending: {} });
   });
 
   it("refuses to start next to a daemon of a different version", async () => {
@@ -331,7 +347,53 @@ describe("Codex hooks", () => {
     await d.close();
     daemons.splice(daemons.indexOf(d), 1);
     const restarted = await start(dir, { machine: "m" });
-    expect(restarted.world("unassigned")).toEqual(prior);
+    expect(restarted.world("unassigned").agents).toEqual(prior.agents);
+    expect(restarted.world("unassigned").now).toBeGreaterThanOrEqual(prior.now);
     expect(Object.values(prior.agents).some((a) => a.ref.provider === "codex" && a.ref.agent !== "root")).toBe(true);
+  });
+  it("ends a restored Codex sub-agent on the root SessionEnd hook", async () => {
+    const dir = tmp("codex-child-restart-");
+    const d1 = await start(dir, { machine: "m" });
+    const child = { machine: "m", provider: "codex", session: "s", agent: "child" };
+    await post(d1, { event: { schema_version: SCHEMA_VERSION, kind: "spawn", agent: child,
+      parent: { ...child, agent: "root" }, provenance: "inferred" } });
+    await d1.close();
+    daemons.splice(daemons.indexOf(d1), 1);
+    const d2 = await start(dir, { machine: "m" });
+    const response = await fetch(`http://127.0.0.1:${d2.port}/hooks/codex`, {
+      method: "POST", headers: { authorization: `Bearer ${d2.token}` },
+      body: JSON.stringify({ session_id: "s", hook_event_name: "SessionEnd" }),
+    });
+    expect(response.status).toBe(204);
+    expect(Object.values(d2.world("unassigned").agents).find((agent) => agent.ref.agent === "child")?.status).toBe("done");
+  });
+  it("keeps a replayed thread room when a later hook has no cwd", async () => {
+    const dir = tmp("codex-thread-room-");
+    const project = join(dir, "project");
+    mkdirSync(project);
+    mkdirSync(join(project, ".git"));
+    const d1 = await start(join(dir, "data"), { machine: "m" });
+    const codexRoot = { machine: "m", provider: "codex", session: "s", agent: "root" };
+    const room = ((await (await post(d1, { cwd: project, event: ev("tool_start", {
+      tool_use_id: "t", tool: "Bash", category: "exec",
+    }, codexRoot) })).json()) as { room: string }).room;
+    await d1.close();
+    daemons.splice(daemons.indexOf(d1), 1);
+    const d2 = await start(join(dir, "data"), { machine: "m" });
+    await fetch(`http://127.0.0.1:${d2.port}/hooks/codex`, {
+      method: "POST", headers: { authorization: `Bearer ${d2.token}` },
+      body: JSON.stringify({ session_id: "s", hook_event_name: "PreCompact" }),
+    });
+    const attr = (key: string, value: string) => ({ key, value: { stringValue: value } });
+    const outcome = { resourceLogs: [{ scopeLogs: [{ logRecords: [{ attributes: [
+      attr("event.name", "codex.tool_result"), attr("conversation.id", "s"),
+      attr("call_id", "t"), attr("success", "false"),
+    ] }] }] }] };
+    const response = await fetch(`http://127.0.0.1:${d2.port}/otel/v1/logs`, {
+      method: "POST", headers: { authorization: `Bearer ${d2.token}`, "content-type": "application/json" },
+      body: JSON.stringify(outcome),
+    });
+    expect(response.status).toBe(200);
+    expect(Object.values(d2.world(room).agents)[0]?.status).toBe("blocked");
   });
 });

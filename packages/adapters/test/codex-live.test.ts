@@ -56,6 +56,27 @@ describe("Codex live fixture replay", () => {
 describe("Codex live mapping and outcomes", () => {
   const agent = { machine: "m", provider: "codex", session: "s", agent: ROOT_AGENT } as const;
   const end = (ok: boolean, id = "tool"): NewEvent => ({ schema_version: 1, agent, kind: "tool_end", tool_use_id: id, ok });
+  it("marks a completed command with a nonzero exit code as failed", () => {
+    const mapper = createCodexLiveMapper({ machine: "m" });
+    mapper.thread({ id: "s", sessionId: "s" });
+    mapper.map({ method: "item/started", params: { threadId: "s", item: { type: "commandExecution", id: "t", command: "exit 2" } } });
+    expect(mapper.map({ method: "item/completed", params: {
+      threadId: "s", item: { type: "commandExecution", id: "t", status: "completed", exitCode: 2 },
+    } }).events).toEqual([expect.objectContaining({ kind: "tool_end", tool_use_id: "t", ok: false })]);
+  });
+  it("forgets a closed thread, its open items and approval requests", () => {
+    const mapper = createCodexLiveMapper({ machine: "m" });
+    mapper.thread({ id: "s", sessionId: "s" });
+    mapper.map({ method: "item/started", params: { threadId: "s", item: { type: "commandExecution", id: "t" } } });
+    mapper.map({ id: 7, method: "item/commandExecution/requestApproval", params: { threadId: "s", itemId: "t" } });
+    expect(mapper.map({ method: "thread/closed", params: { threadId: "s" } }).events).toEqual([]);
+    expect(mapper.map({ method: "serverRequest/resolved", params: { threadId: "s", requestId: 7 } }).events).toEqual([]);
+    mapper.thread({ id: "s", sessionId: "s" });
+    expect(mapper.map({ method: "item/completed", params: {
+      threadId: "s", item: { type: "commandExecution", id: "t", status: "completed" },
+    } }).events).toEqual([]);
+    expect(mapper.map({ method: "serverRequest/resolved", params: { threadId: "s", requestId: 7 } }).events).toEqual([]);
+  });
   it("lets precise failures supersede hook completion and bounds remembered IDs", () => {
     const gate = createOutcomeGate(2);
     expect(gate("hook", end(true))).toBe(true);

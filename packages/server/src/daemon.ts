@@ -123,6 +123,14 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
   } });
   const outcomeGate = createOutcomeGate();
   const threads = new Map<string, { agent: AgentRef; roomId?: string; cwd?: string }>();
+  const rememberThread = (id: string, agent: AgentRef, location: { roomId?: string; cwd?: string } = {}): void => {
+    const previous = threads.get(id);
+    threads.set(id, {
+      agent,
+      roomId: location.roomId ?? (location.cwd ? resolveRoom(location.cwd) : previous?.roomId),
+      cwd: location.cwd ?? previous?.cwd,
+    });
+  };
 
   const rooms = new Map<string, Room>();
   const getRoom = (id: string): Room => {
@@ -150,12 +158,17 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
   for (const id of await storage.rooms()) {
     const room = getRoom(id);
     const events = await storage.read(id);
-    room.world = room.sent = replay(events, timeouts);
+    const replayed = replay(events, timeouts);
+    room.lastActive = replayed.now;
+    room.world = room.sent = reduce(replayed,
+      { schema_version: SCHEMA_VERSION, kind: "tick", ts: clock() }, timeouts);
     for (const event of events) if ("agent" in event && event.agent.provider === "codex") {
       const threadId = event.agent.agent === "root" ? event.agent.session : event.agent.agent;
-      threads.set(threadId, { agent: event.agent, roomId: id });
+      rememberThread(threadId, event.agent, { roomId: id });
     }
-    room.lastActive = room.world.now;
+    for (const agent of Object.values(room.world.agents)) {
+      if (agent.ref.provider === "codex" && agent.status !== "done" && agent.status !== "lost") codex.restore(agent.ref);
+    }
   }
 
   // Appends are chained so the log order always matches the order events were reduced.
@@ -283,7 +296,7 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
   const codexLive = opts.codexControlSocket ? startCodexLive({
     socketPath: opts.codexControlSocket,
     mapper: createCodexLiveMapper({ machine: opts.machine ?? hostname(),
-      onThread: (id, agent, cwd) => threads.set(id, { agent, cwd }),
+      onThread: (id, agent, cwd) => rememberThread(id, agent, { cwd }),
       onUnknownOutcome: (id, status) => (opts.log ?? console.log)(`codex live: unknown outcome ${id}: ${String(status)}`) }),
     onEvents: async ({ cwd, events }) => {
       for (const event of events) if (outcomeGate("live", event)) await ingest(cwd, event);
@@ -346,8 +359,8 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
         const p = payload as Record<string, unknown>;
         if (typeof p.session_id === "string") {
           const id = typeof p.agent_id === "string" ? p.agent_id : p.session_id;
-          threads.set(id, { agent: { machine: opts.machine ?? hostname(), provider: "codex", session: p.session_id,
-            agent: id === p.session_id ? "root" : id }, cwd });
+          rememberThread(id, { machine: opts.machine ?? hostname(), provider: "codex", session: p.session_id,
+            agent: id === p.session_id ? "root" : id }, { cwd });
         }
       }
       for (const event of events) if (url.pathname !== "/hooks/codex" || outcomeGate("hook", event)) await ingest(cwd, event);
