@@ -1,0 +1,25 @@
+{
+  "name": "Office room",
+  "licence": "CC-BY-4.0",
+  "sources": [
+    {
+      "what": "Floors, walls, furniture, props and room layout",
+      "source": "Agentarium scripted room source (make.py, layout.json)",
+      "author": "Agentarium contributors",
+      "url": "https://github.com/ducdv98/agentarium",
+      "licence": "CC-BY-4.0",
+      "changes": "Original work, modelled from primitives by make.py; no third-party meshes or textures."
+    }
+  ],
+  "render": {
+    "blend": "office-room.blend",
+    "collection": "asset",
+    "atlas": "office-room",
+    "frame": { "size": [160, 272], "anchor": [80, 232] },
+    "parts": [
+      "floor", "floor-alt", "carpet", "wall", "wall-window",
+      "desk", "chair", "bookshelf", "server-rack", "filing-cabinet", "comms-desk",
+      "table", "whiteboard", "water-cooler", "printer", "sofa", "coffee-table", "plant"
+    ]
+  }
+}

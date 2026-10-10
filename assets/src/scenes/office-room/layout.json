@@ -1,0 +1,187 @@
+{
+  "size": [12, 10],
+  "floor": {
+    "legend": {
+      ".": "floor",
+      ",": "floor-alt",
+      "c": "carpet"
+    },
+    "rows": [
+      ".,.,.,.,.,.,",
+      ",.,.,.,.,.,.",
+      ".,.,.,.,.,.,",
+      ",.,.,.,.,.,.",
+      ".,.,.,.,.,.,",
+      ",.,.,.,.,.,.",
+      ".,.,.,.,.,.,",
+      ",.,.,.,.,.,.",
+      ".,.cccccc,.,",
+      ",.,cccccc.,."
+    ]
+  },
+  "walls": [
+    { "part": "wall", "at": [0, 0], "facing": "sw" },
+    { "part": "wall", "at": [1, 0], "facing": "sw" },
+    { "part": "wall", "at": [2, 0], "facing": "sw" },
+    { "part": "wall", "at": [3, 0], "facing": "sw" },
+    { "part": "wall-window", "at": [4, 0], "facing": "sw" },
+    { "part": "wall", "at": [5, 0], "facing": "sw" },
+    { "part": "wall", "at": [6, 0], "facing": "sw" },
+    { "part": "wall-window", "at": [7, 0], "facing": "sw" },
+    { "part": "wall", "at": [8, 0], "facing": "sw" },
+    { "part": "wall", "at": [9, 0], "facing": "sw" },
+    { "part": "wall", "at": [10, 0], "facing": "sw" },
+    { "part": "wall", "at": [11, 0], "facing": "sw" },
+    { "part": "wall", "at": [0, 0], "facing": "se" },
+    { "part": "wall", "at": [0, 1], "facing": "se" },
+    { "part": "wall", "at": [0, 2], "facing": "se" },
+    { "part": "wall", "at": [0, 3], "facing": "se" },
+    { "part": "wall-window", "at": [0, 4], "facing": "se" },
+    { "part": "wall-window", "at": [0, 5], "facing": "se" },
+    { "part": "wall", "at": [0, 6], "facing": "se" },
+    { "part": "wall", "at": [0, 7], "facing": "se" },
+    { "part": "wall", "at": [0, 8], "facing": "se" },
+    { "part": "wall", "at": [0, 9], "facing": "se" }
+  ],
+  "seats": [
+    "chair",
+    "sofa"
+  ],
+  "props": [
+    { "part": "plant", "at": [0, 0], "facing": "sw" },
+    { "part": "bookshelf", "at": [1, 0], "facing": "sw" },
+    { "part": "bookshelf", "at": [2, 0], "facing": "sw" },
+    { "part": "bookshelf", "at": [3, 0], "facing": "sw" },
+    { "part": "plant", "at": [4, 0], "facing": "sw" },
+    { "part": "whiteboard", "at": [5, 0], "facing": "sw" },
+    { "part": "whiteboard", "at": [6, 0], "facing": "sw" },
+    { "part": "plant", "at": [7, 0], "facing": "sw" },
+    { "part": "server-rack", "at": [8, 0], "facing": "sw" },
+    { "part": "server-rack", "at": [9, 0], "facing": "sw" },
+    { "part": "server-rack", "at": [10, 0], "facing": "sw" },
+    { "part": "plant", "at": [11, 0], "facing": "sw" },
+    { "part": "filing-cabinet", "at": [0, 2], "facing": "se" },
+    { "part": "filing-cabinet", "at": [0, 3], "facing": "se" },
+    { "part": "printer", "at": [0, 6], "facing": "se" },
+    { "part": "water-cooler", "at": [0, 8], "facing": "se" },
+    { "part": "plant", "at": [0, 9], "facing": "se" },
+    { "part": "desk", "at": [4, 4], "facing": "ne" },
+    { "part": "desk", "at": [5, 4], "facing": "ne" },
+    { "part": "desk", "at": [6, 4], "facing": "ne" },
+    { "part": "desk", "at": [7, 4], "facing": "ne" },
+    { "part": "chair", "at": [4, 3], "facing": "sw" },
+    { "part": "chair", "at": [5, 3], "facing": "sw" },
+    { "part": "chair", "at": [6, 3], "facing": "sw" },
+    { "part": "chair", "at": [7, 3], "facing": "sw" },
+    { "part": "desk", "at": [4, 5], "facing": "sw" },
+    { "part": "desk", "at": [5, 5], "facing": "sw" },
+    { "part": "desk", "at": [6, 5], "facing": "sw" },
+    { "part": "desk", "at": [7, 5], "facing": "sw" },
+    { "part": "chair", "at": [4, 6], "facing": "ne", "front": true },
+    { "part": "chair", "at": [5, 6], "facing": "ne", "front": true },
+    { "part": "chair", "at": [6, 6], "facing": "ne", "front": true },
+    { "part": "chair", "at": [7, 6], "facing": "ne", "front": true },
+    { "part": "table", "at": [9, 4], "facing": "sw" },
+    { "part": "table", "at": [9, 5], "facing": "sw" },
+    { "part": "comms-desk", "at": [11, 6], "facing": "nw" },
+    { "part": "comms-desk", "at": [11, 7], "facing": "nw" },
+    { "part": "coffee-table", "at": [5, 8], "facing": "sw" },
+    { "part": "coffee-table", "at": [6, 8], "facing": "se" },
+    { "part": "sofa", "at": [5, 9], "facing": "ne", "front": true },
+    { "part": "sofa", "at": [6, 9], "facing": "ne", "front": true },
+    { "part": "sofa", "at": [4, 8], "facing": "se" },
+    { "part": "sofa", "at": [7, 8], "facing": "nw", "front": true },
+    { "part": "plant", "at": [3, 9], "facing": "sw" },
+    { "part": "plant", "at": [8, 9], "facing": "sw" }
+  ],
+  "stations": {
+    "read": {
+      "label": "Library",
+      "slots": [
+        { "at": [1, 1], "facing": "ne" },
+        { "at": [2, 1], "facing": "ne" },
+        { "at": [3, 1], "facing": "ne" }
+      ]
+    },
+    "write": {
+      "label": "Desks",
+      "slots": [
+        { "at": [4, 3], "facing": "sw" },
+        { "at": [5, 3], "facing": "sw" },
+        { "at": [6, 3], "facing": "sw" },
+        { "at": [7, 3], "facing": "sw" },
+        { "at": [4, 6], "facing": "ne" },
+        { "at": [5, 6], "facing": "ne" },
+        { "at": [6, 6], "facing": "ne" },
+        { "at": [7, 6], "facing": "ne" }
+      ]
+    },
+    "exec": {
+      "label": "Server racks",
+      "slots": [
+        { "at": [8, 1], "facing": "ne" },
+        { "at": [9, 1], "facing": "ne" },
+        { "at": [10, 1], "facing": "ne" }
+      ]
+    },
+    "search": {
+      "label": "Filing cabinets",
+      "slots": [
+        { "at": [1, 2], "facing": "nw" },
+        { "at": [1, 3], "facing": "nw" }
+      ]
+    },
+    "network": {
+      "label": "Comms desks",
+      "slots": [
+        { "at": [10, 6], "facing": "se" },
+        { "at": [10, 7], "facing": "se" }
+      ]
+    },
+    "delegate": {
+      "label": "Meeting table",
+      "slots": [
+        { "at": [8, 4], "facing": "se" },
+        { "at": [8, 5], "facing": "se" },
+        { "at": [10, 4], "facing": "nw" },
+        { "at": [10, 5], "facing": "nw" },
+        { "at": [9, 3], "facing": "sw" },
+        { "at": [9, 6], "facing": "ne" }
+      ]
+    },
+    "think": {
+      "label": "Whiteboards",
+      "slots": [
+        { "at": [5, 1], "facing": "ne" },
+        { "at": [6, 1], "facing": "ne" },
+        { "at": [5, 2], "facing": "ne" },
+        { "at": [6, 2], "facing": "ne" }
+      ]
+    },
+    "wait": {
+      "label": "Water cooler",
+      "slots": [
+        { "at": [1, 8], "facing": "nw" },
+        { "at": [2, 8], "facing": "nw" }
+      ]
+    },
+    "error": {
+      "label": "Printer",
+      "slots": [
+        { "at": [1, 6], "facing": "nw" },
+        { "at": [2, 6], "facing": "nw" }
+      ]
+    },
+    "rest": {
+      "label": "Lounge",
+      "slots": [
+        { "at": [5, 9], "facing": "ne" },
+        { "at": [6, 9], "facing": "ne" },
+        { "at": [4, 8], "facing": "se" },
+        { "at": [7, 8], "facing": "nw" },
+        { "at": [4, 9], "facing": "ne" },
+        { "at": [7, 9], "facing": "ne" }
+      ]
+    }
+  }
+}

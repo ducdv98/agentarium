@@ -81,6 +81,81 @@ management, the toon look and the outline from `pipeline/settings.json`, so ever
 - The asset faces screen south-west (towards the camera, down the -Y axis) at rest. The pipeline turns it
   for the four directions.
 
+## Scene assets and room layouts
+
+A scene asset, such as `src/scenes/office-room/`, renders many still parts into one atlas. Its manifest
+lists `render.parts` instead of `render.animations`. Each part is a child collection of `render.collection` with
+the same name. The pipeline renders each part alone, one frame for each of the 4 directions, as
+`<part>/<direction>`. A part sits on one 1 m tile centred on the origin. Its front faces -Y (screen south-west):
+an Agent uses it from the neighbouring tile on that side. `render.frame` (`size` and `anchor`, in 1x pixels)
+replaces the character frame from `settings.json`. The office room uses `[160, 272]` and anchors on the tile
+centre at `[80, 232]`, so a 2.2 m wall fits. Palette entries in `settings.json` colour the props as they do the
+characters. `make.py` builds `office-room.blend` from primitives:
+
+```powershell
+& $env:AGENTARIUM_BLENDER -b --factory-startup -P assets/src/scenes/office-room/make.py -- `
+  --out assets/src/scenes/office-room/office-room.blend --settings assets/pipeline/settings.json
+```
+
+`layout.json` places the parts on the tile grid and defines the Stations. A tile is `[column, row]` from the back
+corner. Columns run screen south-east (world +X) and rows run screen south-west (world -Y). At 2x the centre of
+tile `[c, r]` is `((c - r) * 128, (c + r) * 64)` from the back corner's centre. `facing` is one of `ne`, `nw`, `se`
+and `sw`, and picks the part's direction clip.
+
+- `size` is `[columns, rows]`. `floor.rows` has one string per row and one character per tile. A space means no
+  floor. `floor.legend` maps each character to a part.
+- `walls` stand on a tile's edge, opposite their facing: `sw` is the north-east edge, `se` the north-west edge.
+  That edge must be the room's outer edge, with no floor tile beyond it.
+- `props` are furniture, one per tile. Parts listed in `seats` (chairs, sofas) do not block their tile. An Agent
+  may stand or sit there, at most one seat per tile.
+- `stations` has one entry for each of the nine action categories and `rest`. Each entry has a `label` and
+  its `slots`. A slot is a tile where one Agent stands, with the way it faces. Capacity is the number of slots.
+  Every slot is on a free floor tile, belongs to one Station, and can be reached from every other slot over
+  floor tiles without a blocking prop.
+
+The Renderer draws a room in three layers. The floor and the walls are static, so each can be cached with
+`cacheAsTexture`. Props and Agents are then sorted by depth, `column + row`. On the same tile a prop draws
+behind the Agent, unless the prop has `front: true`, for example a chair whose back faces the camera. To cache
+static props (`docs/research/rendering.md`), give each depth row two cached bands, rear props then `front` props,
+and draw that row's Agents between them. The layout fixes only the slots. When more Agents want a Station than it
+has slots, the Renderer decides where they go.
+`assets:check` validates every `layout.json` against its manifest's parts. `node assets/pipeline/preview.mjs
+<scene dir> [--characters <atlas>] [--slots]` composes the room from the committed atlas in that order and writes
+a PNG to `assets/.cache/preview/`.
+
+## Commands
+
+```powershell
+pnpm assets:build
+pnpm assets:build --only office-worker
+pnpm assets:build --only assets/src/characters/office-worker
+pnpm assets:check
+```
+
+`assets:build` validates manifests, writes `NOTICE`, renders with Blender, and
+packs atlases. `assets:check` validates manifests, `NOTICE`, and every atlas
+without Blender.
+
+## Installing the pinned Blender
+
+Use a Windows x64 render machine. Download the MSI from the URL in
+`pipeline/settings.json`:
+
+```powershell
+Get-FileHash blender-5.2.2-windows-x64.msi -Algorithm SHA256
+```
+
+The result must equal `installerSha256`. Install to the default path in the
+settings file or set `AGENTARIUM_BLENDER` to `blender.exe`. The build also
+checks the installed executable against `exeSha256` before it starts Blender.
+Run `git lfs install` before adding a `.blend` file.
+
+Never commit Blender backups, temporary renders, or caches. Never commit
+Mixamo, Quaternius QAL, Sketchfab downloads, CC BY-SA, non-commercial content,
+or assets with an unclear licence. The ignored cache is `assets/.cache/`.
+
+Changing the Blender version means rebuilding all the art.
+
 ## Making a character
 
 ```powershell

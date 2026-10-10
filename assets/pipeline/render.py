@@ -3,7 +3,8 @@
 #
 # The camera, lights, world, colour management, toon look, palette and outline come from settings.json, so
 # every asset looks the same. The asset's .blend only supplies one collection (meshes, at most one armature)
-# and its actions. Writes:
+# and its actions. A scene asset lists render.parts instead of animations: each part is a child collection,
+# rendered alone as a one-frame clip, and render.frame may replace the frame size and anchor. Writes:
 #   <out>/frames/beauty/<anim>/<dir>/frame-NNN.png
 #   <out>/frames/mask-<mask>/<anim>/<dir>/frame-NNN.png
 #   <out>/render-log.json (build, host, GL, seconds per frame, peak memory, and the meta the packer reads)
@@ -31,6 +32,10 @@ with open(ARGS.settings, encoding="utf8") as f:
 with open(os.path.join(ARGS.asset, "asset.json"), encoding="utf8") as f:
     RENDER = json.load(f)["render"]
 MASKS = RENDER.get("masks") or {}
+PARTS = RENDER.get("parts") or []
+# A scene asset may override the frame size and anchor (walls are taller than characters); scale and tile
+# geometry stay shared.
+FRAME = {**S["frame"], **{k: v for k, v in (RENDER.get("frame") or {}).items() if k in ("size", "anchor")}}
 LOG = {"asset": os.path.abspath(ARGS.asset), "errors": [], "frames": []}
 
 
@@ -116,9 +121,9 @@ def setup_scene():
     sc = bpy.context.scene
     for o in list(bpy.data.objects):
         bpy.data.objects.remove(o, do_unlink=True)
-    w1, h1 = S["frame"]["size"]
-    ax1, ay1 = S["frame"]["anchor"]
-    scale = S["frame"]["scale"]
+    w1, h1 = FRAME["size"]
+    ax1, ay1 = FRAME["anchor"]
+    scale = FRAME["scale"]
     cm = S["colourManagement"]
 
     r = sc.render
@@ -341,13 +346,18 @@ def append_asset():
                          for owner in (armature, armature.data)))
         if linked:
             raise AssetError(f"{blend}: {armature.name} has constraints or drivers; bake controls before rendering")
+    children = {c.name: c for c in collection.children_recursive}
+    missing = [p for p in PARTS if p not in children]
+    if missing:
+        raise AssetError(f"{blend}: no part collection named {', '.join(missing)} in {name}")
+    parts = {p: set(children[p].all_objects) for p in PARTS}
     pivot = bpy.data.objects.new("pivot", None)
     bpy.context.scene.collection.objects.link(pivot)
     for o in objects:
         if o.parent is None:
             o.parent = pivot
     actions = {a: bpy.data.actions[a] for a in wanted}
-    return pivot, (armatures[0] if armatures else None), [o for o in objects if o.type == "MESH"], actions
+    return pivot, (armatures[0] if armatures else None), [o for o in objects if o.type == "MESH"], actions, parts
 
 
 def frames_of(action):
@@ -376,12 +386,15 @@ def render_to(path):
 def main():
     check_pin()
     setup_scene()
-    pivot, armature, meshes, actions = append_asset()
+    pivot, armature, meshes, actions, parts = append_asset()
     slots = Slots(meshes)
 
     animations = RENDER.get("animations") or {}
     plan = {name: (actions[a["action"]], frames_of(actions[a["action"]]), a["fps"]) for name, a in animations.items()}
-    if not plan:
+    if parts:
+        # Each part is a one-frame still of its own child collection, so a room packs into one atlas.
+        plan = {p: (None, [bpy.context.scene.frame_current], 1) for p in parts}
+    elif not plan:
         plan = {"still": (None, [bpy.context.scene.frame_current], 1)}
     for name, (_, frames, _) in plan.items():
         if not frames:
@@ -394,6 +407,9 @@ def main():
         for anim, (action, frames, _) in plan.items():
             if action:
                 use_action(armature, action)
+            if parts:
+                for o in meshes:
+                    o.hide_render = o not in parts[anim]
             for d, degrees in dirs.items():
                 pivot.rotation_euler = (0, 0, math.radians(degrees))
                 for i, frame in enumerate(frames):
@@ -404,10 +420,10 @@ def main():
                     if "gl" not in LOG:
                         LOG["gl"] = gl_info()
 
-    w1, h1 = S["frame"]["size"]
+    w1, h1 = FRAME["size"]
     LOG["engine"] = dict(id=bpy.context.scene.render.engine, samples=bpy.context.scene.eevee.taa_render_samples,
-                         resolution=[w1 * S["frame"]["scale"], h1 * S["frame"]["scale"]])
-    LOG["meta"] = dict(frame_1x=S["frame"]["size"], anchor_1x=S["frame"]["anchor"], scale=S["frame"]["scale"],
+                         resolution=[w1 * FRAME["scale"], h1 * FRAME["scale"]])
+    LOG["meta"] = dict(frame_1x=FRAME["size"], anchor_1x=FRAME["anchor"], scale=FRAME["scale"],
                        neutral_tint=list(lin(S["palette"]["tint"])),
                        animations={k: dict(frames=len(v[1]), fps=v[2]) for k, v in plan.items()},
                        dirs=list(dirs), masks=list(MASKS))

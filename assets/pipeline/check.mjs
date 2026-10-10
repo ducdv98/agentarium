@@ -2,6 +2,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { generateNotice, validateTree } from "./licences.mjs";
 import { checkAtlases } from "./atlas-check.mjs";
+import { validateLayout } from "./layout.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const settings = JSON.parse(readFileSync(join(root, "pipeline", "settings.json"), "utf8"));
@@ -31,6 +32,11 @@ function atlasPages(atlasName) {
 
 for (const assetPath of tree.assets) {
   const manifest = JSON.parse(readFileSync(join(assetPath, "asset.json"), "utf8"));
+  const layoutPath = join(assetPath, "layout.json");
+  if (existsSync(layoutPath)) {
+    const layout = JSON.parse(readFileSync(layoutPath, "utf8"));
+    problems.push(...validateLayout(layout, manifest.render?.parts).map((p) => `${layoutPath}: ${p}`));
+  }
   if (!manifest.render) {
     continue;
   }
@@ -39,7 +45,9 @@ for (const assetPath of tree.assets) {
     problems.push(`${manifest.render.atlas}.json: missing`);
     continue;
   }
-  const animations = manifest.render.animations ?? { still: {} };
+  const animations = manifest.render.parts
+    ? Object.fromEntries(manifest.render.parts.map((part) => [part, {}]))
+    : manifest.render.animations ?? { still: {} };
   const masks = Object.keys(manifest.render.masks ?? {});
   problems.push(...checkAtlases(pages, { animations, masks }, settings.directions, manifest.render.atlas));
 }

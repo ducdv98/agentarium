@@ -125,6 +125,32 @@ export function validateManifest(assetPath, manifest) {
         problems.push(problem(manifestPath, `render.animations.${name} needs action and positive integer fps`));
       }
     }
+    if (render.parts !== undefined) {
+      if (!Array.isArray(render.parts) || render.parts.length === 0) {
+        problems.push(problem(manifestPath, "render.parts must be a non-empty list"));
+      } else {
+        render.parts.forEach((part, index) => {
+          if (render.parts.indexOf(part) !== index) {
+            problems.push(problem(manifestPath, `render.parts.${index}: ${part} is listed twice`));
+          } else if (typeof part !== "string" || !/^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(part)) {
+            problems.push(problem(manifestPath, `render.parts.${index}: ${part} is not a safe name`));
+          }
+        });
+      }
+      if (Object.keys(render.animations ?? {}).length) {
+        problems.push(problem(manifestPath, "render.parts and render.animations cannot be used together"));
+      }
+    }
+    if (render.frame !== undefined) {
+      const pair = (value) => (Array.isArray(value) && value.length === 2 ? value : []);
+      const [w, h] = pair(render.frame?.size);
+      const [x, y] = pair(render.frame?.anchor);
+      const whole = [w, h, x, y].every(Number.isInteger);
+      const extra = Object.keys(render.frame ?? {}).some((field) => field !== "size" && field !== "anchor");
+      if (!whole || extra || w <= 0 || h <= 0 || x < 0 || x > w || y < 0 || y > h) {
+        problems.push(problem(manifestPath, "render.frame needs only a whole-pixel size [w, h] and an anchor [x, y] inside it"));
+      }
+    }
   }
   return problems;
 }
