@@ -131,4 +131,88 @@ describe("uninstallHooks", () => {
     writeFileSync(file, JSON.stringify(userSettings));
     expect(uninstallHooks(file).changed).toBe(false);
   });
+
+  it.each([
+    ["an empty event array", { hooks: { PreToolUse: [] } }],
+    ["an empty hooks object", { hooks: {} }],
+    ["an empty group", { hooks: { Stop: [{ matcher: "", hooks: [] }] } }],
+    ["junk under hooks", { hooks: { Stop: ["junk", 3, null], Odd: { x: 1 } } }],
+  ])("leaves a never-installed file with %s unchanged byte for byte", (_, settings) => {
+    const original = JSON.stringify(settings, null, 3);
+    writeFileSync(file, original);
+    expect(uninstallHooks(file)).toEqual({ changed: false, restoredBackup: false });
+    expect(read()).toBe(original);
+  });
+
+  /** Simulates diverged settings (no matching backup) so uninstall takes the surgical path. */
+  const installedWith = (extra: Record<string, unknown[]>) => {
+    installHooks(file, opts);
+    const installed = JSON.parse(read());
+    for (const [event, groups] of Object.entries(extra)) {
+      installed.hooks[event] = [...groups, ...(installed.hooks[event] ?? [])];
+    }
+    installed.theme = "dark";
+    writeFileSync(file, JSON.stringify(installed));
+  };
+
+  it("keeps a user-authored empty event array the install never touched", () => {
+    installedWith({});
+    const settings = JSON.parse(read());
+    settings.hooks.CustomEvent = [];
+    writeFileSync(file, JSON.stringify(settings));
+    uninstallHooks(file);
+    expect(JSON.parse(read())).toEqual({ theme: "dark", hooks: { CustomEvent: [] } });
+  });
+
+  it("keeps a user-authored empty hooks object outside an emptied container", () => {
+    writeFileSync(file, JSON.stringify({ theme: "dark", hooks: {} }));
+    expect(uninstallHooks(file).changed).toBe(false);
+    expect(JSON.parse(read())).toEqual({ theme: "dark", hooks: {} });
+  });
+
+  it("prunes groups, events and the hooks object only where removing ours emptied them", () => {
+    installedWith({ Stop: [{ hooks: [] }] });
+    uninstallHooks(file);
+    expect(JSON.parse(read())).toEqual({ theme: "dark", hooks: { Stop: [{ hooks: [] }] } });
+  });
+
+  it.each([
+    ["an empty event array", { hooks: { PreToolUse: [] } }],
+    ["an empty hooks object", { hooks: {} }],
+  ])("restores %s that existed before install", (_, settings) => {
+    const original = JSON.stringify(settings);
+    writeFileSync(file, original);
+    installHooks(file, opts);
+    expect(uninstallHooks(file).restoredBackup).toBe(true);
+    expect(read()).toBe(original);
+  });
+
+  it("keeps pre-install empty containers when later edits prevent restoring the backup", () => {
+    writeFileSync(file, JSON.stringify({ hooks: { PreToolUse: [] } }));
+    installedWith({});
+    uninstallHooks(file);
+    expect(JSON.parse(read())).toEqual({ theme: "dark", hooks: { PreToolUse: [] } });
+  });
+
+  it("prunes the hooks object when removing ours empties every event", () => {
+    installedWith({});
+    uninstallHooks(file);
+    expect(JSON.parse(read())).toEqual({ theme: "dark" });
+  });
+
+  it("keeps junk elements, matchers and extra fields when removing ours", () => {
+    const ours = { type: "http", url: "http://127.0.0.1:47821/hooks/claude-code" };
+    const mixed = { matcher: "Bash", note: "mine", hooks: [{ type: "command", command: "x" }, ours] };
+    installedWith({ PreToolUse: ["junk", 7, null, { matcher: "Edit" }, mixed] });
+    uninstallHooks(file);
+    expect(JSON.parse(read()).hooks).toEqual({
+      PreToolUse: [
+        "junk",
+        7,
+        null,
+        { matcher: "Edit" },
+        { matcher: "Bash", note: "mine", hooks: [{ type: "command", command: "x" }] },
+      ],
+    });
+  });
 });

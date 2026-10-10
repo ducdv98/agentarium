@@ -28,25 +28,38 @@ const isOurs = (h: unknown): boolean => isObj(h) && h.type === "http" && typeof 
 
 export const backupPath = (settingsPath: string): string => `${settingsPath}.agentarium-backup`;
 
-/** Pure: removes our hook handlers, pruning groups and events that become empty. */
-export function withoutHooks(settings: Json): Json {
+/**
+ * Pure: removes our hook handlers, pruning only the groups, events and hooks object that
+ * those removals emptied. Containers the user left empty stay; with nothing of ours, returns the input.
+ * `before` is the pre-install snapshot: an emptied container that existed there is kept, not pruned.
+ */
+export function withoutHooks(settings: Json, before: Json = {}): Json {
   if (!isObj(settings.hooks)) return settings;
+  const hadHooks = isObj(before.hooks);
+  const hadEvent = (event: string) => hadHooks && Array.isArray((before.hooks as Json)[event]);
   const hooks: Json = {};
+  let changed = false;
+  let prunedEvent = false;
   for (const [event, groups] of Object.entries(settings.hooks)) {
     if (!Array.isArray(groups)) {
       hooks[event] = groups;
       continue;
     }
+    let prunedGroup = false;
     const kept = groups.flatMap((g: unknown) => {
       if (!isObj(g) || !Array.isArray(g.hooks)) return [g];
       const rest = g.hooks.filter((h: unknown) => !isOurs(h));
       if (rest.length === g.hooks.length) return [g];
+      changed = true;
+      if (!rest.length) prunedGroup = true;
       return rest.length ? [{ ...g, hooks: rest }] : [];
     });
-    if (kept.length) hooks[event] = kept;
+    if (prunedGroup && !kept.length && !hadEvent(event)) prunedEvent = true;
+    else hooks[event] = kept;
   }
+  if (!changed) return settings;
   const { hooks: _drop, ...others } = settings;
-  return Object.keys(hooks).length ? { ...others, hooks } : others;
+  return prunedEvent && !hadHooks && !Object.keys(hooks).length ? others : { ...others, hooks };
 }
 
 /**
@@ -126,6 +139,16 @@ export function installHooks(settingsPath: string, opts: { port: number; token: 
   return { changed: true, backedUp };
 }
 
+/** The pre-install snapshot, or null when it is unreadable (uninstall then falls back to the surgical result). */
+function readBackup(path: string): Json | null {
+  try {
+    const parsed: unknown = JSON.parse(readFileSync(path, "utf8"));
+    return isObj(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
 export interface UninstallResult {
   changed: boolean;
   /** The backup was identical to the cleaned settings, so it was restored byte for byte. */
@@ -139,20 +162,17 @@ export interface UninstallResult {
 export function uninstallHooks(settingsPath: string): UninstallResult {
   const { settings, raw } = readSettings(settingsPath);
   if (raw === null) return { changed: false, restoredBackup: false };
-  const cleaned = withoutHooks(settings);
-  if (isDeepStrictEqual(cleaned, settings)) return { changed: false, restoredBackup: false };
   const backup = backupPath(settingsPath);
-  if (existsSync(backup)) {
-    try {
-      if (isDeepStrictEqual(JSON.parse(readFileSync(backup, "utf8")), cleaned)) {
-        copyFileSync(backup, settingsPath);
-        rmSync(backup);
-        return { changed: true, restoredBackup: true };
-      }
-    } catch {
-      // unreadable backup: fall through to the surgical result
-    }
-  } else if (isDeepStrictEqual(cleaned, {})) {
+  const hasBackup = existsSync(backup);
+  const before = hasBackup ? readBackup(backup) : null;
+  const cleaned = withoutHooks(settings, before ?? {});
+  if (isDeepStrictEqual(cleaned, settings)) return { changed: false, restoredBackup: false };
+  if (before && isDeepStrictEqual(before, cleaned)) {
+    copyFileSync(backup, settingsPath);
+    rmSync(backup);
+    return { changed: true, restoredBackup: true };
+  }
+  if (!hasBackup && isDeepStrictEqual(cleaned, {})) {
     // We created the file ourselves (no backup was ever taken), so remove it.
     rmSync(settingsPath);
     return { changed: true, restoredBackup: false };
