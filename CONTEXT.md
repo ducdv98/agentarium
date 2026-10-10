@@ -83,6 +83,10 @@ _Avoid_: Approval mode, YOLO mode
 A swappable scene (office, farm, construction site) that maps core vocabulary to places, characters and animations. The core never uses theme words.
 _Avoid_: Skin
 
+**Renderer**:
+A way of drawing the scene (dot grid, isometric 2D, 3D) that any Theme with assets for it can use. Isometric is a Renderer, not a Theme.
+_Avoid_: Engine, isometric theme
+
 **Station**:
 A named place in a Theme where an Action category happens, with a capacity.
 _Avoid_: Desk, workstation (office words)

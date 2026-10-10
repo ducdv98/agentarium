@@ -7,7 +7,7 @@ vocabulary and manifests are in [themes.md](themes.md).
 
 | Decision | Choice | Status |
 |---|---|---|
-| First renderer | Hand-drawn 2D sprites, isometric camera | Decided by the project owner |
+| First renderer | 2D sprites pre-rendered from Blender, isometric camera | Decided by the project owner (ADR 0007, replaces hand-drawn) |
 | 3D | Later, as a separate renderer behind the same interface | Decided |
 | 2D engine | PixiJS v8 | Proposed; confirm with the spike below |
 | UI shell | React with Vite (static SPA served by the daemon) | Proposed; Next.js static export is the alternative |
@@ -171,12 +171,11 @@ code, record that and decide whether Pixi's headroom is worth the dependency.
 - Separate renderer (Three.js is the likely engine) behind the same interface.
 - The theme's `renderers.3d` assets are separate; a 2D theme is not required to
   work in 3D.
-- Reusing the 2D art in 3D is not expected; plan separate asset work.
+- The 3D renderer reuses the rigged Blender sources as glTF (ADR 0007).
 
 ## Open questions
 
 - Pixi versus plain Canvas 2D after the spike.
 - Whether to adopt skeletal animation, and which runtime and license.
-- Art tooling and the sprite-atlas pipeline (Aseprite or similar; atlas
-  packer).
+- Atlas packer for the scripted Blender pipeline (ADR 0007).
 - Camera angle and tile size for the isometric grid.
