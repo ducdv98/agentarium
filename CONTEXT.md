@@ -36,6 +36,10 @@ _Avoid_: Office, workspace, project (those are theme or user-facing words)
 The Room the view currently shows. It moves to the Room that needs the user most, unless the user has pinned a Room.
 _Avoid_: Active room, current room
 
+**Overview**:
+The view listing every Room with how many of its agents need the user, ordered for triage. Choosing a Room there pins it as the Followed room.
+_Avoid_: Home, dashboard, lobby (lobby is a theme word)
+
 **Group**:
 A user-declared team of agents, independent of Room and Relationship.
 _Avoid_: Department, team
@@ -56,6 +60,18 @@ _Avoid_: Tool type, activity
 **Needs-input flag**:
 True for an agent that is waiting on the user, or has any descendant that is. The basis of triage.
 _Avoid_: Alert, notification
+
+**Label**:
+The name shown for an agent so the user can tell which terminal it is: its branch or worktree plus the start of its first prompt.
+_Avoid_: Title, name (a provider may have its own session title)
+
+**Recent actions**:
+The last few tool calls an agent made, kept on that agent and never rolled up to its lead.
+_Avoid_: History, log (the event log is the Daemon's record)
+
+**Inspector**:
+The view of one selected agent: its State, current activity, Permission mode, Label and Recent actions.
+_Avoid_: Details panel, agent card
 
 **Lost**:
 State of an agent whose end was never observed and which has gone silent past a timeout. It is removed from the scene rather than left as a ghost.
