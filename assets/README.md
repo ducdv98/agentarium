@@ -129,7 +129,7 @@ The Renderer draws a room in three layers. The floor and the walls are static, s
 partition draws first, and a prop draws behind the Agent, unless the prop has `front: true`, for example a chair whose back faces the camera. To cache
 static props (`docs/research/rendering.md`), give each depth row two cached bands, partitions and rear props, then `front` props,
 and draw that row's Agents between them. The layout fixes only the slots. When more Agents want a Station than it
-has slots, the Renderer decides where they go.
+has slots, the Renderer decides where they go (the isometric Renderer's rule is in `docs/research/themes.md`).
 `assets:check` validates every `layout.json` against its manifest's parts. `node assets/pipeline/preview.mjs
 <scene dir> [--characters <atlas>] [--slots]` composes the room from the committed atlas in that order and writes
 a PNG to `assets/.cache/preview/`.

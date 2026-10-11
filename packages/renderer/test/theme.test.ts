@@ -92,6 +92,7 @@ describe("theme manifest", () => {
         "2d": {
           ...completeTheme.renderers?.["2d"],
           atlases: [],
+          room: undefined,
           walk: { ne: "walk/ne" },
           states: { idle: { ne: "idle/ne" } },
           categories: { read: { ne: "read/ne" } },
@@ -101,6 +102,7 @@ describe("theme manifest", () => {
     expect(validateTheme(incomplete, { strict: true })).toEqual([
       "stations.read: missing",
       "renderers.2d.atlases: empty",
+      "renderers.2d.room: missing",
       "renderers.2d.walk.nw: missing",
       "renderers.2d.walk.se: missing",
       "renderers.2d.walk.sw: missing",
@@ -121,6 +123,12 @@ describe("theme manifest", () => {
       "renderers.2d.categories.wait: missing",
       "renderers.2d.categories.error: missing",
     ]);
+  });
+
+  it("needs the room to be a path when given", () => {
+    const r2d = completeTheme.renderers?.["2d"];
+    const broken = { ...completeTheme, renderers: { "2d": { ...r2d, room: "" } } } as unknown as Theme;
+    expect(validateTheme(broken)).toEqual(["renderers.2d.room: needs a path"]);
   });
 
   it("requires 2d only in strict mode", () => {

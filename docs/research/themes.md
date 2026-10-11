@@ -102,12 +102,15 @@ lists `atlases`: Pixi v8 spritesheet JSON files, relative to the repository's
 `waiting` and `blocked`, and for each of the nine action `categories`. A clip
 maps the four directions (`ne`, `nw`, `se`, `sw`) to animation names in those
 atlases. Working agents play their category's clip. Lost and done agents have
-no clip; they fade out.
+no clip; they fade out. `room` is the room's `layout.json`, also relative to
+`assets/` (format in `assets/README.md`, "Scene assets and room layouts"); its
+parts are frames in one of the atlases.
 
 ```json
 "renderers": {
   "2d": {
-    "atlases": ["office/characters.json"],
+    "atlases": ["office/characters.json", "office/room.json"],
+    "room": "office/layout.json",
     "walk": { "ne": "walk/ne", "nw": "walk/nw", "se": "walk/se", "sw": "walk/sw" },
     "states": { "idle": { "ne": "idle/ne", "...": "..." }, "waiting": {}, "blocked": {} },
     "categories": { "read": { "ne": "read/ne", "...": "..." } }
@@ -122,11 +125,22 @@ placeholder.
 
 `validateTheme(theme)` accepts a Theme without a 2D section, so dot-grid stays
 valid. `validateTheme(theme, { strict: true })` is for themes we ship. It lists
-every gap: a missing station, atlas list, clip or direction. `checkAtlases`
+every gap: a missing station, atlas list, room, clip or direction. `checkAtlases`
 checks every name the manifest uses: it must be a playable animation in exactly
 one atlas, and each atlas must set `meta.scale: 2`. The test
 `packages/renderer/test/shipped-themes.test.ts` runs both checks in CI on every
 Theme in `shippedThemes` that has a 2D section.
+
+The isometric Renderer (`createIsometricRenderer`, phase-3-scene 10) puts each
+Agent on its Station's slots in the room: the station key is the Agent's action
+category, or `rest` when it has none or the room has no such Station. An Agent
+keeps its slot while its Station is unchanged. When a Station is full, the
+overflow rule is "spread, then share": the Agent takes the nearest free floor
+tile that is no Station's slot, and once the room has none, it shares the
+Station's least-used slot, drawn a few pixels apart. Agents walk between places
+on the floor grid, around blocking props and never across a partition. A Theme
+without a `room`, or whose art fails to load, gets a placeholder room with one
+block of slots per Station and placeholder characters.
 
 ## Scope
 

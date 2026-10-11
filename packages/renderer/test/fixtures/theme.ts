@@ -11,6 +11,7 @@ export const completeTheme: Theme = {
   renderers: {
     "2d": {
       atlases: ["test/atlas.json"],
+      room: "test/layout.json",
       walk: clip("walk"),
       states: { idle: clip("idle"), waiting: clip("waiting"), blocked: clip("blocked") },
       categories: Object.fromEntries(ACTION_CATEGORIES.map((c) => [c, clip(c)])),

@@ -4,3 +4,7 @@ export * from "./layout";
 export * from "./renderer";
 export * from "./dot-grid-renderer";
 export { dotGrid, shippedThemes } from "./themes";
+export * from "./isometric-renderer";
+export * from "./isometric/types";
+export * from "./isometric/room";
+export * from "./isometric/scene";

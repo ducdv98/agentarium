@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { emptyWorld, type RoomSummary, type WorldState } from "@agentarium/core";
-import { createDotGridRenderer, dotGrid, type Renderer } from "@agentarium/renderer";
+import { createDotGridRenderer, createIsometricRenderer, dotGrid, type Renderer } from "@agentarium/renderer";
 import { connect, type ConnectionStatus } from "./connection";
 import { pickRoom } from "./follow";
 import { buildRoster, needsInputCount } from "./roster";
@@ -16,11 +16,34 @@ function daemonUrl(): string | null {
 
 const theme = dotGrid;
 
+const RENDERERS = {
+  "dot-grid": { label: "Dot grid", create: () => createDotGridRenderer(theme) },
+  isometric: { label: "Isometric", create: () => createIsometricRenderer(theme) },
+} satisfies Record<string, { label: string; create: () => Renderer }>;
+type RendererId = keyof typeof RENDERERS;
+
+/** `?renderer=isometric` picks the starting renderer; the choice is then remembered in this browser. */
+function initialRenderer(): RendererId {
+  const isId = (v: string | null): v is RendererId => !!v && Object.hasOwn(RENDERERS, v);
+  const param = new URLSearchParams(location.search).get("renderer");
+  if (isId(param)) return param;
+  try {
+    const saved = localStorage.getItem("agentarium.renderer");
+    if (isId(saved)) return saved;
+  } catch {
+    // Storage can be blocked; the default is fine.
+  }
+  return "dot-grid";
+}
+
 export function App() {
   const url = useMemo(daemonUrl, []);
   const stage = useRef<HTMLDivElement>(null);
   const renderer = useRef<Renderer | null>(null);
+  const [rendererId, setRendererId] = useState<RendererId>(initialRenderer);
   const [world, setWorld] = useState<WorldState>(emptyWorld());
+  /** The latest world, so a newly chosen renderer starts from it without re-running on every patch. */
+  const latest = useRef<WorldState>(world);
   const [status, setStatus] = useState<ConnectionStatus>("connecting");
   const [rooms, setRooms] = useState<RoomSummary[]>([]);
   const [room, setRoom] = useState<string | null>(null);
@@ -31,9 +54,15 @@ export function App() {
   useEffect(() => {
     const el = stage.current;
     if (!el) return;
-    const r = createDotGridRenderer(theme);
+    const r = RENDERERS[rendererId].create();
     r.mount(el);
+    r.applyState({ kind: "snapshot", world: latest.current });
     renderer.current = r;
+    try {
+      localStorage.setItem("agentarium.renderer", rendererId);
+    } catch {
+      // Not remembered; nothing else depends on it.
+    }
     const onResize = () => r.resize();
     window.addEventListener("resize", onResize);
     return () => {
@@ -41,7 +70,7 @@ export function App() {
       r.dispose();
       renderer.current = null;
     };
-  }, []);
+  }, [rendererId]);
 
   useEffect(() => {
     if (!url) return;
@@ -55,6 +84,7 @@ export function App() {
           msg.type === "snapshot" ? { kind: "snapshot", world: msg.world } : { kind: "patch", patch: msg.patch },
         );
         setRoom(msg.room);
+        latest.current = w;
         setWorld(w);
       },
     });
@@ -98,6 +128,16 @@ export function App() {
             </select>
           </label>
         )}
+        <label className="rooms">
+          View{" "}
+          <select value={rendererId} onChange={(e) => setRendererId(e.target.value as RendererId)}>
+            {Object.entries(RENDERERS).map(([id, r]) => (
+              <option key={id} value={id}>
+                {r.label}
+              </option>
+            ))}
+          </select>
+        </label>
         {!url && <p className="notice">Open this page with ?token=… (printed by “agentarium start”).</p>}
         <ul className="roster">
           {rows.map((r) => (

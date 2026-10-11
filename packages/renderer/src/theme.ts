@@ -32,6 +32,11 @@ export type Clip = Partial<Record<Direction, string>>;
 /** Atlas paths are Pixi v8 spritesheet JSON files relative to the repository's assets directory. */
 export interface Renderer2d {
   atlases: string[];
+  /**
+   * The room's `layout.json` (assets/README.md, "Scene assets and room layouts"), relative to the assets
+   * directory. Its parts are frames in one of `atlases`. Without it the isometric Renderer draws a placeholder room.
+   */
+  room?: string;
   walk?: Clip;
   states: Partial<Record<AnimatedState, Clip>>;
   categories: Partial<Record<ActionCategory, Clip>>;
@@ -151,6 +156,7 @@ export function validateTheme(theme: Theme, options: { strict?: boolean } = {}):
   atlases.forEach((a, i) => {
     if (typeof a !== "string" || !a) problems.push(`renderers.2d.atlases.${i}: needs a path`);
   });
+  if (r2d.room !== undefined && (typeof r2d.room !== "string" || !r2d.room)) problems.push("renderers.2d.room: needs a path");
   checkClip("renderers.2d.walk", r2d.walk);
   for (const [s, clip] of Object.entries(r2d.states ?? {})) {
     if (!(ANIMATED_STATES as readonly string[]).includes(s)) problems.push(`renderers.2d.states.${s}: not an animated state`);
@@ -162,6 +168,7 @@ export function validateTheme(theme: Theme, options: { strict?: boolean } = {}):
   }
   if (options.strict) {
     if (!atlases.length) problems.push("renderers.2d.atlases: empty");
+    if (r2d.room === undefined) problems.push("renderers.2d.room: missing");
     const requireClip = (where: string, clip: Clip | undefined): void => {
       if (!clip || typeof clip !== "object") return void problems.push(`${where}: missing`);
       for (const d of DIRECTIONS) if (!clip[d]) problems.push(`${where}.${d}: missing`);

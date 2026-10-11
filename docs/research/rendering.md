@@ -323,6 +323,48 @@ Rules for the production renderer:
 - Pack few, large atlases per theme.
 - Cache static props only in depth bands.
 
+## Production renderer (2026-10-11)
+
+The isometric Renderer (phase-3-scene 10) was measured with
+`pnpm --filter @agentarium/ui-web bench:isometric`, on the same laptop and
+proxy as the spike. `packages/ui-web/bench.html` plays the load generator's
+script (200 root agents, all live while it measures) through the core reducer
+and feeds the Renderer patches every 100 ms, as the daemon would. "Office art"
+uses the committed office character and room atlases; "placeholders" uses
+dot-grid, which has no 2D art. "All idle" is 200 resting agents and nobody
+waiting.
+
+Low-end proxy (`--gpu low-power --cpu-throttle 4`), two runs agreeing within
+0.4 ms:
+
+| Case | Rendered fps | Frame ms p50 / p95 | Draws per frame | Main thread | Frame loop | `applyState` |
+|---|---:|---|---:|---:|---:|---:|
+| Placeholders, load generator | 28.4 | 3.7 / 5.3 | 1 | 34 % | 12 % | 4 % |
+| Office art, load generator | 28.5 | 5.6 / 7.8 | 3 | 40 % | 18 % | 3 % |
+| Placeholders, all idle | 0 | n/a | n/a | 0 % | 0 % | 0 % |
+| Office art, all idle | 28.8 | 2.2 / 3.0 | 2 | 18 % | 7 % | 0 % |
+
+RTX 4050, no throttling: under load, 0.8 / 1.3 ms (placeholders) and
+1.1 / 1.5 ms (office art) at 28.8 fps, 7 to 8 % main thread.
+
+- Frame time stays well under 16 ms at p95 and draw calls stay at 1 to 3, so
+  the targets hold. The main thread figure includes the bench's own reducer
+  and diff, which the daemon runs in real use; the Renderer's share is "Frame
+  loop" plus `applyState`.
+- With nothing animating the loop and `Ticker.system` stop: 0 % main thread.
+  With office art, resting agents still play their idle clip, so the loop runs
+  at the 30 fps cap and renders only frames where a texture, position or alpha
+  changed.
+- Cold start, on Vite's dev server: the first frame about 0.6 s after
+  navigation on the proxy (0.2 to 0.4 s unthrottled), and the office atlases
+  fetched by 1.0 s. Pixi is a separate chunk (about 256 kB gzipped) that the UI
+  loads only when the isometric view is chosen.
+- Two fixes found by the bench: the walk grid searches on tile indices with
+  neighbours worked out once per room, and the needs-input markers come from
+  one pass over the agents instead of `needsInput` per agent (quadratic).
+  Together they cut `applyState` at 200 agents from about 8 ms to under 1 ms
+  per patch, unthrottled.
+
 ## 3D later
 
 - Separate renderer (Three.js is the likely engine) behind the same interface.
