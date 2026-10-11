@@ -40,7 +40,11 @@ try {
   console.log(`tarball size: ${human(packed.size)} packed, ${human(packed.unpackedSize)} unpacked`);
   check(packed.size <= MAX_TARBALL_BYTES, `tarball is at most ${human(MAX_TARBALL_BYTES)}`);
   const files = packed.files.map((f) => f.path);
-  for (const f of ["dist/bin.js", "dist/daemon.js", "dist/ui/index.html", "package.json", "LICENSE", "README.md"]) {
+  for (const f of [
+    "dist/bin.js", "dist/daemon.js", "dist/ui/index.html", "package.json", "LICENSE", "README.md",
+    "dist/ui/assets/atlases/office-worker.png", "dist/ui/assets/atlases/office-room.png",
+    "dist/ui/assets/src/scenes/office-room/layout.json", "dist/ui/assets/LICENSE", "dist/ui/assets/NOTICE",
+  ]) {
     check(files.includes(f), `tarball contains ${f}`);
   }
   check(!files.some((f) => f.startsWith("src/")), "tarball has no sources");
@@ -74,6 +78,8 @@ try {
   check(page.status === 200 && page.headers.get("content-type")?.startsWith("text/html"), "daemon serves the UI");
   const script = /src="(\/assets\/[^"]+\.js)"/.exec(await page.text())?.[1];
   check(script && (await fetch(`${base}${script}`)).status === 200, "daemon serves the UI assets");
+  check((await fetch(`${base}/assets/atlases/office-worker.json`)).status === 200, "daemon serves the office atlas");
+  check((await fetch(`${base}/assets/src/scenes/office-room/layout.json`)).status === 200, "daemon serves the office room layout");
 
   const token = readFileSync(join(home, "token"), "utf8").trim();
   const hook = await fetch(`${base}/hooks/claude-code`, {

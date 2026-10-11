@@ -147,6 +147,9 @@ pnpm assets:check
 packs atlases. `assets:check` validates manifests, `NOTICE`, and every atlas
 without Blender.
 
+Packing quantises PNG pages to 256 colours (`packing.colors`) to keep the shipped art small.
+Set it to 0 or omit it for lossless PNG packing. Frame and animation metadata stay the same.
+
 ## Installing the pinned Blender
 
 Use a Windows x64 render machine. Download the MSI from the URL in

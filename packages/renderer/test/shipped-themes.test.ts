@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { checkAtlases, shippedThemes, validateTheme } from "../src";
+import { checkAtlases, parseRoom, shippedThemes, validateTheme } from "../src";
 
 const assets = join(__dirname, "../../../assets");
 const readAtlas = (path: string): unknown => {
@@ -18,6 +18,18 @@ describe("shipped themes", () => {
       if (!r2d) return;
       expect(validateTheme(theme, { strict: true })).toEqual([]);
       expect(checkAtlases(r2d, Object.fromEntries(r2d.atlases.map((path) => [path, readAtlas(path)])))).toEqual([]);
+      for (const path of r2d.atlases) {
+        const atlas = readAtlas(path) as { meta: { image: string } };
+        expect(existsSync(join(assets, dirname(path), atlas.meta.image))).toBe(true);
+      }
+      if (r2d.room) {
+        expect(existsSync(join(assets, r2d.room))).toBe(true);
+        const { room, problems } = parseRoom(readAtlas(r2d.room));
+        expect(problems).toEqual([]);
+        for (const key of [...Object.keys(theme.stations), "rest"]) {
+          expect(room!.stations).toHaveProperty(key);
+        }
+      }
     });
   }
 });

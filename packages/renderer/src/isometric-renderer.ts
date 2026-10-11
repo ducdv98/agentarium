@@ -6,7 +6,7 @@ import { createIsoScene } from "./isometric/scene";
 import type { RoomLayout } from "./isometric/types";
 import { needsInputMarkers, type NeedsInputMarker, type RenderUpdate, type Renderer } from "./renderer";
 import type { Theme } from "./theme";
-import { dotGrid } from "./themes/dot-grid";
+import { office } from "./themes/office";
 
 /** Frames are capped at 30 fps while something animates (phase-3-scene 03). */
 const FRAME_MS = 1000 / 30;
@@ -53,11 +53,11 @@ async function loadTheme(theme: Theme, assetUrl: (path: string) => string): Prom
 }
 
 /**
- * The isometric 2D Renderer on Pixi v8 (WebGL). It draws a Theme's room and characters from `renderers.2d`, or
- * placeholders until (or unless) the art loads. Frames come from its own loop, capped at 30 fps, and only while
+ * The isometric 2D Renderer on Pixi v8 (WebGL), with the office Theme by default. It draws a Theme's room and
+ * characters from `renderers.2d`, or placeholders until (or unless) the art loads. Frames come from its own loop, capped at 30 fps, and only while
  * something animates; when nothing does, Pixi's system ticker is stopped too, so an idle scene costs nothing.
  */
-export function createIsometricRenderer(initial: Theme = dotGrid, options: IsometricOptions = {}): Renderer {
+export function createIsometricRenderer(initial: Theme = office, options: IsometricOptions = {}): Renderer {
   const assetUrl = options.assetUrl ?? ((path: string) => `/assets/${path}`);
   const now = options.now ?? (() => performance.now());
   let theme = initial;

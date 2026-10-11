@@ -7,7 +7,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { checkBlender } from "../pipeline/build.mjs";
 import { checkAtlases } from "../pipeline/atlas-check.mjs";
 import { generateNotice, validateManifest, validateTree } from "../pipeline/licences.mjs";
-import { packFrames, packRender } from "../pipeline/pack.mjs";
+import { encodePage, packFrames, packRender } from "../pipeline/pack.mjs";
 
 const temps: string[] = [];
 afterEach(() => {
@@ -290,6 +290,35 @@ describe("atlas animation contracts", () => {
 });
 
 describe("packing", () => {
+  it("falls back to a lossless page when the palette PNG would not decode", () => {
+    // UPNG 2.1.0 truncates 1x1 pages, which a fully transparent frame trims to.
+    for (const size of [1, 2]) {
+      const decoded = PNG.sync.read(encodePage(new PNG({ width: size, height: size }), 256));
+      expect([decoded.width, decoded.height]).toEqual([size, size]);
+    }
+  });
+
+  it("writes a smaller palette PNG when colors are requested", () => {
+    const root = mkdtempSync(join(tmpdir(), "agentarium-palette-"));
+    temps.push(root);
+    const beauty = image(128, 128, 120);
+    for (let i = 0; i < beauty.data.length; i += 4) {
+      beauty.data[i] = (i * 37 + Math.floor(i / 512) * 19) % 256;
+      beauty.data[i + 1] = (i * 13) % 256;
+    }
+    const input = { clips: [{ name: "still/sw", frames: [{ frame: 0, beauty }] }], outputDir: root };
+    packFrames({ ...input, atlas: "lossless" });
+    packFrames({ ...input, atlas: "zero", colors: 0 });
+    packFrames({ ...input, atlas: "palette", colors: 256 });
+    const lossless = readFileSync(join(root, "lossless.png"));
+    const palette = readFileSync(join(root, "palette.png"));
+    expect(readFileSync(join(root, "zero.png"))).toEqual(lossless);
+    expect(palette[25]).toBe(3);
+    const decoded = PNG.sync.read(palette);
+    expect([decoded.width, decoded.height]).toEqual([128, 128]);
+    expect(palette.length).toBeLessThan(lossless.length);
+  });
+
   it("packs masks, trims, anchors, deduplicates, and is deterministic", () => {
     const root = mkdtempSync(join(tmpdir(), "agentarium-pack-"));
     temps.push(root);
@@ -361,7 +390,8 @@ describe("packing", () => {
         writeFileSync(join(dir, `frame-${String(frame).padStart(3, "0")}.png`), PNG.sync.write(image(8, 8, 120 + frame)));
       }
     }
-    packRender(root, join(root, "atlas"), { render: { atlas: "worker" } }, { packing: { maxSize: 128, padding: 2 } });
+    packRender(root, join(root, "atlas"), { render: { atlas: "worker" } }, { packing: { maxSize: 128, padding: 2, colors: 256 } });
+    expect(readFileSync(join(root, "atlas", "worker.png"))[25]).toBe(3);
     const atlas = JSON.parse(readFileSync(join(root, "atlas", "worker.json"), "utf8"));
     expect(atlas.animations["walk/ne"]).toEqual([
       "walk/ne/frame-000", "walk/ne/frame-001", "walk/ne/frame-002", "walk/ne/frame-001",

@@ -1,8 +1,8 @@
 // The isometric Renderer under the load generator's script, for scripts/bench-isometric.mjs (phase-3-scene 10).
 // Not part of the app build. Parameters: ?agents=200&mode=load|idle&art=0|1&assets=<URL of the assets directory>.
-import { ACTION_CATEGORIES, diffWorld, emptyWorld, reduce, type WorldState } from "@agentarium/core";
+import { diffWorld, emptyWorld, reduce, type WorldState } from "@agentarium/core";
 import { generateScript } from "@agentarium/loadgen";
-import { ANIMATED_STATES, DIRECTIONS, createIsometricRenderer, dotGrid, type Clip, type Theme } from "@agentarium/renderer";
+import { createIsometricRenderer, dotGrid, office } from "@agentarium/renderer";
 
 interface FrameSample {
   at: number;
@@ -14,22 +14,6 @@ const params = new URLSearchParams(location.search);
 const agents = Number(params.get("agents") ?? 200);
 const mode = params.get("mode") ?? "load";
 const assets = params.get("assets") ?? "/assets/";
-const clip = (name: string): Clip => Object.fromEntries(DIRECTIONS.map((d) => [d, `${name}/${d}`]));
-
-/** dot-grid with the committed office art, standing in for the office Theme (11). */
-const office: Theme = {
-  ...dotGrid,
-  id: "office-bench",
-  renderers: {
-    "2d": {
-      atlases: ["atlases/office-worker.json", "atlases/office-room.json"],
-      room: "src/scenes/office-room/layout.json",
-      walk: clip("walk"),
-      states: Object.fromEntries(ANIMATED_STATES.map((s) => [s, clip(s)])),
-      categories: Object.fromEntries(ACTION_CATEGORIES.map((c) => [c, clip(c)])),
-    },
-  },
-};
 
 // The Renderer reports a failed start or art load on the console; the runner rejects such a run.
 const failures: string[] = [];

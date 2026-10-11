@@ -78,5 +78,5 @@
     { "position": 0.45, "color": [1.0, 1.0, 1.0] }
   ],
   "outline": { "thickness": 0.018 },
-  "packing": { "maxSize": 4096, "padding": 2 }
+  "packing": { "maxSize": 4096, "padding": 2, "colors": 256 }
 }

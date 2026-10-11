@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { emptyWorld, type RoomSummary, type WorldState } from "@agentarium/core";
-import { createDotGridRenderer, createIsometricRenderer, dotGrid, type Renderer } from "@agentarium/renderer";
+import type { Renderer } from "@agentarium/renderer";
 import { connect, type ConnectionStatus } from "./connection";
 import { pickRoom } from "./follow";
 import { buildRoster, needsInputCount } from "./roster";
+import { initialRenderer, RENDERERS, type RendererId } from "./renderers";
 
 /** `?token=` is required; `?daemon=host:port` points a dev server at the daemon (default: same origin). */
 function daemonUrl(): string | null {
@@ -14,33 +15,23 @@ function daemonUrl(): string | null {
   return `ws://${host}/ws?token=${encodeURIComponent(token)}`;
 }
 
-const theme = dotGrid;
-
-const RENDERERS = {
-  "dot-grid": { label: "Dot grid", create: () => createDotGridRenderer(theme) },
-  isometric: { label: "Isometric", create: () => createIsometricRenderer(theme) },
-} satisfies Record<string, { label: string; create: () => Renderer }>;
-type RendererId = keyof typeof RENDERERS;
-
 /** `?renderer=isometric` picks the starting renderer; the choice is then remembered in this browser. */
-function initialRenderer(): RendererId {
-  const isId = (v: string | null): v is RendererId => !!v && Object.hasOwn(RENDERERS, v);
-  const param = new URLSearchParams(location.search).get("renderer");
-  if (isId(param)) return param;
+function rememberedRenderer(): RendererId {
+  let saved: string | null = null;
   try {
-    const saved = localStorage.getItem("agentarium.renderer");
-    if (isId(saved)) return saved;
+    saved = localStorage.getItem("agentarium.renderer");
   } catch {
     // Storage can be blocked; the default is fine.
   }
-  return "dot-grid";
+  return initialRenderer(location.search, saved);
 }
 
 export function App() {
   const url = useMemo(daemonUrl, []);
   const stage = useRef<HTMLDivElement>(null);
   const renderer = useRef<Renderer | null>(null);
-  const [rendererId, setRendererId] = useState<RendererId>(initialRenderer);
+  const [rendererId, setRendererId] = useState<RendererId>(rememberedRenderer);
+  const theme = RENDERERS[rendererId].theme;
   const [world, setWorld] = useState<WorldState>(emptyWorld());
   /** The latest world, so a newly chosen renderer starts from it without re-running on every patch. */
   const latest = useRef<WorldState>(world);

@@ -4,6 +4,16 @@ Agentarium is a live view of your AI agents. Every agent it observes appears as 
 
 It observes Claude Code and Codex CLI, including sub-agents. Each repository gets its own room, and the view switches to a room where an agent is waiting on you, unless you have picked a room yourself. Everything runs locally on one machine.
 
+## The office
+
+![Agents in the office](https://raw.githubusercontent.com/ducdv98/agentarium/main/docs/images/office.png)
+
+The office is the default view. Agents walk to a station for each kind of work and rest in the lounge when idle. A red marker over an agent, and a highlighted row in the list, show who needs you.
+
+### Art
+
+The office art (character and room) is by Agentarium contributors under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), built on CC0 MakeHuman/MPFB assets. Details are in [assets/NOTICE](assets/NOTICE). The package ships the art with its NOTICE.
+
 ## Install
 
 Requires Node.js 22.18 or later.
@@ -90,6 +100,5 @@ If you remove the package first, its hooks stay in your Claude Code settings fil
 
 ## Licence
 
-Code is MIT. See [LICENSE](LICENSE). Art in `assets/` is CC BY 4.0. See
-[assets/LICENSE](assets/LICENSE) and [assets/NOTICE](assets/NOTICE) for the
-licence and attributions.
+Code is MIT. See [LICENSE](LICENSE). Office art is CC BY 4.0, with CC0 source assets.
+See [assets/LICENSE](assets/LICENSE) and [assets/NOTICE](assets/NOTICE) for the licence and attributions shipped with the art.

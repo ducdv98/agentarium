@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { PNG } from "pngjs";
+import UPNG from "upng-js";
 import { MaxRectsPacker } from "maxrects-packer/dist/maxrects-packer.mjs";
 
 export function toLinear(value) {
@@ -102,6 +103,21 @@ function packImages(images, maxSize, padding) {
   });
 }
 
+/** A palette PNG with `colors` entries, or lossless when `colors` is 0 or UPNG writes a page that does not decode (it truncates 1x1 pages). */
+export function encodePage(png, colors = 0) {
+  if (colors) {
+    const rgba = png.data.buffer.slice(png.data.byteOffset, png.data.byteOffset + png.data.byteLength);
+    const encoded = Buffer.from(UPNG.encode([rgba], png.width, png.height, colors));
+    try {
+      PNG.sync.read(encoded);
+      return encoded;
+    } catch {
+      // Fall through to lossless.
+    }
+  }
+  return PNG.sync.write(png);
+}
+
 function readInput(input, objectField, bytesField) {
   return input[objectField] ?? PNG.sync.read(input[bytesField]);
 }
@@ -159,6 +175,7 @@ export function packFrames({
   masks = [],
   maxSize = 4096,
   padding = 2,
+  colors = 0,
 }) {
   mkdirSync(outputDir, { recursive: true });
   const state = { frames: {}, images: new Map(), neutral };
@@ -227,7 +244,7 @@ export function packFrames({
         app: "agentarium assets pipeline",
       },
     };
-    writeFileSync(join(outputDir, imageName), PNG.sync.write(page.png));
+    writeFileSync(join(outputDir, imageName), encodePage(page.png, colors));
     writeFileSync(join(outputDir, jsonName), `${JSON.stringify(sheet, null, 1)}\n`);
   });
   return pages.map((_, index) => `${atlas}${pages.length === 1 ? "" : `-${index}`}.json`);
@@ -275,5 +292,6 @@ export function packRender(renderDir, outputDir, manifest, settings) {
     masks,
     maxSize: settings.packing.maxSize,
     padding: settings.packing.padding,
+    colors: settings.packing.colors,
   });
 }
