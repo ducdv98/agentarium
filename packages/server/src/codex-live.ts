@@ -1,6 +1,9 @@
+import { spawn, type ChildProcess } from "node:child_process";
+import { lstatSync } from "node:fs";
 import { mkdtemp, rm, symlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { Duplex } from "node:stream";
 import WebSocket from "ws";
 import type { AdapterOutput } from "@agentarium/adapters";
 
@@ -9,8 +12,17 @@ interface Mapper {
   map(message: unknown): AdapterOutput;
 }
 
+// Node can't stat a Windows AF_UNIX socket (EACCES), so only ENOENT means it is missing.
+function socketExists(path: string): boolean {
+  try { lstatSync(path); } catch (error) { return (error as NodeJS.ErrnoException).code !== "ENOENT"; }
+  return true;
+}
+
 export function startCodexLive(opts: {
   socketPath: string;
+  /** Command that carries the socket's bytes over stdio; `app-server proxy --sock <socketPath>` is appended.
+   * Defaults to `codex` on Windows, where Node can't connect to the AF_UNIX socket Codex creates. */
+  proxy?: string[];
   mapper: Mapper;
   onEvents(output: AdapterOutput): void | Promise<void>;
   log: (message: string) => void;
@@ -26,6 +38,8 @@ export function startCodexLive(opts: {
   let poll: NodeJS.Timeout | undefined;
   let shortPath: Promise<string> | undefined;
   let tempDir: string | undefined;
+  let proxyChild: ChildProcess | undefined;
+  const proxy = opts.proxy ?? (process.platform === "win32" ? ["codex"] : undefined);
   let nextId = 1;
   const pending = new Map<number, { resolve(value: unknown): void; reject(reason: Error): void; timer: NodeJS.Timeout }>();
   const resumed = new Set<string>();
@@ -87,7 +101,10 @@ export function startCodexLive(opts: {
     retry = undefined;
     let path = opts.socketPath;
     try {
-      if (Buffer.byteLength(path) > 100) {
+      if (proxy) {
+        // Spawn only once Codex has created the socket, so a machine without Codex isn't polled with processes.
+        if (!socketExists(opts.socketPath)) throw new Error(`no socket at ${opts.socketPath}`);
+      } else if (Buffer.byteLength(path) > 100) {
         shortPath ??= (async () => {
           const dir = await mkdtemp(join(tmpdir(), "agentarium-codex-"));
           tempDir = dir;
@@ -98,7 +115,16 @@ export function startCodexLive(opts: {
         path = await shortPath;
       }
       if (stopped) return;
-      const socket = new WebSocket(`ws+unix://${path}:/`);
+      let socket: WebSocket;
+      if (proxy) {
+        const child = spawn(proxy[0]!, [...proxy.slice(1), "app-server", "proxy", "--sock", opts.socketPath],
+          { stdio: ["pipe", "pipe", "ignore"], windowsHide: true });
+        proxyChild = child;
+        // Node accepts a { readable, writable } pair here; @types/node only types the web-stream variant.
+        const stream = Duplex.from({ readable: child.stdout, writable: child.stdin } as unknown as Duplex);
+        child.on("error", (error) => stream.destroy(error));
+        socket = new WebSocket("ws://localhost/", { createConnection: () => stream as never });
+      } else socket = new WebSocket(`ws+unix://${path}:/`);
       ws = socket;
       let reason = "connection closed";
       socket.on("error", (error) => { reason = error.message; });
@@ -141,6 +167,8 @@ export function startCodexLive(opts: {
       socket.on("close", () => {
         if (ws !== socket) return;
         ws = undefined;
+        proxyChild?.kill();
+        proxyChild = undefined;
         connected = false;
         resumed.clear();
         resuming.clear();
@@ -167,6 +195,7 @@ export function startCodexLive(opts: {
       const reason = error instanceof Error ? error.message : String(error);
       if (!stopped) transition(false, reason);
       ws?.terminate();
+      if (!ws) { proxyChild?.kill(); proxyChild = undefined; }
       if (!ws && !stopped) retry ??= setTimeout(() => void connect(), opts.retryMs ?? 5000);
     }
   };
@@ -178,6 +207,7 @@ export function startCodexLive(opts: {
       if (retry) clearTimeout(retry);
       if (poll) clearInterval(poll);
       ws?.terminate();
+      proxyChild?.kill();
       for (const call of pending.values()) { clearTimeout(call.timer); call.reject(new Error("connection closed")); }
       pending.clear();
       if (shortPath) await shortPath.catch(() => undefined);

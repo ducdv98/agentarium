@@ -4,9 +4,9 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-human. The owner accepts or rejects skipping the socket tests on Windows CI (see Answer).
+**Status:** resolved. The owner accepted skipping the Unix-socket tests on Windows CI; the proxy test covers Codex live there.
 
-- [~] The tests skip with a printed reason when the probe fails, and still run in CI on all three operating systems (the tests run on Linux and macOS CI; Windows CI skips them because Node there cannot serve a .sock path)
+- [x] The tests skip with a printed reason when the probe fails, and still run in CI on all three operating systems (the tests run on Linux and macOS CI; Windows CI skips them because Node there cannot serve a .sock path)
 - [x] Findings on Codex's own socket on this machine are recorded under `## Answer`
 
 ## Answer
@@ -20,3 +20,7 @@ Probed on 2026-10-11 on the owner's Windows 11 machine (Node 24.18.0, codex-cli 
 **Agentarium has never reached it.** `net.connect()` to that socket fails with `EACCES`, because Node opens it as a pipe. The real daemon never even gets that far. `~/.agentarium/daemon.log` only ever logs `codex live: unavailable (Invalid URL: ws+unix://C:\Users\ducdev\.codex\app-server-control\app-server-control.sock:/)`. `ws` rejects a drive-letter path in the `ws+unix://` URL. So on Windows the live-approval path has never run, and Codex sessions there fall back to hooks only. Fixing that would need an AF_UNIX client that doesn't go through Node's `net` (or a Codex transport other than the Unix socket). That's a follow-up ticket, not part of this one.
 
 **The tests now:** a top-level probe listens on a `.sock` in a fresh temp dir. When it fails, the three socket tests in `codex-live.test.ts` skip and print `codex-live: skipping Unix-socket tests (<reason>)`, and the missing-socket test still runs. When `CI` is set on Linux or macOS the probe result is ignored, so a broken runner fails loudly instead of skipping. On Windows the tests skip everywhere, CI included, because Node there can't serve a `.sock` path at all.
+
+## Comments
+
+- 2026-10-11: Codex live now works on Windows. Two things blocked it. `ws` rejected the drive-letter `ws+unix://` URL, and Node on Windows can't open an AF_UNIX socket anyway. `startCodexLive` now speaks WebSocket over the stdio of `codex app-server proxy --sock <path>` (the default on Windows; `proxy` option). It spawns the proxy only once the socket exists. That check uses `lstat` and treats only ENOENT as missing, because Node gets EACCES when it stats the AF_UNIX reparse point (`existsSync` returns false for it). The real daemon now logs `codex live: connected` and `/health` reports `codexLive: true`. A new test runs the proxy path on every OS (a fake proxy relays to TCP); the three Unix-socket tests still skip on Windows.

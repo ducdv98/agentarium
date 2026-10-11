@@ -1,6 +1,7 @@
-import { existsSync, mkdtempSync, readdirSync, rmSync, symlinkSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { createServer } from "node:http";
+import type { AddressInfo } from "node:net";
 import { createServer as createNetServer } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -164,6 +165,52 @@ describe("Codex live daemon", () => {
     await waitFor(() => room()?.status === "blocked");
     expect(room()?.category).toBe("error");
     expect(replyToApproval).toBe(false);
+  });
+
+  it("reaches the control socket through the Codex proxy command", async () => {
+    // Windows Node can't connect to the AF_UNIX socket Codex creates, so `codex app-server proxy` carries the bytes.
+    const dir = temp();
+    const socketPath = join(dir, "control.sock");
+    writeFileSync(socketPath, "");
+    const server = createServer();
+    const wss = new WebSocketServer({ server });
+    await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+    servers.push({ close: async () => {
+      for (const client of wss.clients) client.terminate();
+      await new Promise<void>((resolve) => wss.close(() => resolve()));
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    } });
+    const fakeProxy = join(dir, "proxy.mjs");
+    writeFileSync(fakeProxy, `import { connect } from "node:net";
+const sock = process.argv.at(-1);
+if (process.argv.slice(3, 6).join(" ") !== "app-server proxy --sock" || sock !== ${JSON.stringify(socketPath)}) process.exit(2);
+const tcp = connect(Number(process.argv[2]), "127.0.0.1");
+process.stdin.pipe(tcp).pipe(process.stdout);
+tcp.on("close", () => process.exit(0));
+`);
+    let discoveryCalls = 0;
+    wss.on("connection", (client) => client.on("message", (bytes) => {
+      const message = JSON.parse(bytes.toString()) as { id: number; method: string };
+      if (message.method === "initialize") client.send(JSON.stringify({ jsonrpc: "2.0", id: message.id, result: {} }));
+      if (message.method === "thread/loaded/list") {
+        discoveryCalls++;
+        client.send(JSON.stringify({ jsonrpc: "2.0", id: message.id, result: { data: [] } }));
+      }
+    }));
+    const observer = startCodexLive({
+      socketPath,
+      proxy: [process.execPath, fakeProxy, String((server.address() as AddressInfo).port)],
+      mapper: { thread: () => ({ events: [] }), map: () => ({ events: [] }) },
+      onEvents: () => {},
+      log: () => {},
+      pollMs: 30,
+    });
+    try {
+      await waitFor(() => discoveryCalls >= 2);
+      expect(observer.connected()).toBe(true);
+    } finally {
+      await observer.close();
+    }
   });
 
   it("keeps hooks active and logs unavailable once when the socket is missing", async () => {
