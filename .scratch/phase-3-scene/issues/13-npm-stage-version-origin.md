@@ -4,10 +4,10 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-human
+**Status:** done
 
 - [x] Its origin is recorded under `## Answer`
-- [ ] Deprecated with a message if it shouldn't be installed
+- [x] Deprecated with a message if it shouldn't be installed
 
 ## Answer
 
@@ -27,3 +27,7 @@
       npm stage list @agentarium/cli   # reject any leftover staged version: npm stage reject <id>
 
   The `0.0.0` name-reservation placeholder can be deprecated the same way. npm's unpublish window for a version is 72 hours, so it closes around 2026-10-12T16:37Z for the stub. Deprecating keeps the version list stable, so prefer that.
+
+## Comments
+
+- 2026-10-11: The maintainer deprecated `0.0.0-stage`. `npm view @agentarium/cli@0.0.0-stage deprecated` prints the message. `npm stage list @agentarium/cli` reports no staged versions, so there is nothing to reject. `latest` is still `0.1.0`. The `0.0.0` placeholder was left as it is.

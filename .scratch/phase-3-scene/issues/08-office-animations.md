@@ -4,7 +4,7 @@
 
 **Blocked by:** 07
 
-**Status:** ready-for-human. Drafted and rendered; the owner polishes and approves the animations.
+**Status:** resolved. Drafted and rendered; the owner polishes and approves the animations.
 
 - [x] Every animation renders in 4 directions through the 06 pipeline
 - [x] Waiting reads clearly differently from working at 1× (checked against the needs-input marker from 05)
