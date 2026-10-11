@@ -107,6 +107,8 @@
     { "part": "coffee-table", "at": [6, 8], "facing": "se" },
     { "part": "sofa", "at": [5, 9], "facing": "ne", "front": true },
     { "part": "sofa", "at": [6, 9], "facing": "ne", "front": true },
+    { "part": "sofa", "at": [4, 9], "facing": "ne", "front": true },
+    { "part": "sofa", "at": [7, 9], "facing": "ne", "front": true },
     { "part": "sofa", "at": [4, 8], "facing": "se" },
     { "part": "sofa", "at": [7, 8], "facing": "nw", "front": true },
     { "part": "plant", "at": [3, 9], "facing": "sw" }

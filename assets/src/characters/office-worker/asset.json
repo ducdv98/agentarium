@@ -31,9 +31,21 @@
     "blend": "office-worker.blend",
     "collection": "asset",
     "atlas": "office-worker",
+    "frame": { "size": [160, 232], "anchor": [80, 184] },
     "animations": {
-      "tpose": { "action": "tpose", "fps": 1 },
-      "idle": { "action": "idle", "fps": 8 }
+      "walk": { "action": "walk", "fps": 12, "frames": [1, 8], "loop": "cycle" },
+      "idle": { "action": "idle", "fps": 4, "frames": [1, 5], "loop": "pingpong" },
+      "waiting": { "action": "waiting", "fps": 8, "frames": [1, 5], "loop": "pingpong" },
+      "blocked": { "action": "blocked", "fps": 8, "frames": [1, 6], "loop": "cycle" },
+      "read": { "action": "read", "fps": 6, "frames": [1, 8], "loop": "cycle" },
+      "write": { "action": "write", "fps": 8, "frames": [1, 4], "loop": "cycle" },
+      "exec": { "action": "exec", "fps": 6, "frames": [1, 4], "loop": "cycle" },
+      "search": { "action": "search", "fps": 6, "frames": [1, 5], "loop": "pingpong" },
+      "network": { "action": "network", "fps": 4, "frames": [1, 5], "loop": "pingpong" },
+      "delegate": { "action": "delegate", "fps": 4, "frames": [1, 5], "loop": "pingpong" },
+      "think": { "action": "think", "fps": 3, "frames": [1, 4], "loop": "pingpong" },
+      "wait": { "action": "wait", "fps": 4, "frames": [1, 5], "loop": "pingpong" },
+      "error": { "action": "error", "fps": 6, "frames": [1, 4], "loop": "pingpong" }
     },
     "masks": { "shirt": ["shirt"] }
   }

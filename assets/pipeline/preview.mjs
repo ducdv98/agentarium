@@ -3,7 +3,8 @@
 // It draws in the order the isometric Renderer must use (assets/README.md, "Room layouts"): the floor, then the
 // walls, then props, partitions and characters sorted by depth (column + row), with partitions first on their tile
 // and front props over a character on their tile.
-// --characters stands the atlas's idle (or first) clip on every Station slot; --slots tints each slot's tile.
+// --characters puts a character on every Station slot, showing the first frame of the Station's own clip (idle in the
+// rest area) when the atlas has it, else of the idle (or first) clip; --slots tints each slot's tile.
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -104,8 +105,8 @@ export function preview(assetPath, { characters, slots } = {}) {
 
   const stations = Object.entries(layout.stations);
   const standing = [];
-  for (const [, station] of stations) {
-    for (const slot of station.slots) standing.push(slot);
+  for (const [name, station] of stations) {
+    for (const slot of station.slots) standing.push({ ...slot, clip: name === "rest" ? "idle" : name });
   }
   const clip = people && (Object.keys(people.animations).find((a) => a.startsWith("idle/"))?.split("/")[0]
     ?? Object.keys(people.animations)[0].split("/")[0]);
@@ -119,7 +120,7 @@ export function preview(assetPath, { characters, slots } = {}) {
       tinted = true;
     }
     if (item.kind === "character") {
-      const frames = people.animations[`${clip}/${item.facing}`];
+      const frames = people.animations[`${item.clip}/${item.facing}`] ?? people.animations[`${clip}/${item.facing}`];
       drawFrame(target, people, frames[0], ...at(item.at));
       continue;
     }

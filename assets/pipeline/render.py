@@ -360,10 +360,17 @@ def append_asset():
     return pivot, (armatures[0] if armatures else None), [o for o in objects if o.type == "MESH"], actions, parts
 
 
-def frames_of(action):
-    """Every integer frame of the action; a cyclic action's last frame repeats its first, so it is dropped."""
-    start, end = (int(round(v)) for v in action.frame_range)
-    return list(range(start, end if action.use_cyclic else end + 1))
+def animation_frames(name, action, animation):
+    """Check the action's loop contract and render exactly the manifest's inclusive range."""
+    start, end = animation["frames"]
+    cyclic = animation["loop"] == "cycle"
+    expected_range = (start, end + 1 if cyclic else end)
+    action_range = tuple(action.frame_range)
+    if action.use_cyclic != cyclic or action_range != expected_range:
+        raise AssetError(f"animation {name}: action {action.name} has frame_range {action_range} "
+                         f"and use_cyclic {action.use_cyclic}; manifest expects frame_range {expected_range} "
+                         f"and use_cyclic {cyclic} for {animation['loop']}")
+    return list(range(start, end + 1))
 
 
 def use_action(armature, action):
@@ -390,13 +397,17 @@ def main():
     slots = Slots(meshes)
 
     animations = RENDER.get("animations") or {}
-    plan = {name: (actions[a["action"]], frames_of(actions[a["action"]]), a["fps"]) for name, a in animations.items()}
+    plan = {}
+    for name, animation in animations.items():
+        action = actions[animation["action"]]
+        frames = animation_frames(name, action, animation)
+        plan[name] = (action, frames, animation["fps"], animation["loop"])
     if parts:
         # Each part is a one-frame still of its own child collection, so a room packs into one atlas.
-        plan = {p: (None, [bpy.context.scene.frame_current], 1) for p in parts}
+        plan = {p: (None, [bpy.context.scene.frame_current], 1, "cycle") for p in parts}
     elif not plan:
-        plan = {"still": (None, [bpy.context.scene.frame_current], 1)}
-    for name, (_, frames, _) in plan.items():
+        plan = {"still": (None, [bpy.context.scene.frame_current], 1, "cycle")}
+    for name, (_, frames, _, _) in plan.items():
         if not frames:
             raise AssetError(f"animation {name} has no frames")
 
@@ -404,7 +415,7 @@ def main():
     for mask in [None, *MASKS]:
         layer = "beauty" if mask is None else f"mask-{mask}"
         slots.apply(mask)
-        for anim, (action, frames, _) in plan.items():
+        for anim, (action, frames, _, _) in plan.items():
             if action:
                 use_action(armature, action)
             if parts:
@@ -425,7 +436,7 @@ def main():
                          resolution=[w1 * FRAME["scale"], h1 * FRAME["scale"]])
     LOG["meta"] = dict(frame_1x=FRAME["size"], anchor_1x=FRAME["anchor"], scale=FRAME["scale"],
                        neutral_tint=list(lin(S["palette"]["tint"])),
-                       animations={k: dict(frames=len(v[1]), fps=v[2]) for k, v in plan.items()},
+                       animations={k: dict(frames=len(v[1]), fps=v[2], loop=v[3]) for k, v in plan.items()},
                        dirs=list(dirs), masks=list(MASKS))
     LOG["peak_memory_mb"] = peak_memory_mb()
     with open(os.path.join(OUT, "render-log.json"), "w", encoding="utf8") as f:

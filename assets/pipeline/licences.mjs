@@ -124,6 +124,13 @@ export function validateManifest(assetPath, manifest) {
       if (!animation?.action || !Number.isInteger(animation.fps) || animation.fps <= 0) {
         problems.push(problem(manifestPath, `render.animations.${name} needs action and positive integer fps`));
       }
+      const frames = animation?.frames;
+      if (!Array.isArray(frames) || frames.length !== 2 || !frames.every(Number.isInteger) || frames[0] > frames[1]) {
+        problems.push(problem(manifestPath, `render.animations.${name}.frames must be [start, end] with whole numbers and start <= end`));
+      }
+      if (animation?.loop !== "cycle" && animation?.loop !== "pingpong") {
+        problems.push(problem(manifestPath, `render.animations.${name}.loop must be cycle or pingpong`));
+      }
     }
     if (render.parts !== undefined) {
       if (!Array.isArray(render.parts) || render.parts.length === 0) {

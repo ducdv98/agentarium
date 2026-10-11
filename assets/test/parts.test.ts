@@ -33,7 +33,7 @@ describe("scene parts and frame", () => {
       "render.parts.1: desk is listed twice",
       "render.parts.2: a/b is not a safe name",
     ]);
-    expect(check({ parts: ["desk"], animations: { idle: { action: "idle", fps: 8 } } })).toEqual([
+    expect(check({ parts: ["desk"], animations: { idle: { action: "idle", fps: 8, frames: [1, 4], loop: "cycle" } } })).toEqual([
       "render.parts and render.animations cannot be used together",
     ]);
   });

@@ -31,7 +31,10 @@ async function mannequin(...flags: string[]) {
       blend: "mannequin.blend",
       collection: "asset",
       atlas: "mannequin",
-      animations: { walk: { action: "walk", fps: 12 }, idle: { action: "idle", fps: 8 } },
+      animations: {
+        walk: { action: "walk", fps: 12, frames: [1, 4], loop: "pingpong" },
+        idle: { action: "idle", fps: 8, frames: [1, 4], loop: "cycle" },
+      },
       masks: { shirt: ["shirt"] },
     },
   }));
@@ -47,11 +50,20 @@ describe.skipIf(process.env.AGENTARIUM_BLENDER_TESTS !== "1")("Blender pipeline"
     const atlas = JSON.parse(readFileSync(join(atlasDir, "mannequin.json"), "utf8"));
     for (const animation of ["walk", "idle"]) {
       for (const direction of ["sw", "se", "ne", "nw"]) {
-        expect(atlas.animations[`${animation}/${direction}`]).toHaveLength(4);
-        expect(atlas.animations[`${animation}/${direction}-shirt`]).toHaveLength(4);
+        const length = animation === "walk" ? 6 : 4;
+        const fps = animation === "walk" ? 12 : 8;
+        expect(atlas.animations[`${animation}/${direction}`]).toHaveLength(length);
+        expect(atlas.animations[`${animation}/${direction}-shirt`]).toHaveLength(length);
+        expect(atlas.meta.fps[`${animation}/${direction}`]).toBe(fps);
+        expect(atlas.meta.fps[`${animation}/${direction}-shirt`]).toBe(fps);
       }
     }
     expect(atlas.meta.scale).toBe(2);
+    const log = JSON.parse(readFileSync(join(buildDir, "mannequin", "render-log.json"), "utf8"));
+    expect(log.meta.animations).toEqual({
+      walk: { frames: 4, fps: 12, loop: "pingpong" },
+      idle: { frames: 4, fps: 8, loop: "cycle" },
+    });
     // The character fits inside the frame, and the walk actually moves (distinct packed rects).
     for (const frame of Object.values<{ spriteSourceSize: { y: number; h: number }; sourceSize: { h: number } }>(atlas.frames)) {
       expect(frame.spriteSourceSize.y).toBeGreaterThan(0);

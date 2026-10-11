@@ -1,7 +1,8 @@
 # Saves a small test asset for the Blender integration test:
 #   blender -b --factory-startup -P make-mannequin.py -- <output .blend> [--constrained | --object-constrained]
 # Collection "asset": one armature (root, spine), legs bone-parented to root and a torso to spine, with palette
-# materials (trousers, skin) and a mask material (shirt). Actions "walk" and "idle" key the spine on frames 1-4.
+# materials (trousers, skin) and a mask material (shirt). "walk" is non-cyclic on frames 1-4; "idle" is cyclic
+# on frames 1-5, with frame 5 repeating frame 1. Both render frames 1-4.
 # --constrained leaves a bone constraint on the rig, as an unbaked control link would; --object-constrained
 # leaves one on the rig object.
 import math
@@ -56,7 +57,13 @@ for name, degrees in (("walk", 30), ("idle", 6)):
     rig.animation_data.action = action
     bone = rig.pose.bones["spine"]
     bone.rotation_mode = "XYZ"
-    for frame in range(1, 5):
+    cyclic = name == "idle"
+    end = 5 if cyclic else 4
+    action.use_frame_range = True
+    action.frame_start = 1
+    action.frame_end = end
+    action.use_cyclic = cyclic
+    for frame in range(1, end + 1):
         bone.rotation_euler = (0, 0, math.radians(degrees * math.sin(frame * math.pi / 2)))
         bone.keyframe_insert("rotation_euler", frame=frame)
 rig.animation_data.action = None

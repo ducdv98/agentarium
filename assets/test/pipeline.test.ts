@@ -5,8 +5,9 @@ import { join } from "node:path";
 import { PNG } from "pngjs";
 import { afterEach, describe, expect, it } from "vitest";
 import { checkBlender } from "../pipeline/build.mjs";
-import { generateNotice, validateTree } from "../pipeline/licences.mjs";
-import { packFrames } from "../pipeline/pack.mjs";
+import { checkAtlases } from "../pipeline/atlas-check.mjs";
+import { generateNotice, validateManifest, validateTree } from "../pipeline/licences.mjs";
+import { packFrames, packRender } from "../pipeline/pack.mjs";
 
 const temps: string[] = [];
 afterEach(() => {
@@ -31,7 +32,11 @@ function fixture() {
       licence: "CC0-1.0",
       changes: "Original",
     }],
-    render: { blend: "worker.blend", atlas: "worker", animations: { idle: { action: "idle", fps: 8 } } },
+    render: {
+      blend: "worker.blend",
+      atlas: "worker",
+      animations: { idle: { action: "idle", fps: 8, frames: [1, 4], loop: "cycle" } },
+    },
   }));
   return root;
 }
@@ -50,6 +55,38 @@ describe("Blender pin", () => {
 });
 
 describe("licence manifests", () => {
+  it.each([
+    undefined, null, "1,4", [], [1], [1, 4, 5], [1.5, 4], [1, 4.5], ["1", 4], [4, 1],
+  ])("rejects missing or invalid animation frames %j", (frames) => {
+    const root = fixture();
+    const asset = join(root, "src", "characters", "worker");
+    const path = join(asset, "asset.json");
+    const manifest = JSON.parse(readFileSync(path, "utf8"));
+    manifest.render.animations.idle.frames = frames;
+    expect(validateManifest(asset, manifest)).toEqual([
+      `${path}: render.animations.idle.frames must be [start, end] with whole numbers and start <= end`,
+    ]);
+  });
+
+  it.each([undefined, null, "", "repeat", 1, true])("rejects missing or invalid animation loop %j", (loop) => {
+    const root = fixture();
+    const asset = join(root, "src", "characters", "worker");
+    const path = join(asset, "asset.json");
+    const manifest = JSON.parse(readFileSync(path, "utf8"));
+    manifest.render.animations.idle.loop = loop;
+    expect(validateManifest(asset, manifest)).toEqual([
+      `${path}: render.animations.idle.loop must be cycle or pingpong`,
+    ]);
+  });
+
+  it.each(["cycle", "pingpong"])("accepts animation policy %s and a one-frame range", (loop) => {
+    const root = fixture();
+    const asset = join(root, "src", "characters", "worker");
+    const manifest = JSON.parse(readFileSync(join(asset, "asset.json"), "utf8"));
+    manifest.render.animations.idle = { action: "idle", fps: 8, frames: [3, 3], loop };
+    expect(validateManifest(asset, manifest)).toEqual([]);
+  });
+
   it("accepts a complete CC0 licence audit", () => {
     const root = fixture();
     writeFileSync(join(root, "src", "characters", "worker", "licence-audit.json"), JSON.stringify({
@@ -171,6 +208,87 @@ function clips() {
   ];
 }
 
+function animationAtlas(loop = "pingpong") {
+  const animations: Record<string, string[]> = {};
+  const frames: Record<string, object> = {};
+  const fps: Record<string, number> = {};
+  const sequence = loop === "pingpong" ? [0, 1, 2, 3, 2, 1] : [0, 1, 2, 3];
+  for (const direction of ["ne", "sw"]) {
+    for (const suffix of ["", "-shirt", "-hair"]) {
+      const name = `walk/${direction}${suffix}`;
+      animations[name] = sequence.map((index) => `walk/${direction}/frame-${String(index).padStart(3, "0")}${suffix}`);
+      for (const frame of animations[name]) {
+        frames[frame] = {};
+      }
+      fps[name] = 12;
+    }
+  }
+  return { frames, animations, meta: { scale: 2, fps } };
+}
+
+describe("atlas animation contracts", () => {
+  const directions = { ne: 180, sw: 0 };
+  const render = {
+    animations: { walk: { action: "walk", frames: [5, 8], loop: "pingpong", fps: 12 } },
+    masks: ["shirt", "hair"],
+  };
+
+  it.each(["cycle", "pingpong"])("accepts the exact %s sequence and fps for every direction and mask", (loop) => {
+    expect(checkAtlases(animationAtlas(loop), {
+      ...render,
+      animations: { walk: { ...render.animations.walk, loop } },
+    }, directions)).toEqual([]);
+  });
+
+  it.each(["walk/ne", "walk/ne-shirt"])("reports a wrong sequence length for %s", (name) => {
+    const atlas = animationAtlas();
+    atlas.animations[name].pop();
+    expect(checkAtlases(atlas, render, directions)).toEqual([
+      `atlas: animation ${name} frame sequence must be ${JSON.stringify(animationAtlas().animations[name])}; got ${JSON.stringify(atlas.animations[name])}`,
+    ]);
+  });
+
+  it("reports a wrong order even when the sequence length matches", () => {
+    const atlas = animationAtlas();
+    atlas.animations["walk/ne"][4] = "walk/ne/frame-001";
+    expect(checkAtlases(atlas, render, directions)).toEqual([
+      `atlas: animation walk/ne frame sequence must be ${JSON.stringify(animationAtlas().animations["walk/ne"])}; got ${JSON.stringify(atlas.animations["walk/ne"])}`,
+    ]);
+  });
+
+  it("reports each wrong or missing fps alongside sequence mismatches", () => {
+    const atlas = animationAtlas();
+    atlas.animations["walk/sw"].pop();
+    atlas.meta.fps["walk/ne"] = 8;
+    delete atlas.meta.fps["walk/ne-shirt"];
+    expect(checkAtlases(atlas, render, directions)).toEqual([
+      "atlas: animation walk/ne meta.fps must be 12; got 8",
+      "atlas: animation walk/ne-shirt meta.fps must be 12; got undefined",
+      `atlas: animation walk/sw frame sequence must be ${JSON.stringify(animationAtlas().animations["walk/sw"])}; got ${JSON.stringify(atlas.animations["walk/sw"])}`,
+    ]);
+  });
+
+  it("checks every page and accepts manifest mask objects", () => {
+    const atlas = animationAtlas();
+    const maskPage = { frames: atlas.frames, animations: { "walk/ne-shirt": atlas.animations["walk/ne-shirt"] }, meta: atlas.meta };
+    delete atlas.animations["walk/ne-shirt"];
+    expect(checkAtlases([atlas, maskPage], { ...render, masks: { shirt: ["shirt"], hair: ["hair"] } }, directions)).toEqual([]);
+    maskPage.meta.fps["walk/ne-shirt"] = 1;
+    expect(checkAtlases([atlas, maskPage], render, directions, "worker")).toEqual([
+      "worker-1: animation walk/ne-shirt meta.fps must be 12; got 1",
+    ]);
+  });
+
+  it("keeps checking still clips without manifest animation ranges", () => {
+    const atlas = {
+      frames: { "still/ne/frame-000": {} },
+      animations: { "still/ne": ["still/ne/frame-000"] },
+      meta: { scale: 2 },
+    };
+    expect(checkAtlases(atlas, { animations: { still: {} } }, { ne: 180 })).toEqual([]);
+  });
+});
+
 describe("packing", () => {
   it("packs masks, trims, anchors, deduplicates, and is deterministic", () => {
     const root = mkdtempSync(join(tmpdir(), "agentarium-pack-"));
@@ -189,11 +307,67 @@ describe("packing", () => {
     const atlas = JSON.parse(readFileSync(join(root, "a", "worker.json"), "utf8"));
     expect(atlas.animations["idle/sw"]).toHaveLength(2);
     expect(atlas.animations["idle/sw-shirt"]).toHaveLength(2);
+    expect(atlas.meta.fps).toEqual({ "idle/sw": 1, "idle/sw-shirt": 1, "walk/sw": 1, "walk/sw-shirt": 1 });
     expect(atlas.frames["idle/sw/frame-000"].frame).toEqual(atlas.frames["idle/sw/frame-001"].frame);
     expect(atlas.frames["idle/sw/frame-000"].trimmed).toBe(true);
     expect(atlas.frames["idle/sw/frame-000"].spriteSourceSize).toEqual({ x: 1, y: 1, w: 6, h: 6 });
     expect(atlas.frames["idle/sw/frame-000"].sourceSize).toEqual({ w: 8, h: 8 });
     expect(atlas.frames["idle/sw/frame-000"].anchor).toEqual({ x: 0.5, y: 0.875 });
+  });
+
+  it.each([
+    { count: 1, loop: "pingpong", sequence: [0] },
+    { count: 2, loop: "pingpong", sequence: [0, 1] },
+    { count: 4, loop: "pingpong", sequence: [0, 1, 2, 3, 2, 1] },
+    { count: 4, loop: "cycle", sequence: [0, 1, 2, 3] },
+  ])("packs $loop playback for $count frames, including masks", ({ count, loop, sequence }) => {
+    const root = mkdtempSync(join(tmpdir(), "agentarium-loop-"));
+    temps.push(root);
+    const frames = Array.from({ length: count }, (_, frame) => ({
+      frame,
+      beauty: image(8, 8, 120 + frame),
+      masks: { shirt: image(8, 8, 255), hair: image(8, 8, 255) },
+    }));
+    packFrames({
+      clips: [{ name: "walk/ne", frames, fps: 12, loop }],
+      outputDir: root,
+      atlas: "worker",
+      masks: ["shirt", "hair"],
+    });
+    const atlas = JSON.parse(readFileSync(join(root, "worker.json"), "utf8"));
+    for (const suffix of ["", "-shirt", "-hair"]) {
+      expect(atlas.animations[`walk/ne${suffix}`]).toEqual(
+        sequence.map((frame) => `walk/ne/frame-${String(frame).padStart(3, "0")}${suffix}`),
+      );
+      expect(atlas.meta.fps[`walk/ne${suffix}`]).toBe(12);
+    }
+    expect(Object.keys(atlas.frames)).toHaveLength(count * 3);
+  });
+
+  it("carries fps and loop from the render log into the atlas", () => {
+    const root = mkdtempSync(join(tmpdir(), "agentarium-render-pack-"));
+    temps.push(root);
+    writeFileSync(join(root, "render-log.json"), JSON.stringify({
+      meta: {
+        frame_1x: [8, 8], anchor_1x: [4, 7], scale: 2,
+        animations: { walk: { frames: 3, fps: 12, loop: "pingpong" }, still: { frames: 1, fps: 1, loop: "cycle" } },
+        dirs: ["ne"],
+      },
+    }));
+    for (const [animation, count] of [["walk", 3], ["still", 1]] as const) {
+      const dir = join(root, "frames", "beauty", animation, "ne");
+      mkdirSync(dir, { recursive: true });
+      for (let frame = 0; frame < count; frame += 1) {
+        writeFileSync(join(dir, `frame-${String(frame).padStart(3, "0")}.png`), PNG.sync.write(image(8, 8, 120 + frame)));
+      }
+    }
+    packRender(root, join(root, "atlas"), { render: { atlas: "worker" } }, { packing: { maxSize: 128, padding: 2 } });
+    const atlas = JSON.parse(readFileSync(join(root, "atlas", "worker.json"), "utf8"));
+    expect(atlas.animations["walk/ne"]).toEqual([
+      "walk/ne/frame-000", "walk/ne/frame-001", "walk/ne/frame-002", "walk/ne/frame-001",
+    ]);
+    expect(atlas.animations["still/ne"]).toEqual(["still/ne/frame-000"]);
+    expect(atlas.meta.fps).toEqual({ "walk/ne": 12, "still/ne": 1 });
   });
 
   it("spills pages without splitting a clip", () => {
@@ -211,6 +385,9 @@ describe("packing", () => {
     const pages = ["spill-0.json", "spill-1.json"].map((name) => JSON.parse(readFileSync(join(root, name), "utf8")));
     for (const name of ["idle/sw", "idle/sw-shirt", "walk/sw", "walk/sw-shirt"]) {
       expect(pages.filter((page) => page.animations[name])).toHaveLength(1);
+    }
+    for (const page of pages) {
+      expect(page.meta.fps).toEqual(Object.fromEntries(Object.keys(page.animations).map((name) => [name, 1])));
     }
   });
 

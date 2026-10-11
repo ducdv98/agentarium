@@ -108,6 +108,7 @@ function readInput(input, objectField, bytesField) {
 
 function buildClips(clips, masks, state, anchor) {
   const animations = {};
+  const fps = {};
   const groups = [];
   for (const clip of [...clips].sort((a, b) => a.name.localeCompare(b.name))) {
     const group = new Set();
@@ -132,13 +133,18 @@ function buildClips(clips, masks, state, anchor) {
         group.add(maskFrame.image);
       }
     }
-    animations[clip.name] = beautyNames;
+    const sequence = (names) => (clip.loop ?? "cycle") === "pingpong"
+      ? [...names, ...names.slice(1, -1).reverse()]
+      : names;
+    animations[clip.name] = sequence(beautyNames);
+    fps[clip.name] = clip.fps ?? 1;
     for (const mask of masks) {
-      animations[`${clip.name}-${mask}`] = maskNames[mask];
+      animations[`${clip.name}-${mask}`] = sequence(maskNames[mask]);
+      fps[`${clip.name}-${mask}`] = clip.fps ?? 1;
     }
     groups.push([...group]);
   }
-  return { animations, groups };
+  return { animations, fps, groups };
 }
 
 /** Pack clips without deleting unrelated files in the output directory. */
@@ -156,7 +162,7 @@ export function packFrames({
 }) {
   mkdirSync(outputDir, { recursive: true });
   const state = { frames: {}, images: new Map(), neutral };
-  const { animations, groups } = buildClips(clips, masks, state, {
+  const { animations, fps, groups } = buildClips(clips, masks, state, {
     x: anchor[0] / frameSize[0],
     y: anchor[1] / frameSize[1],
   });
@@ -201,10 +207,12 @@ export function packFrames({
       delete pageFrames[name].image;
     }
     const pageAnimations = {};
+    const pageFps = {};
     for (const [name, frameNames] of Object.entries(animations)) {
       const names = frameNames.filter((frameName) => frameName in pageFrames);
       if (names.length) {
         pageAnimations[name] = names;
+        pageFps[name] = fps[name];
       }
     }
     const sheet = {
@@ -215,6 +223,7 @@ export function packFrames({
         format: "RGBA8888",
         size: { w: page.png.width, h: page.png.height },
         scale,
+        fps: pageFps,
         app: "agentarium assets pipeline",
       },
     };
@@ -252,7 +261,7 @@ export function packRender(renderDir, outputDir, manifest, settings) {
         }
         return input;
       });
-      clips.push({ name: `${animation}/${direction}`, frames });
+      clips.push({ name: `${animation}/${direction}`, frames, fps: details.fps, loop: details.loop });
     }
   }
   return packFrames({

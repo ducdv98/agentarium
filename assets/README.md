@@ -42,8 +42,8 @@ This is a complete example:
     "collection": "asset",
     "atlas": "office-worker",
     "animations": {
-      "walk": { "action": "walk", "fps": 12 },
-      "idle": { "action": "idle", "fps": 8 }
+      "walk": { "action": "walk", "fps": 12, "frames": [1, 8], "loop": "cycle" },
+      "idle": { "action": "idle", "fps": 8, "frames": [1, 4], "loop": "pingpong" }
     },
     "masks": { "shirt": ["shirt"] }
   }
@@ -55,8 +55,14 @@ This is a complete example:
 `licence`, and `changes` are required. `render` is optional for source-only
 assets. `blend` names an existing file. `collection` names the Blender
 collection. `atlas` is a unique safe file stem. `animations` maps output names
-to Blender action names and positive integer frame rates. An omitted or empty
-map renders one-frame `still` clips. `masks` maps mask names to material names.
+to Blender action names and positive integer frame rates. Every animation needs
+`frames: [start, end]`, inclusive whole numbers with `start <= end`, and `loop`.
+`cycle` plays start through end, then starts again. `pingpong` plays start through
+end, then end-1 through start+1, then repeats. Only start through end are rendered;
+the packer reuses frame names for the return trip. An omitted or empty map renders
+one-frame `still` clips. `masks` maps mask names to material names. Every atlas page
+has `meta.fps`, mapping its animation names (such as `walk/ne` and `walk/ne-shirt`)
+to their frame rates. Parts and stills use fps 1.
 
 ## The `.blend` contract
 
@@ -75,9 +81,10 @@ management, the toon look and the outline from `pipeline/settings.json`, so ever
 - An image texture in a replaced material keeps its alpha, for hair cards and brows.
 - Each mesh gets the inverted-hull outline in the `ink` colour, unless the object has the custom
   property `agentarium_outline` set to false.
-- Each animation names an action. Every integer frame of the action's frame range is rendered. When the
-  action is marked cyclic (Manual Frame Range, Cyclic Animation), its last frame repeats the first and is
-  skipped. Output frames are numbered from 0.
+- Each animation names an action and fixes the rendered range with `frames: [start, end]`. For `loop: "cycle"`,
+  the action is marked cyclic (Manual Frame Range, Cyclic Animation) and its frame range is `[start, end + 1]`;
+  the last frame repeats the first and is not rendered. For `loop: "pingpong"`, the action is not cyclic and its
+  frame range is exactly `[start, end]`. Output frames are numbered from 0.
 - The asset faces screen south-west (towards the camera, down the -Y axis) at rest. The pipeline turns it
   for the four directions.
 

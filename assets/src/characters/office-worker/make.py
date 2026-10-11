@@ -3,7 +3,8 @@
 #
 # The body, its morph targets, the Rigify metarig and its weights come from MPFB 2.0.17; the eyes and brows come
 # from the MakeHuman CC0 system asset pack. Everything else is made here: the 1.2x head (ticket 01), the clothing
-# and hair, the materials, the canonical deformation skeleton and the test actions. MPFB is used as a tool only.
+# and hair, the materials, the canonical deformation skeleton and the actions, which animations.py authors from
+# the clips asset.json lists. MPFB is used as a tool only.
 #
 # The saved file follows the .blend contract in assets/README.md:
 #   collection "asset":    the deformation skeleton "office-worker" and every mesh, skinned to it
@@ -16,7 +17,6 @@ import gzip
 import importlib
 import io
 import json
-import math
 import os
 import shutil
 import sys
@@ -24,12 +24,14 @@ from pathlib import Path
 
 import bmesh
 import bpy
-from mathutils import Matrix, Quaternion, Vector
+from mathutils import Vector
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[2] / "pipeline"))
+sys.path.insert(0, str(HERE))
 sys.dont_write_bytecode = True  # no __pycache__ next to the pipeline scripts
 import bake  # noqa: E402
+import animations  # noqa: E402
 
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 ap = argparse.ArgumentParser()
@@ -446,77 +448,6 @@ def bind(obj, skeleton):
     obj.modifiers.new("armature", "ARMATURE").object = skeleton
 
 
-# ---------------------------------------------------------------- test actions on the controls
-def aim(rig, name, direction):
-    """Turns a control so its bone points along direction (armature space), keeping its twist as close as it can."""
-    update()
-    pb = rig.pose.bones[name]
-    m = pb.matrix.copy()
-    current = (m.to_3x3() @ Vector((0, 1, 0))).normalized()
-    turn = current.rotation_difference(Vector(direction).normalized())
-    pb.matrix = Matrix.Translation(m.translation) @ (turn.to_matrix() @ m.to_3x3()).to_4x4()
-    update()
-
-
-def rest(rig):
-    for pb in rig.pose.bones:
-        pb.matrix_basis = Matrix()
-    update()
-
-
-def author(rig, name, frames, pose, cyclic=False):
-    """Keys pose(rig, phase) on every frame. A cyclic action's last frame repeats its first."""
-    action = bpy.data.actions.new(f"{name}.controls")
-    action.use_fake_user = True
-    bake.use_action(rig, action)
-    keyed = set()
-    for frame in range(1, frames + 1):
-        bpy.context.scene.frame_set(frame)
-        rest(rig)
-        for side in ("L", "R"):  # FK arms; the legs stay on IK, at rest
-            parent = rig.pose.bones[f"upper_arm_parent.{side}"]
-            parent["IK_FK"] = 1.0
-            parent.keyframe_insert('["IK_FK"]', frame=frame, group=parent.name)
-        moved = pose(rig, (frame - 1) / (frames - 1) * math.tau if cyclic else 0.0)
-        keyed |= set(moved)
-        for bone in keyed:
-            rig.pose.bones[bone].keyframe_insert(
-                "rotation_quaternion" if rig.pose.bones[bone].rotation_mode == "QUATERNION" else "rotation_euler",
-                frame=frame, group=bone)
-    action.use_frame_range = True
-    action.frame_start, action.frame_end = 1, frames
-    action.use_cyclic = cyclic
-    rig.animation_data.action = None
-    rest(rig)
-
-
-def side_x(rig, side):
-    return 1.0 if rig.pose.bones[f"upper_arm_fk.{side}"].head.x > 0 else -1.0
-
-
-def tpose(rig, _phase):
-    for side in ("L", "R"):
-        x = side_x(rig, side)
-        for bone in ("upper_arm_fk", "forearm_fk", "hand_fk"):
-            aim(rig, f"{bone}.{side}", (x, 0, 0))
-    return [f"{b}.{s}" for b in ("upper_arm_fk", "forearm_fk", "hand_fk") for s in ("L", "R")]
-
-
-def idle(rig, phase):
-    """Arms relaxed at the sides, a slow breath in the chest and a little sway in the arms."""
-    breath = math.sin(phase)
-    chest = rig.pose.bones["chest"]
-    chest.rotation_quaternion = Quaternion((1, 0, 0), math.radians(1.5) * breath)
-    update()
-    for side in ("L", "R"):
-        x = side_x(rig, side)
-        sway = 0.02 * math.sin(phase + 0.6)
-        aim(rig, f"upper_arm_fk.{side}", (x * (0.16 + 0.01 * breath), 0.03 + sway, -1))
-        aim(rig, f"forearm_fk.{side}", (x * 0.06, -0.14 + sway, -1))
-        aim(rig, f"hand_fk.{side}", (x * 0.03, -0.08 + sway, -1))
-    return ["chest"] + [f"{b}.{s}" for b in ("upper_arm_fk", "forearm_fk", "hand_fk") for s in ("L", "R")]
-
-
 # ---------------------------------------------------------------- licence audit (ticket 07, item 1)
 MPFB_LICENCE = "https://github.com/makehumancommunity/mpfb2/blob/v2.0.17/LICENSE.md"
 # The asset kinds MPFB's LICENSE.md releases as CC0 1.0, by data directory.
@@ -611,8 +542,7 @@ def main():
     for name in ("eyes", "brows"):
         meshes[name]["agentarium_outline"] = False
 
-    author(controls, "tpose", 1, tpose)
-    author(controls, "idle", 17, idle, cyclic=True)
+    animations.author_all(controls, bake.use_action)
     bake.bake(skeleton, controls)
     bpy.context.scene.frame_set(1)
     bpy.ops.wm.save_as_mainfile(filepath=os.path.abspath(ARGS.out), compress=True)
