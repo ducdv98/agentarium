@@ -1,9 +1,18 @@
 #!/usr/bin/env node
 import { forwardCodexHook } from "./codex-hook";
-import { readOrCreateToken } from "./paths";
+import { formatGlitch, readGlitchFile } from "@agentarium/server";
+import { glitchFile, readOrCreateToken } from "./paths";
 import { contextFromEnv, differentVersionMessage, init, start, stop, uninstall } from "./commands";
 
-const USAGE = "usage: agentarium <init|uninstall|start|stop|hook codex --port <n> [--home <dir>]>";
+const USAGE = "usage: agentarium <init|uninstall|start|stop|glitches [--since <duration>]|hook codex --port <n> [--home <dir>]>";
+
+function durationMs(value: string): number | undefined {
+  const match = /^(\d+)([mhd])$/.exec(value);
+  if (!match) return undefined;
+  const unit = match[2] === "m" ? 60_000 : match[2] === "h" ? 3_600_000 : 86_400_000;
+  const ms = Number(match[1]) * unit;
+  return Number.isSafeInteger(ms) ? ms : undefined;
+}
 
 async function main(argv: string[]): Promise<number> {
   const ctx = contextFromEnv();
@@ -62,6 +71,19 @@ async function main(argv: string[]): Promise<number> {
     case "stop": {
       const r = await stop(ctx);
       console.log(r.status === "stopped" ? `Daemon stopped (pid ${r.pid}).` : "Daemon is not running.");
+      return 0;
+    }
+    case "glitches": {
+      const sinceIndex = argv.indexOf("--since");
+      const value = sinceIndex >= 0 ? argv[sinceIndex + 1] : "7d";
+      const duration = value ? durationMs(value) : undefined;
+      if (duration === undefined) {
+        console.error("Invalid duration; use a number followed by m, h, or d (for example 30m, 12h or 7d).");
+        return 1;
+      }
+      const glitches = await readGlitchFile(glitchFile(ctx.home), Date.now() - duration);
+      if (glitches.length === 0) console.log(`No Glitches in the last ${value}.`);
+      for (const glitch of glitches.sort((a, b) => a.ts - b.ts)) console.log(formatGlitch(glitch));
       return 0;
     }
     default:

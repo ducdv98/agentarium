@@ -18,6 +18,7 @@ export const codexHooksPath = (env: Env = process.env): string =>
 export const dataDir = (home: string): string => join(home, "data");
 export const daemonFile = (home: string): string => join(home, "daemon.json");
 export const logFile = (home: string): string => join(home, "daemon.log");
+export const glitchFile = (home: string): string => join(home, "glitches.jsonl");
 
 /** The shared secret for ingest and the UI; created on first use. */
 export function readOrCreateToken(home: string): string {

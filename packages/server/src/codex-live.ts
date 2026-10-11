@@ -26,6 +26,7 @@ export function startCodexLive(opts: {
   mapper: Mapper;
   onEvents(output: AdapterOutput): void | Promise<void>;
   log: (message: string) => void;
+  onAvailability?: (available: boolean, reason?: string) => void;
   retryMs?: number;
   pollMs?: number;
   rpcTimeoutMs?: number;
@@ -52,6 +53,7 @@ export function startCodexLive(opts: {
     announced = available;
     opts.log(available ? `codex live: connected to ${opts.socketPath}` :
       `codex live: unavailable (${reason}); Codex sessions use hooks only`);
+    opts.onAvailability?.(available, available ? undefined : reason);
   };
   const rpc = (method: string, params: object): Promise<unknown> => new Promise((resolve, reject) => {
     if (ws?.readyState !== WebSocket.OPEN) { reject(new Error("connection closed")); return; }

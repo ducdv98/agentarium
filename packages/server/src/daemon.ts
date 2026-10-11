@@ -13,6 +13,8 @@ import {
   emptyWorld,
   reduce,
   replay,
+  needsInput,
+  ROOT_AGENT,
   type AgentEvent,
   type AgentRef,
   type ClientMessage,
@@ -32,6 +34,7 @@ import { startCodexLive } from "./codex-live";
 import { readCodexSessionMeta, findCodexRollout, readCodexApprovalsReviewer } from "./codex-rollouts";
 import { codexOtelOutcomes } from "./codex-otel";
 import { readClaudeRejections } from "./claude-transcripts";
+import { memoryGlitchLog, type GlitchLog } from "./glitches";
 
 export interface DaemonOptions {
   port?: number;
@@ -59,6 +62,10 @@ export interface DaemonOptions {
   /** How often transcripts of Claude agents waiting on a prompt are checked for a TUI rejection; 0 disables. */
   transcriptPollMs?: number;
   log?: (message: string) => void;
+  /** Where detected Glitches are recorded (default: in memory). */
+  glitches?: GlitchLog;
+  /** Command that relays the Codex control socket over stdio (see `startCodexLive`); for tests. */
+  codexLiveProxy?: string[];
 }
 
 export interface Daemon {
@@ -95,6 +102,10 @@ interface Client {
   room: Room;
   /** Missed a patch because of backpressure; owed a fresh snapshot. */
   stale: boolean;
+  staleSince?: number;
+  /** Some Agent in the Room needed the user while this client was stale: a Glitch when it recovers or leaves. */
+  staleNeedsInput: boolean;
+  staleRoom?: string;
 }
 
 interface Room {
@@ -117,6 +128,8 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
   const flushMs = opts.flushMs ?? 50;
   const tickMs = opts.tickMs ?? 5_000;
   const maxBuffered = opts.maxBufferedBytes ?? 1_000_000;
+  const glitches = opts.glitches ?? memoryGlitchLog();
+  let codexWasAvailable = false;
 
   const claudeCode = createClaudeCodeAdapter({ machine: opts.machine ?? hostname() });
   const codexHome = opts.codexHome ?? process.env.CODEX_HOME ?? join(homedir(), ".codex");
@@ -188,6 +201,15 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
     seq: room.seq,
     world: room.sent,
   });
+  const recover = (c: Client): void => {
+    if (!c.stale) return;
+    const now = clock();
+    if (c.staleNeedsInput) glitches.record({ kind: "stale_client", ts: now, room: c.staleRoom, durationMs: now - (c.staleSince ?? now) });
+    c.stale = false;
+    c.staleSince = undefined;
+    c.staleNeedsInput = false;
+    c.staleRoom = undefined;
+  };
 
   const allClients = new Set<Client>();
   const summaries = (): RoomSummary[] =>
@@ -222,9 +244,14 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
       const msg: ServerMessage = { type: "patch", room: room.id, seq: room.seq, patch };
       for (const c of room.clients) {
         if (c.ws.bufferedAmount > maxBuffered) {
-          c.stale = true;
+          if (!c.stale) {
+            c.stale = true;
+            c.staleSince = clock();
+            c.staleRoom = room.id;
+          }
+          if (Object.keys(room.world.agents).some((key) => needsInput(room.world, key))) c.staleNeedsInput = true;
         } else if (c.stale) {
-          c.stale = false;
+          recover(c);
           send(c, snapshot(room));
         } else {
           send(c, msg);
@@ -289,6 +316,15 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
   async function ingest(cwd: string | undefined, newEvent: NewEvent, roomId?: string): Promise<Room> {
     const event = { ...newEvent, ts: clock() } as AgentEvent;
     const room = getRoom(roomId ?? resolveRoom(cwd));
+    const key = "agent" in event ? agentKey(event.agent) : undefined;
+    const existing = key ? room.world.agents[key] : undefined;
+    if (existing?.status === "lost" && "agent" in event) {
+      glitches.record({ kind: "lost_but_alive", ts: event.ts, room: room.id, agent: key, provider: event.agent.provider,
+        status: existing.status, category: existing.category, tool: existing.tool, durationMs: event.ts - existing.lastTs });
+    }
+    if (!existing && "agent" in event && event.agent.agent === ROOT_AGENT && event.kind !== "session_start") {
+      glitches.record({ kind: "late_session_start", ts: event.ts, room: room.id, agent: key, provider: event.agent.provider, reason: event.kind });
+    }
     room.world = reduce(room.world, event, timeouts);
     room.lastActive = event.ts;
     markDirty(room);
@@ -325,6 +361,11 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
       for (const event of events) if (outcomeGate("live", event)) await ingest(cwd, event);
     },
     log: opts.log ?? console.log,
+    proxy: opts.codexLiveProxy,
+    onAvailability: (available, reason) => {
+      if (!available && codexWasAvailable) glitches.record({ kind: "codex_live_dropped", ts: clock(), reason });
+      codexWasAvailable = available;
+    },
   }) : undefined;
 
   async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
@@ -412,10 +453,11 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
     wss.handleUpgrade(req, socket, head, (ws) => {
       const requested = url.searchParams.get("room");
       const room = (requested ? rooms.get(requested) : undefined) ?? defaultRoom();
-      const client: Client = { ws, room, stale: false };
+      const client: Client = { ws, room, stale: false, staleNeedsInput: false };
       room.clients.add(client);
       allClients.add(client);
       const leave = (): void => {
+        recover(client);
         client.room.clients.delete(client);
         allClients.delete(client);
       };
@@ -429,13 +471,14 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
           return;
         }
         if (msg?.type === "resync") {
+          recover(client);
           send(client, snapshot(client.room));
         } else if (msg?.type === "join") {
           const target = rooms.get(msg.room);
           if (!target) return;
           client.room.clients.delete(client);
           client.room = target;
-          client.stale = false;
+          recover(client);
           target.clients.add(client);
           send(client, snapshot(target));
         }
@@ -462,6 +505,7 @@ export async function startDaemon(opts: DaemonOptions = {}): Promise<Daemon> {
       server.closeAllConnections();
       await new Promise<void>((resolve) => server.close(() => resolve()));
       await appendQueue;
+      await glitches.flush();
     },
   };
 }

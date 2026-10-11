@@ -3,8 +3,8 @@ import { existsSync, rmSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { DAEMON_VERSION, resolvePort, startDaemon } from "@agentarium/server";
-import { agentariumHome, daemonFile, dataDir, readOrCreateToken } from "./paths";
+import { DAEMON_VERSION, jsonlGlitchLog, resolvePort, startDaemon } from "@agentarium/server";
+import { agentariumHome, daemonFile, dataDir, glitchFile, readOrCreateToken } from "./paths";
 
 const home = agentariumHome();
 // The build copies the UI next to the bundled daemon (dist/ui).
@@ -12,6 +12,7 @@ const uiDist = fileURLToPath(new URL("./ui", import.meta.url));
 const daemon = await startDaemon({
   port: resolvePort(),
   dataDir: dataDir(home),
+  glitches: jsonlGlitchLog(glitchFile(home)),
   token: readOrCreateToken(home),
   ...(existsSync(uiDist) ? { staticDir: uiDist } : {}),
   ...(process.env.AGENTARIUM_CODEX_LIVE === "0" ? {} : {

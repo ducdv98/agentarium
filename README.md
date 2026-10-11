@@ -54,7 +54,10 @@ Agentarium does not edit `config.toml`. The token lives there in plain text, as 
 | `agentarium init` | Adds Agentarium's hooks to your user-level Claude Code settings file (`~/.claude/settings.json`, or `$CLAUDE_CONFIG_DIR/settings.json`). If the Codex home exists, it also adds command hooks to `~/.codex/hooks.json` (or `$CODEX_HOME/hooks.json`). Backs up each existing file once with an `.agentarium-backup` suffix. Safe to run again. Codex shows “Hooks need review” before its new hooks run. |
 | `agentarium start` | Starts the daemon in the background on `127.0.0.1:47821` and prints the URL to open. If it is already running, prints the URL again. |
 | `agentarium stop` | Stops the daemon. |
+| `agentarium glitches [--since <duration>]` | Prints the Glitches the daemon recorded in the last 7 days (or e.g. `--since 12h`), one ready-made usage-log line each. Works with the daemon stopped. |
 | `agentarium uninstall` | Removes Agentarium's hooks from the Claude Code settings file and Codex `hooks.json`, leaving your other settings alone. If removing the hooks leaves exactly what the backup holds, the backup file is restored as it was; otherwise the backup is left in place. |
+
+Glitches record moments when the Daemon detected that the view may have been wrong or late, such as a stale client or an Agent marked lost that was still alive. They live in `~/.agentarium/glitches.jsonl` (under `AGENTARIUM_HOME`), are kept for 14 days and up to 1 MB, contain no prompt or command text, and never leave this machine.
 
 `init` and `uninstall` re-read settings before committing and retry if another writer changed them. This guard only narrows the race: Claude Code and editors do not cooperate through locking, so a change between the final re-read and rename (or delete) can still be replaced. The remaining window is a single re-read plus rename (or delete).
 
