@@ -1,11 +1,30 @@
 import { existsSync, mkdtempSync, readdirSync, rmSync, symlinkSync } from "node:fs";
+import { mkdtemp, rm } from "node:fs/promises";
 import { createServer } from "node:http";
+import { createServer as createNetServer } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { WebSocketServer } from "ws";
 import { startDaemon, type Daemon } from "../src";
 import { startCodexLive } from "../src/codex-live";
+
+const probe = async () => {
+  const dir = await mkdtemp(join(tmpdir(), "ag-codex-"));
+  const socketPath = join(dir, "probe.sock");
+  try {
+    return await new Promise<string | undefined>((resolve) => {
+      const server = createNetServer();
+      server.once("error", (error: NodeJS.ErrnoException) => resolve(`listen ${error.code} on ${socketPath}`));
+      server.listen(socketPath, () => server.close(() => resolve(undefined)));
+    });
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+};
+const socketReason = await probe();
+const socketSkip = socketReason !== undefined && (!process.env.CI || process.platform === "win32");
+if (socketSkip) console.warn(`codex-live: skipping Unix-socket tests (${socketReason})`);
 
 const dirs: string[] = [];
 const daemons: Daemon[] = [];
@@ -25,7 +44,7 @@ afterEach(async () => {
 });
 
 describe("Codex live daemon", () => {
-  it("times out unanswered RPC calls and retries discovery", async () => {
+  it.skipIf(socketSkip)("times out unanswered RPC calls and retries discovery", async () => {
     const socketPath = join(temp(), "control.sock");
     const server = createServer();
     const wss = new WebSocketServer({ server });
@@ -56,7 +75,7 @@ describe("Codex live daemon", () => {
       await observer.close();
     }
   });
-  it("reuses one short socket alias across reconnects and removes it on close", async () => {
+  it.skipIf(socketSkip)("reuses one short socket alias across reconnects and removes it on close", async () => {
     const dir = temp();
     const socketPath = join(dir, "control.sock");
     const longSocketPath = join(dir, "x".repeat(100));
@@ -101,7 +120,7 @@ describe("Codex live daemon", () => {
     }
     expect(existsSync(join(tmpdir(), created[0]!))).toBe(false);
   });
-  it("observes an approval and its outcome without replying to the app-server request", async () => {
+  it.skipIf(socketSkip)("observes an approval and its outcome without replying to the app-server request", async () => {
     const dir = temp();
     const socketPath = join(dir, "control.sock");
     const longSocketPath = join(dir, "x".repeat(100));
