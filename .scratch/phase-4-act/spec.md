@@ -7,6 +7,7 @@ Reference: Pixel Agents already lets you click a character to reach its session 
 ## Gate
 
 - Phase 3 issue 11 is closed: the owner has checked a real Codex session and a real waiting prompt in the office.
+- Daily-use issue 09 (Glitches) has landed, so the Daemon records wrong or late moments during the week.
 - After that, about one week of real use of the office scene, logged in `.scratch/daily-use/usage-log.md`. The usage-log gate is back for this phase, because it changes how the user triages. Issues stay `needs-triage` until the week ends, and the log entries can change them.
 
 ## Scope

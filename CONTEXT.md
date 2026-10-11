@@ -93,6 +93,10 @@ _Avoid_: Server, backend
 The approval policy and sandbox an agent runs under, as resolved from the user's own configuration. Agentarium observes it and never imposes one (ADR 0006).
 _Avoid_: Approval mode, YOLO mode
 
+**Glitch**:
+A moment the Daemon detected on its own where the view may have been wrong or late, such as a stale client or an Agent marked lost that was still alive. It is evidence for the usage log, never an Event, and whether it hurt triage is the user's call.
+_Avoid_: Alert (the Needs-input flag), error (an Action category), incident, anomaly
+
 ### Scene
 
 **Theme**:
