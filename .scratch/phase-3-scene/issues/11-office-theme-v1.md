@@ -4,10 +4,10 @@
 
 **Blocked by:** 08, 09, 10
 
-**Status:** ready-for-human. Built, and real Claude Code and Codex sessions are checked; the owner checks a real waiting prompt in the office.
+**Status:** resolved
 
 - [x] The strict theme check passes in CI
-- [ ] A real session (Claude Code and Codex) shows working, waiting and idle agents correctly in the office, and a waiting agent is spotted at a glance
+- [x] A real session (Claude Code and Codex) shows working, waiting and idle agents correctly in the office, and a waiting agent is spotted at a glance
 - [x] The npm tarball stays under the limit from 06
 - [x] The README shows a screenshot and credits the art under CC BY 4.0
 
@@ -22,3 +22,4 @@
   - Real sessions: a real Claude Code session showed working (exec) at the server racks in the office. Not checked: a real Codex session, because `~/.codex/hooks.json` on this machine has no Agentarium hooks (run `agentarium init`); and a real waiting prompt, which needs an interactive permission prompt. Under the load generator, waiting Agents carry the red marker and their roster rows turn red.
   - Seen while checking: the marker is small at 1x when many Agents crowd the back of the room (the Desks' working slots, Whiteboards and Library are all along the back wall). Worth a look for "spotted at a glance".
 - 2026-10-11: Real Codex session checked. `agentarium init` re-added the Codex hooks (`~/.codex/hooks.json` had been emptied) and the daemon now reaches Codex live on Windows (see 12). A real `codex exec` session in this repo went idle → working/think → working/exec → idle → done in the office's Room. Still for the owner: a real waiting prompt (an interactive Codex or Claude Code approval) and whether it is spotted at a glance.
+- 2026-10-11: The owner checked a real waiting prompt (`codex -a untrusted`, a write command left unapproved): the waiting agent showed in the office and was spotted at a glance. Resolved.
